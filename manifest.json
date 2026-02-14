@@ -1,0 +1,16 @@
+{
+  "name": "Milo Radio",
+  "short_name": "MiloRadio",
+  "description": "Dein Radio für unterwegs",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f4f6fb",
+  "theme_color": "#4f46e5",
+  "icons": [
+    {
+      "src": "images/cholo_love.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ]
+}

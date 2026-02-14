@@ -1,0 +1,359 @@
+[
+  {
+    "id": 1,
+    "sender_Name": "Jazz Radio-Lounge",
+    "sender_Url": "https://jazzlounge.ice.infomaniak.ch/jazzlounge-high.mp3",
+    "sender_Logo": "https://station-images-prod.radio-assets.com/300/jazzradio-lounge.jpeg?version=9d8fe4d388940284e610f4add2fc01ad772ab8e7",
+    "genre": "Jazz"
+  },
+  {
+    "id": 2,
+    "sender_Name": "Jazz / Hamburg",
+    "sender_Url": "https://radiojazz.stream.laut.fm/radiojazz?ref=radiode&t302=2026-02-09_23-38-06&uuid=a8c79993-9f09-43da-9e69-cf03bca4a973",
+    "sender_Logo": "https://station-images-prod.radio-assets.com/300/lautfm-jazzradio.png?version=0c0f7442f07c6425156afeb08f08eb572b85db09",
+    "genre": "Jazz"
+  },
+  {
+    "id": 3,
+    "sender_Name": "The Penthouse Radio",
+    "sender_Url": "https://ssl.nexuscast.com:9046/;",
+    "sender_Logo": "https://station-images-prod.radio-assets.com/300/penthouseradio.png?version=fc644bae122d2bcba5f6a1d55b421052ab300d03",
+    "genre": "Jazz"
+  },
+  {
+    "id": 4,
+    "sender_Name": "Metal Shop Rocks",
+    "sender_Url": "https://quincy.torontocast.com:1505/stream",
+    "sender_Logo": "https://station-images-prod.radio-assets.com/300/metalshop.png?version=838809c763a6e44787dfcc2da3066b1e6e1d7693",
+    "genre": "Metal"
+  },
+  {
+    "id": 5,
+    "sender_Name": "Hair Band Radio",
+    "sender_Url": "https://quincy.torontocast.com:3115/stream",
+    "sender_Logo": "https://station-images-prod.radio-assets.com/300/hairbandradio.png?version=16becf8fa4df8a05667b8fd52f53067e4099b64a",
+    "genre": "Metal"
+  },
+  {
+    "id": 6,
+    "sender_Name": "Sensimedia - Hip Hop Radio / Los Angeles",
+    "sender_Url": "https://sensihiphop.radioca.st/;",
+    "sender_Logo": "https://station-images-prod.radio-assets.com/300/sensimedia-hiphop.png?version=dc7e07fe194ca9b63344da86a766f6ad2cfcba5f",
+    "genre": "Hip Hop"
+  },
+  {
+    "id": 7,
+    "sender_Name": "Générations-New Jack / Paris",
+    "sender_Url": "https://generations-njs.ice.infomaniak.ch/generations-njs.mp3",
+    "sender_Logo": "https://station-images-prod.radio-assets.com/300/generationsnewjack.png?version=60fdf23b406f15f87a14e9f3264776aa652ba794",
+    "genre": "Hip Hop"
+  },
+  {
+    "id": 8,
+    "sender_Name": "Générations-Rap-Us Gold / Paris",
+    "sender_Url": "https://gene-wr08.ice.infomaniak.ch/gene-wr08.mp3",
+    "sender_Logo": "https://station-images-prod.radio-assets.com/300/generationsrapusgold.png?version=a9e10eb7314ff12ba40744346299c5d5c7a280dc",
+    "genre": "Hip Hop"
+  },
+  {
+    "id": 9,
+    "sender_Name": "90s90s HipHop / Deutscher Sender",
+    "sender_Url": "https://regiocast.streamabc.net/regc-90s90shiphop9858510-mp3-192-3156332?sABC=6989qp24%230%239q0599s2o739q14s82q0sqq77829r5nq%23enqvbqr&aw_0_1st.playerid=radiode&amsparams=playerid:radiode;skey:1770642468",
+    "sender_Logo": "https://station-images-prod.radio-assets.com/300/90s90shiphop.jpeg?version=4f45c4c360e7000260b75f7540fe7a2f4aa77a53",
+    "genre": "Hip Hop"
+  },
+  {
+    "id": 10,
+    "sender_Name": "Tropicalisima Bachata New York",
+    "sender_Url": "https://stream-163.zeno.fm/77w1swbrzxrvv?zt=eyJhbGciOiJIUzI1NiJ9.eyJzdHJlYW0iOiI3N3cxc3dicnp4cnZ2IiwiaG9zdCI6InN0cmVhbS0xNjMuemVuby5mbSIsInJ0dGwiOjUsImp0aSI6IlBLOG15NnRaUm1hX0Z2dzkxN1prYWciLCJpYXQiOjE3NzA1MTQzNTQsImV4cCI6MTc3MDUxNDQxNH0.cbcNankIgKxHA6zq0HeSb1Mvf6LlecakvcLFoCvK7DI",
+    "sender_Logo": "https://station-images-prod.radio-assets.com/300/tropicalisimabachata.jpeg?version=c0e80a2d10914971feb5e36d1383a57ca6ef068c",
+    "genre": "Bachata"
+  },
+  {
+    "id": 11,
+    "sender_Name": "Latina Bachata",
+    "sender_Url": "https://latinabachata.ice.infomaniak.ch/latinabachata.mp3",
+    "sender_Logo": "https://station-images-prod.radio-assets.com/300/latinabachata.jpeg?version=c22a426422460a0dbbe98de64dc9b355bab17719",
+    "genre": "Bachata"
+  },
+  {
+    "id": 12,
+    "sender_Name": "Aardvark Blues FM",
+    "sender_Url": "https://ais-edge89-dal02.cdnstream.com/b77280_128mp3",
+    "sender_Logo": "https://station-images-prod.radio-assets.com/300/aardvarkblues.png?version=615686ab78cf4a759d3de5d2aec2ebdd8c571f7c",
+    "genre": "Blues"
+  },
+  {
+    "id": 13,
+    "sender_Name": "Nostalgie Blues",
+    "sender_Url": "https://streaming.nrjaudio.fm/ou8ordgk7oiu?origine=radio.net&aw_0_1st.station=Nostalgie-Blues",
+    "sender_Logo": "https://station-images-prod.radio-assets.com/300/nostalgieblues.jpeg?version=3e6fccade18f4d00d38dd1c7b34aa288ac10563f",
+    "genre": "Blues"
+  },
+  {
+    "id": 14,
+    "sender_Name": "Rock'n Blues / Hamburg",
+    "sender_Url": "https://rocknblues.stream.laut.fm/rocknblues?ref=radiode&t302=2026-02-10_02-10-04&uuid=5811b232-a82f-495b-be5d-5352a52c59cf",
+    "sender_Logo": "https://station-images-prod.radio-assets.com/300/lautfm-rocknblues.png?version=f11c23271b576179cbd2ad8764d6395a6c45dd77",
+    "genre": "Blues"
+  },
+  {
+    "id": 15,
+    "sender_Name": "Tropical 100 Bolero",
+    "sender_Url": "https://stream-165.zeno.fm/b34hotasejstv?zt=eyJhbGciOiJIUzI1NiJ9.eyJzdHJlYW0iOiJiMzRob3Rhc2Vqc3R2IiwiaG9zdCI6InN0cmVhbS0xNjUuemVuby5mbSIsInJ0dGwiOjUsImp0aSI6IktMeXUxeWhGU3ZlMzFoUVZOeE5McHciLCJpYXQiOjE3NzA2ODE4MDksImV4cCI6MTc3MDY4MTg2OX0.5NYA2-kNfey0IMrASObiKVJXGGy8Up5H_UztkgwB184",
+    "sender_Logo": "https://station-images-prod.radio-assets.com/300/tropical100bolero.jpeg?version=5f06644cb7b6523b9c911540ec793a24cdef2bb0",
+    "genre": "Bolero"
+  },
+  {
+    "id": 16,
+    "sender_Name": "Tiempo De Boleros",
+    "sender_Url": "https://radio.tiempodeboleros.es/live",
+    "sender_Logo": "https://station-images-prod.radio-assets.com/300/tiempodeboleros.png?version=4dcaa519a8e8e695b7c780c21eb4fba07a1a4dea",
+    "genre": "Bolero"
+  },
+  {
+    "id": 17,
+    "sender_Name": "Radio Boleros Inolvidables / Peru",
+    "sender_Url": "https://stream-157.zeno.fm/5t45zksv7mruv?zt=eyJhbGciOiJIUzI1NiJ9.eyJzdHJlYW0iOiI1dDQ1emtzdjdtcnV2IiwiaG9zdCI6InN0cmVhbS0xNTcuemVuby5mbSIsInJ0dGwiOjUsImp0aSI6InBhNDh2UzVIUzdHYVNQM3JzRThHQmciLCJpYXQiOjE3NzA2ODc2NTksImV4cCI6MTc3MDY4NzcxOX0.ScczB0BOwFnDhEP9nEwDhZewL3ks1C6F1eYSeEvGCGM",
+    "sender_Logo": "https://station-images-prod.radio-assets.com/300/radio-boleros-inolvidables.png?version=b6368d6dfc9e4dddff96996104fb5d05c0bbfe8b",
+    "genre": "Bolero"
+  },
+  {
+    "id": 18,
+    "sender_Name": "Bossa Nova Brasil",
+    "sender_Url": "https://radio2.vip-radios.fm:18009/stream-128kmp3-BossaNovaBrazil",
+    "sender_Logo": "https://station-images-prod.radio-assets.com/300/bossanovabrazil.png?version=4fe9ccdbd6bae73aee04d84eb3caa91807f43a6b",
+    "genre": "Bossa Nova"
+  },
+  {
+    "id": 19,
+    "sender_Name": "BRA-PAUL IN RIO RADIO",
+    "sender_Url": "https://usa10.fastcast4u.com/paulinrio",
+    "sender_Logo": "https://station-images-prod.radio-assets.com/300/paulinrio.png?version=f3adbeee478f4d00327ecef71758854ed4bc6d5d",
+    "genre": "Bossa Nova"
+  },
+  {
+    "id": 20,
+    "sender_Name": "Sensimedia Dancehall Radio",
+    "sender_Url": "https://sensidancehall.radioca.st/;",
+    "sender_Logo": "https://station-images-prod.radio-assets.com/300/sensimedia-dancehall.png?version=d29638eef6e8c0f41f201997a463c3ad2aa4b626",
+    "genre": "Dancehall"
+  },
+  {
+    "id": 21,
+    "sender_Name": "80s80s Funk & Soul / Deutscher Sender",
+    "sender_Url": "https://regiocast.streamabc.net/regc-80s80ssoul8277002-aacplus-64-8076241?sABC=6989qq27%230%239q0599s2o739q14s82q0sqq77829r5nq%23enqvbqr&aw_0_1st.playerid=radiode&amsparams=playerid:radiode;skey:1770642727",
+    "sender_Logo": "https://station-images-prod.radio-assets.com/300/80s80sfunksoul.jpeg?version=83fdc41e7dcd01e65bd2688bb079425d9d24ba4f",
+    "genre": "Funk & Soul"
+  },
+  {
+    "id": 22,
+    "sender_Name": "Amsterdam Funk Channel",
+    "sender_Url": "https://live.afc.fm/listen",
+    "sender_Logo": "https://station-images-prod.radio-assets.com/300/afc.png?version=5dcc596f8e49205f326665b5c3e785035a38f9a4",
+    "genre": "Funk & Soul"
+  },
+  {
+    "id": 23,
+    "sender_Name": "Générations-Funk  / Paris",
+    "sender_Url": "https://gene-wr05.ice.infomaniak.ch/gene-wr05.mp3",
+    "sender_Logo": "https://station-images-prod.radio-assets.com/300/generationsfunk.png?version=15a64a3525bb3bc04c3b8cf3a7213e7a20228d75",
+    "genre": "Funk & Soul"
+  },
+  {
+    "id": 24,
+    "sender_Name": "Radio Balkan Narodni",
+    "sender_Url": "https://radiobalkan.live/radio/live/narodni.mp3",
+    "sender_Logo": "",
+    "genre": "Kroatien"
+  },
+  {
+    "id": 25,
+    "sender_Name": "Radio Dalmacija",
+    "sender_Url": "https://shoutcast.pondi.hr:9000/;",
+    "sender_Logo": "https://station-images-prod.radio-assets.com/300/radiodalmacija.png?version=d406485b0745826c11d8dfaba89ad58af6b9a3e5",
+    "genre": "Kroatien"
+  },
+  {
+    "id": 26,
+    "sender_Name": "Radio Istra",
+    "sender_Url": "https://s8.iqstreaming.com:8032/stream?",
+    "sender_Logo": "",
+    "genre": "Kroatien"
+  },
+  {
+    "id": 27,
+    "sender_Name": "Solo Merengue",
+    "sender_Url": "https://c15.radioboss.fm:18223/stream",
+    "sender_Logo": "https://station-images-prod.radio-assets.com/300/fieramixlamerenguera.png?version=231e3929324799b23924578abe6fa873771a9b55",
+    "genre": "Merengue"
+  },
+  {
+    "id": 28,
+    "sender_Name": "Radio X HN",
+    "sender_Url": "https://stream-175.zeno.fm/1a44k95bdd0uv?zt=eyJhbGciOiJIUzI1NiJ9.eyJzdHJlYW0iOiIxYTQ0azk1YmRkMHV2IiwiaG9zdCI6InN0cmVhbS0xNzUuemVuby5mbSIsInJ0dGwiOjUsImp0aSI6Im9qekNKMXFZVExXRUo1U1duMjcxWEEiLCJpYXQiOjE3NzA1MTQ5NDksImV4cCI6MTc3MDUxNTAwOX0.n7NL8U9I9RiA--xrJYJ8s1m5YXfvR7Noa-22l2XE27w",
+    "sender_Logo": "https://station-images-prod.radio-assets.com/300/radiohit997x3.png?version=a9cef59fe5b0a8f733006747b34c79e01e9cd0a4",
+    "genre": "Honduras"
+  },
+  {
+    "id": 29,
+    "sender_Name": "Vox FM Honduras",
+    "sender_Url": "https://ice42.securenetsystems.net/VOXFM",
+    "sender_Logo": "https://station-images-prod.radio-assets.com/300/voxfmhn.png?version=b50534380cfaaa43fb1e6e0e33f4955c9f39ae7a",
+    "genre": "Honduras"
+  },
+  {
+    "id": 30,
+    "sender_Name": "Musiquera 93.3FM",
+    "sender_Url": "https://stream-142.zeno.fm/83h238tqsceuv?zt=eyJhbGciOiJIUzI1NiJ9.eyJzdHJlYW0iOiI4M2gyMzh0cXNjZXV2IiwiaG9zdCI6InN0cmVhbS0xNDIuemVuby5mbSIsInJ0dGwiOjUsImp0aSI6InVIRF9FYzBOUm1lV0huMmdMMG1FdWciLCJpYXQiOjE3NzA2OTAxMTYsImV4cCI6MTc3MDY5MDE3Nn0.5e3LdiKE6IfUzPIWeQC3XxFMWSovj9rArgIBRb4YCjw",
+    "sender_Logo": "https://station-images-prod.radio-assets.com/300/musiquera.jpeg?version=70232a5b39a8916c53642dc5300e5e15e61f0827",
+    "genre": "Honduras"
+  },
+  {
+    "id": 31,
+    "sender_Name": "Tropical 100 Merengue",
+    "sender_Url": "https://stream-167.zeno.fm/yeeiw2t9xeqvv?zt=eyJhbGciOiJIUzI1NiJ9.eyJzdHJlYW0iOiJ5ZWVpdzJ0OXhlcXZ2IiwiaG9zdCI6InN0cmVhbS0xNjcuemVuby5mbSIsInJ0dGwiOjUsImp0aSI6InEtQk1EZS1aVElpOTdvY0k4czBQbHciLCJpYXQiOjE3NzA2ODE2NTgsImV4cCI6MTc3MDY4MTcxOH0.GQkYMeROs1rGK-v1QzPKbgFQJQbI2S3lQpX4_42EkVg",
+    "sender_Logo": "https://station-images-prod.radio-assets.com/300/tropical100merengue.jpeg?version=aacac2021c384938486dfe880beb2011c252dc6d",
+    "genre": "Merengue"
+  },
+  {
+    "id": 32,
+    "sender_Name": "Tropical 100 Bacharengue",
+    "sender_Url": "https://stream-168.zeno.fm/7qjv7jiqxhxuv?zt=eyJhbGciOiJIUzI1NiJ9.eyJzdHJlYW0iOiI3cWp2N2ppcXhoeHV2IiwiaG9zdCI6InN0cmVhbS0xNjguemVuby5mbSIsInJ0dGwiOjUsImp0aSI6IjF3cFFWbVA0UVh5cGtfTEdDVjBzU2ciLCJpYXQiOjE3NzA2ODE3NTcsImV4cCI6MTc3MDY4MTgxN30.yAAf_zZoGCk9YbS_N_6zIQgzlj3IHxGH6InrXyjquas",
+    "sender_Logo": "https://station-images-prod.radio-assets.com/300/tropical100merengue.jpeg?version=aacac2021c384938486dfe880beb2011c252dc6d",
+    "genre": "Merengue"
+  },
+  {
+    "id": 33,
+    "sender_Name": "La Super Musiquera 502 HD",
+    "sender_Url": "https://securestream.radioshd.info:7089/stream/1/",
+    "sender_Logo": "",
+    "genre": "Pop Latino"
+  },
+  {
+    "id": 34,
+    "sender_Name": "Radio Brisa Tropical",
+    "sender_Url": "https://usa10.fastcast4u.com/title",
+    "sender_Logo": "https://station-images-prod.radio-assets.com/300/brisatropical.png?version=a88e673e7f58052f4a9a1f1ab66dcbe588dbb1fe",
+    "genre": "Pop Latino"
+  },
+  {
+    "id": 35,
+    "sender_Name": "Solo Rancheras Mexico",
+    "sender_Url": "https://c11.radioboss.fm:18212/stream",
+    "sender_Logo": "https://station-images-prod.radio-assets.com/300/fireamixlamexicana.png?version=1c7374aa1dcb322069b78590bbc044bfd0bc3af5",
+    "genre": "Rancheras"
+  },
+  {
+    "id": 36,
+    "sender_Name": "Radio Gigante",
+    "sender_Url": "https://stream-178.zeno.fm/qn5fsryt88quv?zt=eyJhbGciOiJIUzI1NiJ9.eyJzdHJlYW0iOiJxbjVmc3J5dDg4cXV2IiwiaG9zdCI6InN0cmVhbS0xNzguemVuby5mbSIsInJ0dGwiOjUsImp0aSI6IjRVUmtja0hwUUtxV00xdUlSa3B5SnciLCJpYXQiOjE3NzA1MTU2MTgsImV4cCI6MTc3MDUxNTY3OH0.bD6VtvwepTJCIsyyEoL4H8dyl22SV1ztzAG2vjazeco",
+    "sender_Logo": "",
+    "genre": "Rancheras"
+  },
+  {
+    "id": 37,
+    "sender_Name": "WKDV - La Ley 1460",
+    "sender_Url": "https://audio.livecastnet.com:2555/stream",
+    "sender_Logo": "https://station-images-prod.radio-assets.com/300/wkdv.png?version=53e63864d17bc8a9b9407d34bbddacc321f1a0b5",
+    "genre": "Rancheras"
+  },
+  {
+    "id": 38,
+    "sender_Name": "Joint Radio Reggae / Tel Aviv",
+    "sender_Url": "https://betelgeuse.nucast.co.uk/stream/jrn-reggae",
+    "sender_Logo": "https://station-images-prod.radio-assets.com/300/jointradioreggae.png?version=ce26af4ab7bc326f53b22d70de8139ee1bb06ca7",
+    "genre": "Reggae"
+  },
+  {
+    "id": 39,
+    "sender_Name": "Jahfari",
+    "sender_Url": "https://jahfari.stream.laut.fm/jahfari?ref=radiode&t302=2026-02-10_01-43-54&uuid=a31821f9-64dc-4b1c-ab07-d8535ac5a1b6",
+    "sender_Logo": "https://station-images-prod.radio-assets.com/300/lautfm-jahfari.png?version=184fe1a9f2c80ad249640230f004ccfa21b50309",
+    "genre": "Reggae"
+  },
+  {
+    "id": 40,
+    "sender_Name": "Sensimedia - Roots Radio",
+    "sender_Url": "https://sensiroots.radioca.st/;",
+    "sender_Logo": "https://station-images-prod.radio-assets.com/300/sensimedia-roots.png?version=98b64e6b9954a00ecc8a7c28f91f506ac3ee3532",
+    "genre": "Reggae"
+  },
+   {
+    "id": 41,
+    "sender_Name": "Latina Reggaeton / Paris",
+    "sender_Url": "https://latinareggaeton.ice.infomaniak.ch/latinareggaeton.mp3",
+    "sender_Logo": "https://station-images-prod.radio-assets.com/300/latinareggaeton.jpeg?version=96d884562b5f1fb3144a631eb74e5668448bfca8",
+    "genre": "Reggaeton"
+  },
+   {
+    "id": 42,
+    "sender_Name": "Reggaeton City México",
+    "sender_Url": "https://stream-151.zeno.fm/aqv7eadz908uv?zt=eyJhbGciOiJIUzI1NiJ9.eyJzdHJlYW0iOiJhcXY3ZWFkejkwOHV2IiwiaG9zdCI6InN0cmVhbS0xNTEuemVuby5mbSIsInJ0dGwiOjUsImp0aSI6Ik81dW9fMDNHUmc2R3JESW5KUm9CbFEiLCJpYXQiOjE3NzA2ODczNjksImV4cCI6MTc3MDY4NzQyOX0.fVjZaAO1mqVJtHbKi8bYhZSwGE4aVwo4YE44GJ221Tw",
+    "sender_Logo": "https://station-images-prod.radio-assets.com/300/reggaetoncitymexico.png?version=9757dc9718fc403fdec0a8ae51ef12f6cebce402",
+    "genre": "Reggaeton"
+  },
+   {
+    "id": 43,
+    "sender_Name": "Dem Bow",
+    "sender_Url": "https://dem-bow.stream.laut.fm/dem-bow?ref=radiode&t302=2026-02-10_01-39-11&uuid=684c6737-e67e-4406-8646-468f89262eb3",
+    "sender_Logo": "https://station-images-prod.radio-assets.com/300/lautfm-dembow.jpeg?version=844444740d69962787cc5a61324e55204fa006dc",
+    "genre": "Reggaeton"
+  },
+   {
+    "id": 44,
+    "sender_Name": "Tropicalisima Salsa New York",
+    "sender_Url": "https://stream-163.zeno.fm/6pnauxb8wsjuv?zt=eyJhbGciOiJIUzI1NiJ9.eyJzdHJlYW0iOiI2cG5hdXhiOHdzanV2IiwiaG9zdCI6InN0cmVhbS0xNjMuemVuby5mbSIsInJ0dGwiOjUsImp0aSI6IlZsbXJvZFVDU1g2dUNxV202a1hYWEEiLCJpYXQiOjE3NzA1MTQyMTcsImV4cCI6MTc3MDUxNDI3N30.sjfm1frN9ijNTudYQD0zYfb8WoB8TfF9QespYrrHL2k",
+    "sender_Logo": "https://station-images-prod.radio-assets.com/300/tropicalisimasalsa.jpeg?version=815b6bb3fc989962baab6d82fd02899c2a5827d2",
+    "genre": "Salsa"
+  },
+   {
+    "id": 45,
+    "sender_Name": "Latina Salsa / Paris",
+    "sender_Url": "https://latinasalsa.ice.infomaniak.ch/latinasalsa.mp3",
+    "sender_Logo": "https://station-images-prod.radio-assets.com/300/latinasalsa.jpeg?version=4ecd3209fe34d822d3ac9365ce08d621036ab88f",
+    "genre": "Salsa"
+  },
+   {
+    "id": 46,
+    "sender_Name": "RADIO HABANA SON CUBA",
+    "sender_Url": "https://stream-152.zeno.fm/2ieszeso9istv?zt=eyJhbGciOiJIUzI1NiJ9.eyJzdHJlYW0iOiIyaWVzemVzbzlpc3R2IiwiaG9zdCI6InN0cmVhbS0xNTIuemVuby5mbSIsInJ0dGwiOjUsImp0aSI6Imx3TC1ZTERhVDltclp5R0E3UUhKWkEiLCJpYXQiOjE3NzA2OTAzNDAsImV4cCI6MTc3MDY5MDQwMH0.LF09utLGwGLyYyCtZ0sHrqMZjnqInWu5bt7oYNIAUi8",
+    "sender_Logo": "https://station-images-prod.radio-assets.com/300/habanasoncuba.jpeg?version=bc3b10f386f2f98864e2cb30415edba94e264037",
+    "genre": "Salsa"
+  },
+   {
+    "id": 47,
+    "sender_Name": "Salsamania - Salsa Radio - Colombia",
+    "sender_Url": "https://play10.tikast.com/proxy/salsamania?mp=/stream%E2%80%A8",
+    "sender_Logo": "https://station-images-prod.radio-assets.com/300/salsamania.png?version=0b918f52b18ef8f3eb6a9b614059b717554ff40e",
+    "genre": "Salsa"
+  },
+   {
+    "id": 48,
+    "sender_Name": "Sunshine Live - Techno / Acid",
+    "sender_Url": "https://sunsl.streamabc.net/sunsl-techno-mp3-128-2432010?sABC=698n9427%230%23496r53761599905rr9r212o6oo73rs40%23enqvbqr&aw_0_1st.playerid=radiode&amsparams=playerid:radiode;skey:1770689575",
+    "sender_Logo": "https://station-images-prod.radio-assets.com/300/sunshinetechno.jpeg?version=a39fa9aebc535af9f9f800bd8ef7d271c4e81cf4",
+    "genre": "Techno"
+  },
+   {
+    "id": 49,
+    "sender_Name": "Sunshine live - Mayday / Trance",
+    "sender_Url": "https://sunsl.streamabc.net/sunsl-mayday-aacplus-64-4787960?sABC=698n94ns%230%23496r53761599905rr9r212o6oo73rs40%23enqvb.qr&aw_0_1st.playerid=radio.de&amsparams=playerid:radio.de;skey:1770689711",
+    "sender_Logo": "https://station-images-prod.radio-assets.com/300/sunshinemayday.png?version=e1395bc78e2f5742731975e23c57334c4e3c061b",
+    "genre": "Techno"
+  },
+  {
+    "id": 50,
+    "sender_Name": "Sunshine Live - Drum&Bass",
+    "sender_Url": "https://sunsl.streamabc.net/sunsl-drumnbass-mp3-192-9834247?sABC=698n954n%230%23496r53761599905rr9r212o6oo73rs40%23enqvb.qr&aw_0_1st.playerid=radio.de&amsparams=playerid:radio.de;skey:1770689866",
+    "sender_Logo": "https://station-images-prod.radio-assets.com/300/sunshinednb.jpeg?version=98df52e200473ec52d844e3d28902799468f03e7",
+    "genre": "Techno"
+  },
+  {
+    "id": 51,
+    "sender_Name": "Sunshine Live - House",
+    "sender_Url": "https://sunsl.streamabc.net/sunsl-house-mp3-192-3326799?sABC=698n95pq%230%23496r53761599905rr9r212o6oo73rs40%23enqvb.qr&aw_0_1st.playerid=radio.de&amsparams=playerid:radio.de;skey:1770689997",
+    "sender_Logo": "https://station-images-prod.radio-assets.com/300/sunshinehouse.jpeg?version=e23b0d893dada06ad289019abec61f3756711789",
+    "genre": "Techno"
+  }
+]

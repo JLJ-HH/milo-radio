@@ -1,0 +1,28 @@
+radio2_app (Projektstruktur)
+
+📂 radio2_app
+├── 📁 css
+│ └── style.css
+│
+├── 📁 images
+│ └── cholo_love.png
+|
+|__📁 json
+| └── sender_daten.json
+|
+├── 📁 js
+│ ├── config.js
+│ │
+│ ├── 📁 services
+│ │ ├── radioService.js
+│ │ ├── stationService.js
+│ │ └── userStationService.js
+│ │
+│ ├── main.js
+│ │
+│ ├── 📁 pages
+│ │ ├── page1.js
+│ │ ├── page2.js
+│ │ └── page3.js
+│
+└── index.html
