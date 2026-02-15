@@ -7,7 +7,7 @@ const nav = document.getElementById("navbar");
 // ===============================
 // ADMIN KONFIGURATION
 // ===============================
-const ADMIN_PIN = "1234";
+const ADMIN_PIN = "Luisemilio_333";
 
 // ===============================
 // ADMIN STATUS

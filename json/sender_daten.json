@@ -355,5 +355,54 @@
     "sender_Url": "https://sunsl.streamabc.net/sunsl-house-mp3-192-3326799?sABC=698n95pq%230%23496r53761599905rr9r212o6oo73rs40%23enqvb.qr&aw_0_1st.playerid=radio.de&amsparams=playerid:radio.de;skey:1770689997",
     "sender_Logo": "https://station-images-prod.radio-assets.com/300/sunshinehouse.jpeg?version=e23b0d893dada06ad289019abec61f3756711789",
     "genre": "Techno"
+  },
+  {
+    "id": 52,
+    "sender_Name": "Harscore Radio / Drum'n Base",
+    "sender_Url": "https://stream.hardcoreradio.nl:9000/hcr.mp3",
+    "sender_Logo": "https://station-images-prod.radio-assets.com/300/hardcoreradio.png?version=4d64dffcf3a354ee72cbe1c117fc615396a28afa",
+    "genre": "Techno"
+  },
+  {
+    "id": 53,
+    "sender_Name": "Schwany7 Märchen Kinderradio",
+    "sender_Url": "https://maerchenradio.spcast.eu/stream",
+    "sender_Logo": "https://station-images-prod.radio-assets.com/300/schwany7.png?version=c5d64522928ca426f515ed7e6b485787b08a7da2",
+    "genre": "KinderRadio"
+  },
+  {
+    "id": 54,
+    "sender_Name": "Bachata Hit Radio / Santo Domingo",
+    "sender_Url": "https://radio.dominiserver.com/proxy/bachatahitradio/stream",
+    "sender_Logo": "https://station-images-prod.radio-assets.com/300/bachatahitradio.png?version=c072c519e32eaa3a177891ef6886ae6964cffb9f",
+    "genre": "Bachata"
+  },
+  {
+    "id": 55,
+    "sender_Name": "Top Bachata Radio / Santo Domingo",
+    "sender_Url": "https://radio.dominiserver.com/proxy/topbachata/stream",
+    "sender_Logo": "https://station-images-prod.radio-assets.com/300/topbachataradio.png?version=35ae674e72b876f1c82f7b802910b2bf46cae797",
+    "genre": "Bachata"
+  },
+  {
+    "id": 56,
+    "sender_Name": "Vallenatos Romanticos con Monchi Bogarin Radio",
+    "sender_Url": "https://stream-167.zeno.fm/4neferxbzy8uv?zt=eyJhbGciOiJIUzI1NiJ9.eyJzdHJlYW0iOiI0bmVmZXJ4Ynp5OHV2IiwiaG9zdCI6InN0cmVhbS0xNjcuemVuby5mbSIsInJ0dGwiOjUsImp0aSI6ImtZalhQc1ZvUUVLbm5KRjE4RWRKOUEiLCJpYXQiOjE3NzExMTEzNjgsImV4cCI6MTc3MTExMTQyOH0.eM4_J8jFWEv0ayrndO31ltcKFpIPLQZkLXVGwlMrQ6g&rj-ttl=5&rj-tok=AAABfr-dUn0AxvxizkHVOmHQxQ",
+    "sender_Logo": "https://station-images-prod.radio-assets.com/300/vallenatosromanticoscon.jpeg?version=ce62a13cd76413977c88b9330abcc2b363c447d8",
+    "genre": "Vallenatos"
+  },
+  {
+    "id": 57,
+    "sender_Name": "Vallenato FM / Bogota",
+    "sender_Url": "https://colombiawebs.com.co/proxy/postales1/stream",
+    "sender_Logo": "",
+    "genre": "Vallenatos"
+  },
+  {
+    "id": 58,
+    "sender_Name": "Radio Vallenatos Clasicos",
+    "sender_Url": "https://stream-161.zeno.fm/z07vyxbqz8quv?zt=eyJhbGciOiJIUzI1NiJ9.eyJzdHJlYW0iOiJ6MDd2eXhicXo4cXV2IiwiaG9zdCI6InN0cmVhbS0xNjEuemVuby5mbSIsInJ0dGwiOjUsImp0aSI6InFtQ0tUcHgyVGNTckFvQm1QdmpMaUEiLCJpYXQiOjE3NzExMTExMTUsImV4cCI6MTc3MTExMTE3NX0.278oB5KHbRZyc3jEW4GKvEhqjSRiN05ImIHV01_nKZI",
+    "sender_Logo": "https://station-images-prod.radio-assets.com/300/vallenatosclasicos.png?version=ea7387e9038dffad615a167fdc3365828d6a995d",
+    "genre": "Vallenatos"
   }
 ]
