@@ -404,5 +404,75 @@
     "sender_Url": "https://stream-161.zeno.fm/z07vyxbqz8quv?zt=eyJhbGciOiJIUzI1NiJ9.eyJzdHJlYW0iOiJ6MDd2eXhicXo4cXV2IiwiaG9zdCI6InN0cmVhbS0xNjEuemVuby5mbSIsInJ0dGwiOjUsImp0aSI6InFtQ0tUcHgyVGNTckFvQm1QdmpMaUEiLCJpYXQiOjE3NzExMTExMTUsImV4cCI6MTc3MTExMTE3NX0.278oB5KHbRZyc3jEW4GKvEhqjSRiN05ImIHV01_nKZI",
     "sender_Logo": "https://station-images-prod.radio-assets.com/300/vallenatosclasicos.png?version=ea7387e9038dffad615a167fdc3365828d6a995d",
     "genre": "Vallenatos"
+  },
+  {
+    "id": 59,
+    "sender_Name": "Dancehall Nicaragua",
+    "sender_Url": "https://stream-179.zeno.fm/frfely84cjguv?zt=eyJhbGciOiJIUzI1NiJ9.eyJzdHJlYW0iOiJmcmZlbHk4NGNqZ3V2IiwiaG9zdCI6InN0cmVhbS0xNzkuemVuby5mbSIsInJ0dGwiOjUsImp0aSI6ImY2VWV0ckhMUmMtV0dVZEVCQjlsN3ciLCJpYXQiOjE3NzExMjA4MDAsImV4cCI6MTc3MTEyMDg2MH0.0VQwfjpsOs1tGa3DI7bE2y-ADKIG936teNS4xI03Hcw",
+    "sender_Logo": "https://station-images-prod.radio-assets.com/300/dancehallnicaragua.jpeg?version=1490a8575f420b3bc6bfcae3399cc27fc7ad1f96",
+    "genre": "Dancehall"
+  },
+  {
+    "id": 60,
+    "sender_Name": "Africa Radio / Paris",
+    "sender_Url": "https://african1paris.ice.infomaniak.ch/african1paris-128.mp3",
+    "sender_Logo": "https://station-images-prod.radio-assets.com/300/africa1.png?version=84067e57ea749292db7644ed370b197744a94be7",
+    "genre": "Afro"
+  },
+  {
+    "id": 61,
+    "sender_Name": "Tropiques FM",
+    "sender_Url": "https://listen.radioking.com/radio/8916/stream/19088",
+    "sender_Logo": "https://station-images-prod.radio-assets.com/300/tropiquesfm.jpeg?version=7b48ddd57d66af31282cc5354ee606ecc9c90a71",
+    "genre": "Afro"
+  },
+  {
+    "id": 62,
+    "sender_Name": "FunX Afro / Rotterdam",
+    "sender_Url": "https://icecast.omroep.nl:80/funx-reggaefb-bb-mp3",
+    "sender_Logo": "https://station-images-prod.radio-assets.com/300/funxnlreggae.png?version=9b2802eb5a95803ec4509b00a33abf0958417427",
+    "genre": "Dancehall"
+  },
+  {
+    "id": 63,
+    "sender_Name": "Cumbias Inmortales / Monterrey",
+    "sender_Url": "https://panel.retrolandigital.com/listen/cumbias_inmortales_radio/listen",
+    "sender_Logo": "https://station-images-prod.radio-assets.com/300/cumbiasinmortales.jpeg?version=1a4c569f6bd0bb19f693f3f2dceb16c5f8302104",
+    "genre": "Cumbia"
+  },
+  {
+    "id": 64,
+    "sender_Name": "Radio FM Cumbiambera",
+    "sender_Url": "https://streaming1.locucionar.com/proxy/fmcumbiambera?mp=%2Fstream",
+    "sender_Logo": "https://station-images-prod.radio-assets.com/300/radio-fm-cumbiambera.jpeg?version=464fdaafee0ce435ca5af65752bff792314b35f8",
+    "genre": "Cumbia"
+  },
+  {
+    "id": 65,
+    "sender_Name": "Allzic Funk",
+    "sender_Url": "https://allzic08.ice.infomaniak.ch/allzic11.mp3",
+    "sender_Logo": "https://station-images-prod.radio-assets.com/300/allzicfunk.png?version=cc9d98e85130b3df32727b4507b75fe9ac02ffde",
+    "genre": "Funk & Soul"
+  },
+  {
+    "id": 66,
+    "sender_Name": "FM 80 Funky Music",
+    "sender_Url": "https://listen.radioking.com/radio/467555/stream/523739",
+    "sender_Logo": "https://station-images-prod.radio-assets.com/300/fm80.png?version=b5576d51c8f75a4fa2d71859b4073b09855eabbb",
+    "genre": "Funk & Soul"
+  },
+  {
+    "id": 67,
+    "sender_Name": "Soul Cafe Radio / New York",
+    "sender_Url": "https://usa10.fastcast4u.com:8960/;",
+    "sender_Logo": "https://station-images-prod.radio-assets.com/300/soulcaferadio.png?version=2f3a54596a0ae2455b2941d9ca336519e793e222",
+    "genre": "Funk & Soul"
+  },
+  {
+    "id": 68,
+    "sender_Name": "Hot 108 Jamz / New York",
+    "sender_Url": "https://live.powerhitz.com/hot108?aw_0_req.gdpr=true&hot108jamz",
+    "sender_Logo": "https://station-images-prod.radio-assets.com/300/hot108jamz.png?version=2c5a4de717a94d0a504c053651be1b1de83391c9",
+    "genre": "Hip Hop"
   }
 ]
