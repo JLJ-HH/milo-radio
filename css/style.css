@@ -292,19 +292,77 @@ button {
 }
 
 /* ===============================
-   MOBILE OPTIMIERUNG
+   ➤ NOW PLAYING – SMARTER FALLBACK (NEU!)
+   ============================== */
+#nowPlayingText {
+  font-size: 0.85rem !important;
+  min-height: 18px !important;
+  line-height: 1.2 !important;
+  padding: 2px 0 !important;
+  margin: 0 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  transition: all 0.2s ease !important;
+}
+
+#nowPlayingText.has-title {
+  font-size: 0.75rem !important;
+  color: var(--accent) !important;  /* Cyan-Blau wie deine App */
+  font-weight: 500 !important;
+}
+
+#nowPlayingText.live-station {
+  font-size: 0.82rem !important;
+  color: #6b7280 !important;  /* Grau */
+  font-style: italic;
+}
+
+/* ===============================
+   MOBILE OPTIMIERUNG (KOMBINIERT)
    ============================== */
 @media (max-width: 480px) {
-  #content { padding: 1rem; overflow-y: auto; }
-  #radioControls button { padding: 14px 20px; font-size: 1.1rem; }
-  #volumeSlider { height: 28px; min-width: 100%; margin-top: 0.7rem; }
-  .card { width: 48%; margin-bottom: 0.7rem; padding: 0.7rem; }
+  #content { 
+    padding: 1rem; 
+    overflow-y: auto; 
+  }
+  
+  #nowPlayingText {
+    font-size: 0.8rem !important;
+  }
+  #nowPlayingText.has-title {
+    font-size: 0.72rem !important;
+  }
+  
+  #radioControls button { 
+    padding: 14px 20px; 
+    font-size: 1.1rem; 
+  }
+  #volumeSlider { 
+    height: 28px; 
+    min-width: 100%; 
+    margin-top: 0.7rem; 
+  }
+  .card { 
+    width: 48%; 
+    margin-bottom: 0.7rem; 
+    padding: 0.7rem; 
+  }
 }
 
 @media (max-width: 360px) {
-  .card { width: 100%; margin-bottom: 0.5rem; padding: 0.5rem; }
-  #radioControls button { padding: 12px 16px; font-size: 1rem; }
-  #volumeSlider { height: 24px; }
+  .card { 
+    width: 100%; 
+    margin-bottom: 0.5rem; 
+    padding: 0.5rem; 
+  }
+  #radioControls button { 
+    padding: 12px 16px; 
+    font-size: 1rem; 
+  }
+  #volumeSlider { 
+    height: 24px; 
+  }
 }
 
 /* ===============================
@@ -337,10 +395,18 @@ button {
 }
 
 @media (min-width: 768px) {
-  #mobileLogoSection { display: none !important; }
+  #mobileLogoSection { 
+    display: none !important; 
+  }
 }
 
 @media (max-width: 767px) {
-  h2 { font-size: 1.5rem !important; margin-bottom: 1rem; }
-  #stationTitleMobile { font-size: 1.1rem !important; }
+  h2 { 
+    font-size: 1.5rem !important; 
+    margin-bottom: 1rem; 
+  }
+  #stationTitleMobile { 
+    font-size: 1.1rem !important; 
+  }
 }
+

@@ -90,9 +90,24 @@ if (mobileLogo) {
       } catch (e) {
           title = text;
       }
-      if (nowPlayingText) {
-          nowPlayingText.textContent = title.trim() ? title.trim() : "";
-      }
+      //  ALT (Zeile 80):
+if (nowPlayingText) {
+  nowPlayingText.textContent = title.trim() ? title.trim() : "";
+}
+
+//  NEU:
+if (nowPlayingText) {
+  if (title.trim()) {
+    nowPlayingText.textContent = title.trim();
+    nowPlayingText.classList.add('has-title');  // 🎵 Kleine Schrift
+    nowPlayingText.classList.remove('live-station'); 
+  } else {
+    nowPlayingText.textContent = `🎵 ${station.sender_Name}`;  // Kompakt!
+    nowPlayingText.classList.add('live-station');
+    nowPlayingText.classList.remove('has-title');
+  }
+}
+
     } catch (error) {
       console.warn("Error fetching now playing:", error);
       if (nowPlayingText) nowPlayingText.textContent = "";
