@@ -295,9 +295,9 @@ button {
    ➤ NOW PLAYING – SMARTER FALLBACK (NEU!)
    ============================== */
 #nowPlayingText {
-  font-size: 0.85rem !important;
-  min-height: 18px !important;
-  line-height: 1.2 !important;
+  font-size: 1.25rem !important;
+  min-height: 28px !important;
+  line-height: 1.4 !important;
   padding: 2px 0 !important;
   margin: 0 !important;
   overflow: hidden !important;
@@ -307,15 +307,16 @@ button {
 }
 
 #nowPlayingText.has-title {
-  font-size: 0.75rem !important;
-  color: var(--accent) !important;  /* Cyan-Blau wie deine App */
-  font-weight: 500 !important;
+  font-size: 1.2rem !important;
+  color: var(--primary-dark) !important;  /* Dunkleres Blau für besseren Kontrast */
+  font-weight: 700 !important;
 }
 
 #nowPlayingText.live-station {
-  font-size: 0.82rem !important;
-  color: #6b7280 !important;  /* Grau */
+  font-size: 1.2rem !important;
+  color: #374151 !important;  /* Dunkleres Grau */
   font-style: italic;
+  font-weight: 600 !important;
 }
 
 /* ===============================
@@ -328,10 +329,10 @@ button {
   }
   
   #nowPlayingText {
-    font-size: 0.8rem !important;
+    font-size: 1.15rem !important;
   }
   #nowPlayingText.has-title {
-    font-size: 0.72rem !important;
+    font-size: 1.1rem !important;
   }
   
   #radioControls button { 

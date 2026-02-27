@@ -10,8 +10,8 @@ export function render(container) {
         <div class="col-8 col-md-10 ps-3">
             <h1 class="mb-1 d-none d-md-block">Radio Player</h1>
             <h2 class="mb-0 d-md-none" style="color: var(--primary);">Radio Player</h2>
-            <p id="stationTitle" class="mb-0">Keine Sender ausgewählt</p>
-            <p id="nowPlayingText" class="mb-0 text-muted small d-block" style="min-height: 20px;"></p>
+            <p id="stationTitle" class="mb-1 fw-bold fs-5">Keine Sender ausgewählt</p>
+            <p id="nowPlayingText" class="mb-0 d-block" style="min-height: 28px;"></p>
         </div>
     </div>
 
