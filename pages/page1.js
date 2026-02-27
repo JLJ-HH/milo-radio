@@ -11,6 +11,7 @@ export function render(container) {
             <h1 class="mb-1 d-none d-md-block">Radio Player</h1>
             <h2 class="mb-0 d-md-none" style="color: var(--primary);">Radio Player</h2>
             <p id="stationTitle" class="mb-0">Keine Sender ausgewählt</p>
+            <p id="nowPlayingText" class="mb-0 text-muted small d-block" style="min-height: 20px;"></p>
         </div>
     </div>
 
@@ -44,6 +45,7 @@ if (mobileLogo) {
 
 
   const stationTitle = container.querySelector("#stationTitle");
+  const nowPlayingText = container.querySelector("#nowPlayingText");
   const playBtn = container.querySelector("#playBtn");
   const stopBtn = container.querySelector("#stopBtn");
   const volumeSlider = container.querySelector("#volumeSlider");
@@ -53,10 +55,66 @@ if (mobileLogo) {
   let activeStations = userStationService.getStations();
   let currentStation = null;
   let lastPlayedStation = null;
+  let nowPlayingInterval = null;
 
   const savedVolume = localStorage.getItem("radioVolume") ?? 0.3;
   volumeSlider.value = savedVolume;
   radioService.setVolume(savedVolume);
+
+  async function fetchNowPlaying(station) {
+    if (!station) {
+      if (nowPlayingText) nowPlayingText.textContent = "";
+      return;
+    }
+
+    let urlToFetch = "";
+    
+    // Fallback on the PHP proxy if no explicit now_playing_url is provided, or if we want to force it
+    if (station.now_playing_url && station.now_playing_url.trim() !== "") {
+        urlToFetch = station.now_playing_url;
+    } else if (station.sender_Url) {
+        // Use our new PHP proxy
+        urlToFetch = `./api/metadata.php?stream=${encodeURIComponent(station.sender_Url)}`;
+    } else {
+        if (nowPlayingText) nowPlayingText.textContent = "";
+        return;
+    }
+
+    try {
+      const response = await fetch(urlToFetch);
+      const text = await response.text();
+      let title = "";
+      try {
+          const json = JSON.parse(text);
+          title = json.title || json.song || json.now_playing || json.name || json.currentSong || "";
+      } catch (e) {
+          title = text;
+      }
+      if (nowPlayingText) {
+          nowPlayingText.textContent = title.trim() ? title.trim() : "";
+      }
+    } catch (error) {
+      console.warn("Error fetching now playing:", error);
+      if (nowPlayingText) nowPlayingText.textContent = "";
+    }
+  }
+
+  function startNowPlayingUpdates(station) {
+    clearInterval(nowPlayingInterval);
+    if (!station) {
+        if (nowPlayingText) nowPlayingText.textContent = "";
+        return;
+    }
+    fetchNowPlaying(station);
+    nowPlayingInterval = setInterval(() => {
+        fetchNowPlaying(station);
+    }, 15000);
+  }
+
+  function stopNowPlayingUpdates() {
+    clearInterval(nowPlayingInterval);
+    if (nowPlayingText) nowPlayingText.textContent = "";
+  }
 
   function showFeedback(msg, color = "green") {
     feedback.textContent = msg;
@@ -135,6 +193,7 @@ if (mobileLogo) {
         currentStation = station;
         lastPlayedStation = station;
         radioService.play(station.sender_Url);
+        startNowPlayingUpdates(station);
         updateStatus();
         renderRadioCards();
       };
@@ -150,6 +209,7 @@ if (mobileLogo) {
             currentStation.sender_Url === station.sender_Url
           ) {
             radioService.stop();
+            stopNowPlayingUpdates();
             currentStation = null;
           }
           showFeedback(`Sender "${station.sender_Name}" entfernt`, "red");
@@ -169,6 +229,7 @@ if (mobileLogo) {
 
   stopBtn.addEventListener("click", () => {
     radioService.stop();
+    stopNowPlayingUpdates();
     currentStation = null;
     renderRadioCards();
   });
@@ -178,6 +239,7 @@ if (mobileLogo) {
       currentStation = lastPlayedStation;
     if (currentStation) {
       radioService.play(currentStation.sender_Url);
+      startNowPlayingUpdates(currentStation);
       lastPlayedStation = currentStation;
       updateStatus();
       renderRadioCards();

@@ -10,6 +10,7 @@ export function render(container) {
                 <input type="url" id="url" class="form-control mb-2" placeholder="Radio URL" required>
                 <input type="text" id="genre" class="form-control mb-2" placeholder="Genre" required>
                 <input type="url" id="logo" class="form-control mb-2" placeholder="Logo URL (optional)">
+                <input type="url" id="nowPlaying" class="form-control mb-2" placeholder="Now Playing URL (optional)">
                 <input type="hidden" id="editIndex">
                 <button type="submit" class="btn btn-primary me-2" id="submitBtn">Hinzufügen</button>
                 <button type="button" class="btn btn-secondary" id="resetBtn">Reset</button>
@@ -25,6 +26,7 @@ export function render(container) {
     const urlInput = container.querySelector('#url');
     const genreInput = container.querySelector('#genre');
     const logoInput = container.querySelector('#logo');
+    const nowPlayingInput = container.querySelector('#nowPlaying');
     const editIndexInput = container.querySelector('#editIndex');
     const submitBtn = container.querySelector('#submitBtn');
     const resetBtn = container.querySelector('#resetBtn');
@@ -103,6 +105,7 @@ export function render(container) {
         urlInput.value = station.sender_Url;
         genreInput.value = station.genre ?? '';
         logoInput.value = station.sender_Logo ?? '';
+        nowPlayingInput.value = station.now_playing_url ?? '';
         editIndexInput.value = station._index;
         submitBtn.textContent = 'Aktualisieren';
     };
@@ -128,7 +131,8 @@ export function render(container) {
             sender_Name: senderInput.value.trim(),
             sender_Url: urlInput.value.trim(),
             genre: genreInput.value.trim(),
-            sender_Logo: logoInput.value.trim() || null
+            sender_Logo: logoInput.value.trim() || null,
+            now_playing_url: nowPlayingInput.value.trim() || null
         };
         const editIndex = editIndexInput.value;
 
