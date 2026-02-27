@@ -5,7 +5,7 @@
     "sender_Url": "https://jazzlounge.ice.infomaniak.ch/jazzlounge-high.mp3",
     "sender_Logo": "https://station-images-prod.radio-assets.com/300/jazzradio-lounge.jpeg?version=9d8fe4d388940284e610f4add2fc01ad772ab8e7",
     "genre": "Jazz",
-    "now_playing_url": "https://api.radio.de/stations/now-playing?stationIds=jazzradio-lounge"
+    "now_playing_url": ""
   },
   {
     "id": 2,
@@ -13,7 +13,7 @@
     "sender_Url": "https://radiojazz.stream.laut.fm/radiojazz?ref=radiode&t302=2026-02-09_23-38-06&uuid=a8c79993-9f09-43da-9e69-cf03bca4a973",
     "sender_Logo": "https://station-images-prod.radio-assets.com/300/lautfm-jazzradio.png?version=0c0f7442f07c6425156afeb08f08eb572b85db09",
     "genre": "Jazz",
-    "now_playing_url": "https://api.radio.de/stations/now-playing?stationIds=lautfm-jazzradio"
+    "now_playing_url": ""
   },
   {
     "id": 3,
@@ -21,7 +21,7 @@
     "sender_Url": "https://ssl.nexuscast.com:9046/;",
     "sender_Logo": "https://station-images-prod.radio-assets.com/300/penthouseradio.png?version=fc644bae122d2bcba5f6a1d55b421052ab300d03",
     "genre": "Jazz",
-    "now_playing_url": "https://api.radio.de/stations/now-playing?stationIds=penthouseradio"
+    "now_playing_url":""
   },
   {
     "id": 4,
@@ -29,7 +29,7 @@
     "sender_Url": "https://quincy.torontocast.com:1505/stream",
     "sender_Logo": "https://station-images-prod.radio-assets.com/300/metalshop.png?version=838809c763a6e44787dfcc2da3066b1e6e1d7693",
     "genre": "Metal",
-    "now_playing_url": "https://api.radio.de/stations/now-playing?stationIds=metalshop"
+    "now_playing_url": ""
   },
   {
     "id": 5,
@@ -37,7 +37,7 @@
     "sender_Url": "https://quincy.torontocast.com:3115/stream",
     "sender_Logo": "https://station-images-prod.radio-assets.com/300/hairbandradio.png?version=16becf8fa4df8a05667b8fd52f53067e4099b64a",
     "genre": "Metal",
-    "now_playing_url": "https://api.radio.de/stations/now-playing?stationIds=hairbandradio"
+    "now_playing_url": ""
   },
   {
     "id": 6,
@@ -45,7 +45,7 @@
     "sender_Url": "https://sensihiphop.radioca.st/;",
     "sender_Logo": "https://station-images-prod.radio-assets.com/300/sensimedia-hiphop.png?version=dc7e07fe194ca9b63344da86a766f6ad2cfcba5f",
     "genre": "Hip Hop",
-    "now_playing_url": "https://api.radio.de/stations/now-playing?stationIds=sensimedia-hiphop"
+    "now_playing_url": ""
   },
   {
     "id": 7,
@@ -53,7 +53,7 @@
     "sender_Url": "https://generations-njs.ice.infomaniak.ch/generations-njs.mp3",
     "sender_Logo": "https://station-images-prod.radio-assets.com/300/generationsnewjack.png?version=60fdf23b406f15f87a14e9f3264776aa652ba794",
     "genre": "Hip Hop",
-    "now_playing_url": "https://api.radio.de/stations/now-playing?stationIds=generationsnewjack"
+    "now_playing_url": ""
   },
   {
     "id": 8,
