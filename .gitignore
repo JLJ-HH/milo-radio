@@ -1,0 +1,48 @@
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# IDE und Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Node.js
+node_modules/
+npm-debug.log
+npm-debug.log*
+yarn-error.log
+package-lock.json
+yarn.lock
+
+# Konfigurationsdateien
+.ini
+*.ini
+
+# OS
+Thumbs.db
+.DS_Store
+.directory
+
+# Build und Cache
+dist/
+build/
+.cache/
+*.min.js
+*.min.css
+
+# Logs
+logs/
+*.log
+
+# Temporäre Dateien
+*.tmp
+.temp/
+
+# IDE spezifisch
+*.sublime-project
+*.sublime-workspace 
