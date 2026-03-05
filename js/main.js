@@ -1,11 +1,8 @@
 // ===============================
-// IMPORTS
-// ===============================
-import { ADMIN_PIN } from './config.js';
-
-// ===============================
 // DOM ELEMENTE
 // ===============================
+// API Base URL
+const API_URL = './api/auth.php';
 const container = document.getElementById("content");
 const nav = document.getElementById("navbar");
 
@@ -16,25 +13,47 @@ function isAdmin() {
   return sessionStorage.getItem("isAdmin") === "true";
 }
 
-function askForAdminPin() {
+async function askForAdminPin() {
   const pin = prompt("Admin PIN eingeben:");
 
   // Prüfen, ob der Nutzer abgebrochen hat
   if (pin === null) {
-    return; // einfach nichts machen
+    return;
   }
 
-  if (pin === ADMIN_PIN) {
-    sessionStorage.setItem("isAdmin", "true");
-    alert("Admin-Modus aktiviert");
-    loadPage("page2");
-  } else {
-    alert("Falscher PIN");
+  try {
+    const response = await fetch(API_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ pin })
+    });
+
+    const result = await response.json();
+
+    if (result.success) {
+      sessionStorage.setItem("isAdmin", "true");
+      alert("Admin-Modus aktiviert");
+      loadPage("page2");
+    } else {
+      alert("Falscher PIN");
+    }
+  } catch (err) {
+    console.error("Auth-Fehler:", err);
+    alert("Authentifizierungsfehler");
   }
 }
 
-// Optional: Admin Logout (kann später genutzt werden)
-function logoutAdmin() {
+// Admin Logout
+async function logoutAdmin() {
+  try {
+    await fetch(API_URL, {
+      method: 'DELETE'
+    });
+  } catch (err) {
+    console.error("Logout-Fehler:", err);
+  }
   sessionStorage.removeItem("isAdmin");
   alert("Admin-Modus beendet");
   loadPage("page1");
