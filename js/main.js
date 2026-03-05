@@ -1,13 +1,13 @@
 // ===============================
+// IMPORTS
+// ===============================
+import { ADMIN_PIN } from './config.js';
+
+// ===============================
 // DOM ELEMENTE
 // ===============================
 const container = document.getElementById("content");
 const nav = document.getElementById("navbar");
-
-// ===============================
-// ADMIN KONFIGURATION
-// ===============================
-const ADMIN_PIN = "Luisemilio_333";
 
 // ===============================
 // ADMIN STATUS
