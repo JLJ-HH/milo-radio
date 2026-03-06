@@ -61,6 +61,22 @@ if (mobileLogo) {
   volumeSlider.value = savedVolume;
   radioService.setVolume(savedVolume);
 
+  // ➤ State-Wiederherstellung (Persistence)
+  const lastUrl = localStorage.getItem('lastStationUrl');
+  const wasPlaying = localStorage.getItem('isPlaying') === 'true';
+
+  if (lastUrl) {
+    const found = activeStations.find(s => s.sender_Url === lastUrl);
+    if (found) {
+        lastPlayedStation = found;
+        if (wasPlaying) {
+            currentStation = found;
+            radioService.play(found.sender_Url);
+            startNowPlayingUpdates(found);
+        }
+    }
+  }
+
   async function fetchNowPlaying(station) {
     if (!station) {
       if (nowPlayingText) nowPlayingText.textContent = "";

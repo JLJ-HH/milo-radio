@@ -12,7 +12,9 @@ class RadioService {
         if (url) {
             this.audio.src = url;                  // Audio-Quelle setzen
             this.currentStation = url;             // aktuelle Station merken
+            localStorage.setItem('lastStationUrl', url);
         }
+        localStorage.setItem('isPlaying', 'true');
         this.audio.play().catch(err => this.emit('error', err)); // Wiedergabe starten, Fehler-Event senden
         this.emit('play', this.currentStation);   // play-Event auslösen
     }
@@ -21,6 +23,7 @@ class RadioService {
     stop() {
         this.audio.pause();       // Audio pausieren
         this.audio.currentTime = 0; // auf Anfang zurücksetzen
+        localStorage.setItem('isPlaying', 'false');
         this.emit('stop');        // stop-Event auslösen
     }
 
