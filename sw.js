@@ -11,6 +11,7 @@ const urlsToCache = [
   './js/pages/page1.js',
   './js/pages/page2.js',
   './js/pages/page3.js',
+  './images/android.png',
   './images/cholo_love.png',
   './images/qr-code.png',
   './json/sender_daten.json'
