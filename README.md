@@ -11,7 +11,7 @@ Milo Radio ist eine moderne, progressive Web-App (PWA) zum Streamen deiner Liebl
 - **QR-Code Sharing**: Schnelles Teilen der App über das integrierte Logo-Modal.
 - **Responsive Design**: Optimiert für Desktop und mobile Endgeräte (Dark-Mode fähig).
 
-## 🛠 Technologie-Stack
+##  Technologie-Stack
 
 - **Frontend**: Vanilla HTML5, CSS3 (Custom Properties), JavaScript (ES Modules).
 - **Backend**: PHP (für Metadaten-Proxy und Authentifizierung).
