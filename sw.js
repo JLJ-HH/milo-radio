@@ -12,6 +12,7 @@ const urlsToCache = [
   './js/pages/page2.js',
   './js/pages/page3.js',
   './images/cholo_love.png',
+  './images/qr-code.png',
   './json/sender_daten.json'
 ];
 
