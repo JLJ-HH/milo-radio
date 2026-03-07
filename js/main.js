@@ -2,7 +2,7 @@
 // DOM ELEMENTE
 // ===============================
 // API Base URL
-const API_URL = './api/auth.php';
+const API_URL = "./api/auth.php";
 const container = document.getElementById("content");
 const nav = document.getElementById("navbar");
 
@@ -23,11 +23,11 @@ async function askForAdminPin() {
 
   try {
     const response = await fetch(API_URL, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify({ pin })
+      body: JSON.stringify({ pin }),
     });
 
     const result = await response.json();
@@ -49,7 +49,7 @@ async function askForAdminPin() {
 async function logoutAdmin() {
   try {
     await fetch(API_URL, {
-      method: 'DELETE'
+      method: "DELETE",
     });
   } catch (err) {
     console.error("Logout-Fehler:", err);
@@ -63,36 +63,35 @@ async function logoutAdmin() {
 // NAVBAR ERSTELLEN
 // ===============================
 function createNavButtons() {
-    nav.innerHTML = '';
+  nav.innerHTML = "";
 
-    // --- RADIO ---
-    const radioBtn = document.createElement('button');
-    radioBtn.className = 'btn btn-outline-primary me-2';
-    radioBtn.textContent = 'Radio';
-    radioBtn.onclick = () => loadPage('page1');
-    nav.appendChild(radioBtn);
+  // --- RADIO ---
+  const radioBtn = document.createElement("button");
+  radioBtn.className = "btn btn-outline-primary me-2";
+  radioBtn.textContent = "Radio";
+  radioBtn.onclick = () => loadPage("page1");
+  nav.appendChild(radioBtn);
 
-    // --- GENRES ---
-    const genresBtn = document.createElement('button');
-    genresBtn.className = 'btn btn-outline-secondary me-2';
-    genresBtn.textContent = 'Genres';
-    genresBtn.onclick = () => loadPage('page3');
-    nav.appendChild(genresBtn);
+  // --- GENRES ---
+  const genresBtn = document.createElement("button");
+  genresBtn.className = "btn btn-outline-secondary me-2";
+  genresBtn.textContent = "Genres";
+  genresBtn.onclick = () => loadPage("page3");
+  nav.appendChild(genresBtn);
 
-    // --- EINSTELLUNGEN (ADMIN) ---
-    const settingsBtn = document.createElement('button');
-    settingsBtn.className = 'btn btn-outline-dark';
-    settingsBtn.textContent = 'Einstellungen';
-    settingsBtn.onclick = () => {
-        if (isAdmin()) {
-            loadPage('page2');
-        } else {
-            askForAdminPin();
-        }
-    };
-    nav.appendChild(settingsBtn);
+  // --- EINSTELLUNGEN (ADMIN) ---
+  const settingsBtn = document.createElement("button");
+  settingsBtn.className = "btn btn-outline-dark";
+  settingsBtn.textContent = "Einstellungen";
+  settingsBtn.onclick = () => {
+    if (isAdmin()) {
+      loadPage("page2");
+    } else {
+      askForAdminPin();
+    }
+  };
+  nav.appendChild(settingsBtn);
 }
-
 
 // ===============================
 // SEITEN LADEN
@@ -102,6 +101,7 @@ async function loadPage(page) {
     const module = await import(`../pages/${page}.js`);
     container.innerHTML = "";
     module.render(container);
+    sessionStorage.setItem("currentPage", page);
   } catch (err) {
     console.error("Fehler beim Laden der Seite:", err);
     container.innerHTML =
@@ -113,4 +113,5 @@ async function loadPage(page) {
 // INITIALISIERUNG
 // ===============================
 createNavButtons();
-loadPage("page1");
+const savedPage = sessionStorage.getItem("currentPage") || "page1";
+loadPage(savedPage);
