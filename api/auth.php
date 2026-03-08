@@ -7,11 +7,24 @@ header('Access-Control-Allow-Origin: *');
 header('Content-Type: application/json');
 header('Access-Control-Allow-Methods: POST, GET');
 
-// .env Datei laden
-$envPath = __DIR__ . '/../../private/.env';
-if (file_exists($envPath)) {
+// .env Datei laden (Sucht an verschiedenen Orten für Local/Server)
+$possiblePaths = [
+    __DIR__ . '/../../privat/.env', // Strato Pfad
+    __DIR__ . '/../.env', // Local XAMPP Pfad
+    __DIR__ . '/../../private/.env' // Fallback / Alter Pfad
+];
+
+$envPath = null;
+foreach ($possiblePaths as $path) {
+    if (file_exists($path)) {
+        $envPath = $path;
+        break;
+    }
+}
+
+if ($envPath) {
     $env = parse_ini_file($envPath);
-    $realPin = $env['ADMIN_PIN'] ?? null;
+    $realPin = isset($env['ADMIN_PIN']) ? trim($env['ADMIN_PIN']) : null;
 }
 else {
     http_response_code(500);
