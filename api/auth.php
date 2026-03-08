@@ -8,7 +8,7 @@ header('Content-Type: application/json');
 header('Access-Control-Allow-Methods: POST, GET');
 
 // .env Datei laden
-$envPath = __DIR__ . '/../../private/env';
+$envPath = __DIR__ . '/../../private/.env';
 if (file_exists($envPath)) {
     $env = parse_ini_file($envPath);
     $realPin = $env['ADMIN_PIN'] ?? null;
