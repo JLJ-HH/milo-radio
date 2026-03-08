@@ -8,11 +8,12 @@ header('Content-Type: application/json');
 header('Access-Control-Allow-Methods: POST, GET');
 
 // .env Datei laden
-$envPath = __DIR__ . '/../.env';
+$envPath = __DIR__ . '/../../private/env';
 if (file_exists($envPath)) {
     $env = parse_ini_file($envPath);
     $realPin = $env['ADMIN_PIN'] ?? null;
-} else {
+}
+else {
     http_response_code(500);
     echo json_encode(['success' => false, 'error' => '.env Datei nicht gefunden']);
     exit;
@@ -28,11 +29,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $input = json_decode(file_get_contents('php://input'), true);
     $userPin = $input['pin'] ?? '';
-    
+
     if ($userPin === $realPin) {
         $_SESSION['isAdmin'] = true;
         echo json_encode(['success' => true]);
-    } else {
+    }
+    else {
         http_response_code(401);
         echo json_encode(['success' => false, 'error' => 'Falscher PIN']);
     }

@@ -1,0 +1,17 @@
+# Datei: /radio-app/.htaccess
+
+# Verhindert den Zugriff auf .env (falls sie doch mal dort landet)
+<Files .env>
+    Order allow,deny
+    Deny from all
+</Files>
+
+# Verhindert das Auflisten von Ordnerinhalten (Directory Browsing)
+Options -Indexes
+
+# Optional: Schützt auch deine .json Dateien vor direktem Aufruf, 
+# falls nur dein PHP sie lesen soll
+<Files "*.json">
+    Order allow,deny
+    Deny from all
+</Files>
