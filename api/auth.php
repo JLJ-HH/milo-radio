@@ -22,24 +22,11 @@ header('Access-Control-Allow-Methods: POST, GET, DELETE');
 // 2. LADEN DER UMGEBUNGSVARIABLEN (.env)
 // ============================================================
 
-// Mögliche Pfade zur .env-Datei (Sucht an verschiedenen Orten für lokale Entwicklung vs. Server)
-$possiblePaths = [
-    __DIR__ . '/../../privat/.env', // Pfad auf dem Strato-Server
-    __DIR__ . '/../.env', // Lokaler Pfad (z.B. XAMPP)
-    __DIR__ . '/../../private/.env' // Sicherheits-Fallback
-];
-
-$envPath = null;
-// Wir gehen die Liste durch und nehmen den ersten Pfad, der existiert
-foreach ($possiblePaths as $path) {
-    if (file_exists($path)) {
-        $envPath = $path;
-        break;
-    }
-}
+// Pfad zur .env-Datei (Sollte im 'private' Ordner liegen)
+$envPath = __DIR__ . '/../../private/.env';
 
 // Wenn eine .env-Datei gefunden wurde, laden wir die ADMIN_PIN
-if ($envPath) {
+if (file_exists($envPath)) {
     $env = parse_ini_file($envPath);
     $realPin = isset($env['ADMIN_PIN']) ? trim($env['ADMIN_PIN']) : null;
 }
