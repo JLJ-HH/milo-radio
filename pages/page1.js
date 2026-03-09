@@ -1,7 +1,14 @@
+/**
+ * SEITE 1: RADIO PLAYER (page1.js)
+ *
+ * Diese Seite ist das Herzstück der App. Sie zeigt den Player,
+ * die Senderliste des Nutzers und die aktuellen Song-Infos (Now Playing).
+ */
 import { radioService } from "../js/services/radioService.js";
 import { userStationService } from "../js/services/userStationService.js";
 
 export function render(container) {
+  // --- 1. HTML-LAYOUT RENDERN ---
   container.innerHTML = `
     <div class="row align-items-center mb-4">
         <div class="col-4 col-md-2 text-end pe-0">
@@ -25,25 +32,8 @@ export function render(container) {
     <div id="stationsContainer"></div>
     `;
 
+  // --- 2. ELEMENTE REFERENZIEREN ---
   const mobileLogo = container.querySelector("#mobileLogo");
-if (mobileLogo) {
-  mobileLogo.style.height = "120px";
-
-  mobileLogo.addEventListener("click", function () {
-    // ➤ Logo-Effekt beibehalten
-    this.style.transform = "scale(1.1)";
-    setTimeout(() => (this.style.transform = ""), 300);
-
-    // ➤ QR-Code Modal anzeigen
-    const qrModalEl = document.getElementById("qrModal");
-    if (qrModalEl) {
-      const qrModal = new bootstrap.Modal(qrModalEl);
-      qrModal.show();
-    }
-  });
-}
-
-
   const stationTitle = container.querySelector("#stationTitle");
   const nowPlayingText = container.querySelector("#nowPlayingText");
   const playBtn = container.querySelector("#playBtn");
@@ -52,31 +42,38 @@ if (mobileLogo) {
   const stationsContainer = container.querySelector("#stationsContainer");
   const feedback = container.querySelector("#feedback");
 
+  // Lokale Zustände
   let activeStations = userStationService.getStations();
   let currentStation = null;
   let lastPlayedStation = null;
   let nowPlayingInterval = null;
 
+  // --- 3. INITIALISIERUNG (VOLLUME & PERSISTENZ) ---
   const savedVolume = localStorage.getItem("radioVolume") ?? 0.3;
   volumeSlider.value = savedVolume;
   radioService.setVolume(savedVolume);
 
-  // ➤ State-Wiederherstellung (Persistence)
-  const lastUrl = localStorage.getItem('lastStationUrl');
-  const wasPlaying = localStorage.getItem('isPlaying') === 'true';
+  // Letzte Sitzung wiederherstellen
+  const lastUrl = localStorage.getItem("lastStationUrl");
+  const wasPlaying = localStorage.getItem("isPlaying") === "true";
 
   if (lastUrl) {
-    const found = activeStations.find(s => s.sender_Url === lastUrl);
+    const found = activeStations.find((s) => s.sender_Url === lastUrl);
     if (found) {
-        lastPlayedStation = found;
-        if (wasPlaying) {
-            currentStation = found;
-            radioService.play(found.sender_Url);
-            startNowPlayingUpdates(found);
-        }
+      lastPlayedStation = found;
+      if (wasPlaying) {
+        currentStation = found;
+        radioService.play(found.sender_Url);
+        startNowPlayingUpdates(found);
+      }
     }
   }
 
+  // --- 4. FUNKTIONEN (LOGIK) ---
+
+  /**
+   * Holt die aktuellen Song-Informationen über den PHP-Proxy.
+   */
   async function fetchNowPlaying(station) {
     if (!station) {
       if (nowPlayingText) nowPlayingText.textContent = "";
@@ -84,61 +81,65 @@ if (mobileLogo) {
     }
 
     let urlToFetch = "";
-    
-    // Fallback on the PHP proxy if no explicit now_playing_url is provided, or if we want to force it
+
+    // PHP-Proxy nutzen, um CORS-Probleme zu umgehen
     if (station.now_playing_url && station.now_playing_url.trim() !== "") {
-        urlToFetch = station.now_playing_url;
+      urlToFetch = station.now_playing_url;
     } else if (station.sender_Url) {
-        // Use our new PHP proxy
-        urlToFetch = `./api/metadata.php?stream=${encodeURIComponent(station.sender_Url)}`;
+      urlToFetch = `./api/metadata.php?stream=${encodeURIComponent(station.sender_Url)}`;
     } else {
-        if (nowPlayingText) nowPlayingText.textContent = "";
-        return;
+      if (nowPlayingText) nowPlayingText.textContent = "";
+      return;
     }
 
     try {
       const response = await fetch(urlToFetch);
       const text = await response.text();
       let title = "";
+
       try {
-          const json = JSON.parse(text);
-          title = json.title || json.song || json.now_playing || json.name || json.currentSong || "";
+        const json = JSON.parse(text);
+        title =
+          json.title ||
+          json.song ||
+          json.now_playing ||
+          json.name ||
+          json.currentSong ||
+          "";
       } catch (e) {
-          title = text;
+        title = text;
       }
-      //  ALT (Zeile 80):
-if (nowPlayingText) {
-  nowPlayingText.textContent = title.trim() ? title.trim() : "";
-}
 
-//  NEU:
-if (nowPlayingText) {
-  if (title.trim()) {
-    nowPlayingText.textContent = title.trim();
-    nowPlayingText.classList.add('has-title');  // 🎵 Kleine Schrift
-    nowPlayingText.classList.remove('live-station'); 
-  } else {
-    nowPlayingText.textContent = `🎵 ${station.sender_Name}`;  // Kompakt!
-    nowPlayingText.classList.add('live-station');
-    nowPlayingText.classList.remove('has-title');
-  }
-}
-
+      // UI mit Song-Titel aktualisieren
+      if (nowPlayingText) {
+        if (title.trim()) {
+          nowPlayingText.textContent = title.trim();
+          nowPlayingText.classList.add("has-title");
+          nowPlayingText.classList.remove("live-station");
+        } else {
+          // Fallback: Nur Sendername anzeigen
+          nowPlayingText.textContent = `🎵 ${station.sender_Name}`;
+          nowPlayingText.classList.add("live-station");
+          nowPlayingText.classList.remove("has-title");
+        }
+      }
     } catch (error) {
-      console.warn("Error fetching now playing:", error);
+      console.warn("Fehler beim Abrufen der Metadaten:", error);
       if (nowPlayingText) nowPlayingText.textContent = "";
     }
   }
 
+  /**
+   * Startet die regelmäßige Abfrage (Intervall) der Song-Infos.
+   */
   function startNowPlayingUpdates(station) {
     clearInterval(nowPlayingInterval);
-    if (!station) {
-        if (nowPlayingText) nowPlayingText.textContent = "";
-        return;
-    }
+    if (!station) return;
+
     fetchNowPlaying(station);
+    // Alle 15 Sekunden aktualisieren
     nowPlayingInterval = setInterval(() => {
-        fetchNowPlaying(station);
+      fetchNowPlaying(station);
     }, 15000);
   }
 
@@ -147,6 +148,9 @@ if (nowPlayingText) {
     if (nowPlayingText) nowPlayingText.textContent = "";
   }
 
+  /**
+   * Zeigt eine kurze Bestätigungsmeldung an.
+   */
   function showFeedback(msg, color = "green") {
     feedback.textContent = msg;
     feedback.style.color = color;
@@ -154,6 +158,9 @@ if (nowPlayingText) {
     setTimeout(() => feedback.classList.add("hidden"), 2000);
   }
 
+  /**
+   * Aktualisiert den Anzeigetext (Du hörst: ...) und die Button-Zustände.
+   */
   function updateStatus() {
     const titleText = currentStation
       ? `Du hörst: ${currentStation.sender_Name}`
@@ -165,15 +172,20 @@ if (nowPlayingText) {
 
     if (stationTitle) stationTitle.textContent = titleText;
 
+    // Buttons aktivieren/deaktivieren
     playBtn.disabled = activeStations.length === 0 || !!currentStation;
     stopBtn.disabled = !currentStation;
   }
 
+  /**
+   * Erstellt die Kachel-Ansicht der vom Nutzer gewählten Sender.
+   */
   function renderRadioCards() {
     stationsContainer.innerHTML = "";
+
     if (activeStations.length === 0) {
       stationsContainer.innerHTML =
-        '<p class="text-muted">Keine Sender ausgewählt. Gehe zu „Genres" um welche hinzuzufügen.</p>';
+        '<p class="text-muted">Keine Sender ausgewählt. Gehe zu „Genres", um welche hinzuzufügen.</p>';
       updateStatus();
       return;
     }
@@ -181,30 +193,21 @@ if (nowPlayingText) {
     activeStations.forEach((station) => {
       const card = document.createElement("div");
       card.className = "card text-center";
+      // Aktiven Sender optisch hervorheben
       if (currentStation && currentStation.sender_Url === station.sender_Url)
         card.classList.add("active");
 
-      // 🔹 Dynamischer Image-Fallback
+      // Sender-Logo (mit Fallback)
       const img = document.createElement("img");
       img.className = "card-img-top mx-auto mt-2";
-      img.style.width = "80px";
-      img.style.height = "80px";
-      img.style.objectFit = "cover";
-
-      // Pfad angepasst: relativ vom js/pages Ordner
       img.src =
         station.sender_Logo && station.sender_Logo.trim() !== ""
           ? station.sender_Logo
           : "./images/cholo_love.png";
-      img.onerror = () => {
-        img.onerror = null;
-        img.src = "/images/cholo_love.png";
-      };
 
-      // Fallback, falls URL ungültig ist
       img.onerror = () => {
         img.onerror = null;
-        img.src = "../images/cholo_love.png";
+        img.src = "./images/cholo_love.png";
       };
 
       card.appendChild(img);
@@ -220,6 +223,7 @@ if (nowPlayingText) {
 
       const [playBtnCard, removeBtnCard] = body.querySelectorAll("button");
 
+      // Klick auf eine Sender-Kachel
       playBtnCard.onclick = () => {
         currentStation = station;
         lastPlayedStation = station;
@@ -229,12 +233,14 @@ if (nowPlayingText) {
         renderRadioCards();
       };
 
+      // Klick auf "Entfernen"
       removeBtnCard.onclick = () => {
         if (confirm(`"${station.sender_Name}" aus deiner Liste entfernen?`)) {
           activeStations = activeStations.filter(
             (s) => s.sender_Url !== station.sender_Url,
           );
           userStationService.setStations(activeStations);
+
           if (
             currentStation &&
             currentStation.sender_Url === station.sender_Url
@@ -253,35 +259,55 @@ if (nowPlayingText) {
     updateStatus();
   }
 
+  // --- 5. EVENT-LISTENER (INTERAKTION) ---
+
+  // Logo-Klick öffnet den QR-Code (Modal)
+  if (mobileLogo) {
+    mobileLogo.addEventListener("click", function () {
+      this.style.transform = "scale(1.1)";
+      setTimeout(() => (this.style.transform = ""), 300);
+
+      const qrModalEl = document.getElementById("qrModal");
+      if (qrModalEl) {
+        const qrModal = new bootstrap.Modal(qrModalEl);
+        qrModal.show();
+      }
+    });
+  }
+
+  // Lautstärke-Slider
   volumeSlider.addEventListener("input", () => {
     radioService.setVolume(volumeSlider.value);
     localStorage.setItem("radioVolume", volumeSlider.value);
   });
 
+  // Globaler Stop-Button
   stopBtn.addEventListener("click", () => {
     radioService.stop();
     stopNowPlayingUpdates();
     currentStation = null;
+    updateStatus();
     renderRadioCards();
   });
 
+  // Globaler Play-Button
   playBtn.addEventListener("click", () => {
     if (!currentStation && lastPlayedStation)
       currentStation = lastPlayedStation;
     if (currentStation) {
       radioService.play(currentStation.sender_Url);
       startNowPlayingUpdates(currentStation);
-      lastPlayedStation = currentStation;
       updateStatus();
       renderRadioCards();
     }
   });
 
+  // Wenn sich die Liste über den Genre-Tab ändert
   userStationService.on("update", (newList) => {
     activeStations = newList;
     renderRadioCards();
-    showFeedback("Liste aktualisiert");
   });
 
+  // Ansicht beim Laden aufbauen
   renderRadioCards();
 }

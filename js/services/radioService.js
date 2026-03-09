@@ -1,66 +1,94 @@
-// Klasse für einen einfachen Radio-Service
+/**
+ * RADIOSERVICE (radioService.js)
+ *
+ * Diese Klasse kümmert sich um die eigentliche Audio-Wiedergabe.
+ * Sie steuert das Abspielen, Stoppen und die Lautstärke.
+ */
 class RadioService {
-    constructor() {
-        this.audio = new Audio();      // Audio-Element für die Wiedergabe
-        this.currentStation = null;    // aktuell abgespielte Radiostation (URL)
-        this.events = {};              // Objekt für Event-Callbacks
+  constructor() {
+    // Das Standard-Browser-Element für Audio-Wiedergabe
+    this.audio = new Audio();
+    // Merkt sich die URL der aktuellen Station
+    this.currentStation = null;
+    // Speichert Callback-Funktionen für Events (z.B. wenn Musik startet)
+    this.events = {};
+  }
+
+  /**
+   * Startet die Wiedergabe einer Stream-URL.
+   * @param {string} url Die Stream-Adresse des Radiosenders
+   */
+  play(url) {
+    // Falls keine URL übergeben wurde und keine gespeichert ist -> Abbruch
+    if (!url && !this.currentStation) return;
+
+    if (url) {
+      this.audio.src = url; // Neue Stream-Quelle setzen
+      this.currentStation = url; // Station merken
+      // Letzte Station im Browser-Speicher sichern (für Neustart)
+      localStorage.setItem("lastStationUrl", url);
     }
 
-    // Wiedergabe starten oder zu einer neuen Station wechseln
-    play(url) {
-        if (!url && !this.currentStation) return;  // nichts tun, wenn keine Station vorhanden
-        if (url) {
-            this.audio.src = url;                  // Audio-Quelle setzen
-            this.currentStation = url;             // aktuelle Station merken
-            localStorage.setItem('lastStationUrl', url);
-        }
-        localStorage.setItem('isPlaying', 'true');
-        this.audio.play().catch(err => this.emit('error', err)); // Wiedergabe starten, Fehler-Event senden
-        this.emit('play', this.currentStation);   // play-Event auslösen
-    }
+    // Status "spielt gerade" merken
+    localStorage.setItem("isPlaying", "true");
 
-    // Wiedergabe stoppen und zurücksetzen
-    stop() {
-        this.audio.pause();       // Audio pausieren
-        this.audio.currentTime = 0; // auf Anfang zurücksetzen
-        localStorage.setItem('isPlaying', 'false');
-        this.emit('stop');        // stop-Event auslösen
-    }
+    // Wiedergabe starten (asynchron)
+    this.audio.play().catch((err) => {
+      console.error("Audio-Fehler:", err);
+      this.emit("error", err);
+    });
 
-    // Lautstärke setzen
-    setVolume(value) {
-        this.audio.volume = value;
-        this.emit('volumeChange', value); // Event bei Lautstärkeänderung
-    }
+    // Event auslösen, dass die Wiedergabe läuft
+    this.emit("play", this.currentStation);
+  }
 
-    // Aktuelle Lautstärke abrufen
-    getVolume() {
-        return this.audio.volume;
-    }
+  /**
+   * Stoppt die Wiedergabe komplett.
+   */
+  stop() {
+    this.audio.pause(); // Wiedergabe pausieren
+    this.audio.currentTime = 0; // "Nadel" auf Anfang (wichtig bei Dateien, weniger bei Streams)
+    localStorage.setItem("isPlaying", "false");
+    this.emit("stop"); // Event auslösen, dass gestoppt wurde
+  }
 
-    // Aktuelle Station abrufen
-    getCurrentStation() {
-        return this.currentStation;
-    }
+  /**
+   * Setzt die Lautstärke (Wert zwischen 0.0 und 1.0).
+   */
+  setVolume(value) {
+    this.audio.volume = value;
+    this.emit("volumeChange", value);
+  }
 
-    // Event-Listener registrieren
-    on(event, callback) {
-        if (!this.events[event]) this.events[event] = [];
-        this.events[event].push(callback);
-    }
+  getVolume() {
+    return this.audio.volume;
+  }
 
-    // Event-Listener entfernen
-    off(event, callback) {
-        if (!this.events[event]) return;
-        this.events[event] = this.events[event].filter(cb => cb !== callback);
-    }
+  getCurrentStation() {
+    return this.currentStation;
+  }
 
-    // Event auslösen und alle registrierten Callback-Funktionen aufrufen
-    emit(event, data) {
-        if (!this.events[event]) return;
-        this.events[event].forEach(cb => cb(data));
-    }
+  // --- EVENT-SYSTEM (Hintergrund-Kommunikation) ---
+
+  // Registriert eine Funktion, die bei einem Ereignis (z.B. 'play') ausgeführt wird
+  on(event, callback) {
+    if (!this.events[event]) this.events[event] = [];
+    this.events[event].push(callback);
+  }
+
+  // Entfernt eine zuvor registrierte Funktion
+  off(event, callback) {
+    if (!this.events[event]) return;
+    this.events[event] = this.events[event].filter((cb) => cb !== callback);
+  }
+
+  // Löst ein Ereignis aus und benachrichtigt alle angemeldeten Funktionen
+  emit(event, data) {
+    if (!this.events[event]) return;
+    this.events[event].forEach((cb) => cb(data));
+  }
 }
 
-// Singleton-Instanz des RadioService exportieren
+// Wir exportieren eine einzige Instanz (Singleton), damit alle Seiten
+// dasselbe Radio-Objekt benutzen.
 export const radioService = new RadioService();

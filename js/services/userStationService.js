@@ -1,46 +1,65 @@
-// Klasse zur Verwaltung einer temporären Liste von Benutzersendern
+/**
+ * USERSTATIONSERVICE (userStationService.js)
+ *
+ * Dieser Dienst verwaltet die Liste der Sender, die sich der
+ * aktuelle Benutzer für seinen Player ausgesucht hat.
+ */
 class UserStationService {
   constructor() {
-    this.stations = this.loadFromStorage(); // Aktuelle Benutzerstationen laden
-    this.events = {}; // Objekt für Event-Callbacks
+    // Liste der vom Nutzer gewählten Sender beim Start laden
+    this.stations = this.loadFromStorage();
+    // Speicher für Event-Callbacks (z.B. UI aktualisieren bei Änderung)
+    this.events = {};
   }
 
-  // Stationsliste aus localStorage laden
+  /**
+   * Lädt die gewählten Sender des Nutzers aus dem Browser-Speicher (LocalStorage).
+   */
   loadFromStorage() {
     try {
       const saved = localStorage.getItem("userStations");
       return saved ? JSON.parse(saved) : [];
     } catch (e) {
-      console.warn("Fehler beim Laden der userStations aus localStorage:", e);
+      console.warn("Fehler beim Laden der userStations:", e);
       return [];
     }
   }
 
-  // Stationsliste setzen und Event auslösen
+  /**
+   * Ersetzt die gesamte Liste der gewählten Sender und benachrichtigt die App.
+   * @param {Array} list Neue Liste von Sendern
+   */
   setStations(list) {
-    this.stations = [...list]; // Kopie der Liste speichern
-    localStorage.setItem("userStations", JSON.stringify(this.stations)); // Dauerhaft speichern
-    this.emit("update", this.stations); // Event, dass sich die Liste geändert hat
+    // Sicherheitskopie erstellen
+    this.stations = [...list];
+    // Im Browser-Speicher dauerhaft sichern
+    localStorage.setItem("userStations", JSON.stringify(this.stations));
+    // Allen Seiten sagen: "Die Liste hat sich geändert!"
+    this.emit("update", this.stations);
   }
 
-  // Stationsliste abrufen (Kopie)
+  /**
+   * Gibt eine Kopie der aktuellen Benutzer-Senderliste zurück.
+   */
   getStations() {
     return [...this.stations];
   }
 
-  // Event-Listener registrieren
+  // --- EVENT-STEUERUNG ---
+
+  // Hiermit können sich Komponenten (wie page1.js) für Updates anmelden
   on(event, callback) {
     if (!this.events[event]) this.events[event] = [];
     this.events[event].push(callback);
   }
 
-  // Event-Listener entfernen
+  // Abmeldung von Updates
   off(event, callback) {
     if (!this.events[event]) return;
     this.events[event] = this.events[event].filter((cb) => cb !== callback);
   }
 
-  // Event auslösen und alle registrierten Callback-Funktionen aufrufen
+  // Löst die Benachrichtigung aus
   emit(event, data) {
     if (!this.events[event]) return;
     this.events[event].forEach((cb) => cb(data));

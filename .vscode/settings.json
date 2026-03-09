@@ -1,3 +1,4 @@
 {
+    // Bestimmt den Port, den die 'Live Server' Erweiterung für die lokale Vorschau nutzt
     "liveServer.settings.port": 5501
 }
