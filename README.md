@@ -32,5 +32,11 @@ Details zur Ordnerhierarchie findest du im [Strukturplan](./strukturplan.txt).
 
 Du kannst milo-radio zu deinem Home-Bildschirm hinzufügen. Dank der PWA-Konfiguration wird ein schickes Icon angezeigt und die App fühlt sich wie eine native App an.
 
+## Autor
+
+**José Luis Juárez** - Angehender Anwendungsentwickler aus Hamburg.
+
+[Strato Portfolio](https://milo-radio.de/)
+
 ---
 © 2026 Milo Radio
