@@ -36,7 +36,7 @@ Du kannst milo-radio zu deinem Home-Bildschirm hinzufügen. Dank der PWA-Konfigu
 
 **José Luis Juárez** - Angehender Anwendungsentwickler aus Hamburg.
 
-[Strato Portfolio](https://milo-radio.de/)
+[Strato Radio-App](https://milo-radio.de/)
 
 ---
 © 2026 Milo Radio
