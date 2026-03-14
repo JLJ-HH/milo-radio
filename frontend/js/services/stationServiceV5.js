@@ -2,7 +2,7 @@
  * STATIONSERVICE (stationService.js)
  *
  * Verwaltet die "Master-Liste" aller verfügbaren Radiosender.
- * Lädt Daten aus einer JSON-Datei und speichert Änderungen im LocalStorage.
+ * Lädt Daten aus der DB und speichert Änderungen im LocalStorage.
  */
 class StationService {
   constructor() {
@@ -15,21 +15,29 @@ class StationService {
    * Initialisierung: Lädt Daten erst aus der Datei, dann aus dem Speicher.
    */
   async init() {
-    await this.loadFromJSON(); // Schritt 1: Standard-Sender aus Datei laden
+    await this.loadFromAPI(); // Schritt 1: Standard-Sender aus DB laden
     this.isLoaded = true; // Status auf "bereit" setzen
     this.loadFromStorage(); // Schritt 2: Eigene Änderungen des Admins laden
   }
 
   /**
-   * Lädt die vordefinierten Sender aus der Datei sender_daten.json.
+   * Lädt die vordefinierten Sender aus der Datenbank via API.
    */
-  async loadFromJSON() {
+  async loadFromAPI() {
     try {
-      const response = await fetch("./json/sender_daten.json");
-      const jsonStations = await response.json();
-      this.stations = jsonStations;
+      const response = await fetch("../backend/api/get_stations.php");
+      const data = await response.json();
+      
+      // Falls die API ein Error-Objekt statt eines Arrays schickt:
+      if (Array.isArray(data)) {
+        this.stations = data;
+      } else {
+        console.error("API Error oder ungültiges Format:", data);
+        this.stations = [];
+      }
     } catch (e) {
-      console.warn("JSON-Datei konnte nicht geladen werden:", e);
+      console.warn("API konnte nicht geladen werden:", e);
+      this.stations = [];
     }
   }
 

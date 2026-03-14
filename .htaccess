@@ -1,18 +1,38 @@
-# Datei: /radio-app/.htaccess
+# ----------------------------------------------------------------------
+# 1. SICHERHEIT: Zugriff auf sensible Dateien sperren
+# ----------------------------------------------------------------------
 
-# Verhindert den Zugriff auf .env (Sicherheitsrelevante Zugangsdaten)
-<Files .env>
+# Sperre den Zugriff auf alle .env Dateien
+<FilesMatch "^\.env">
     Order allow,deny
     Deny from all
-</Files>
+</FilesMatch>
+
+# Sperre den Zugriff auf Git-Konfigurationen und Assistant-Daten
+RedirectMatch 404 /\.git
+RedirectMatch 404 /\.agents
+RedirectMatch 404 /\.gemini
+RedirectMatch 404 /brain
 
 # Verhindert das Auflisten von Ordnerinhalten (Directory Browsing)
-# Dies sorgt dafür, dass Hacker nicht sehen können, welche Dateien im Ordner liegen
 Options -Indexes
 
-# Schützt .json Dateien vor direktem Aufruf über den Browser
-# Nur die App/PHP soll darauf zugreifen können
+# ----------------------------------------------------------------------
+# 2. DATEI-SCHUTZ: Direkten Zugriff auf Daten einschränken
+# ----------------------------------------------------------------------
+
+# Schützt .json Dateien (Außer manifest.json)
 <Files "*.json">
     Order allow,deny
     Deny from all
 </Files>
+
+<Files "manifest.json">
+    Order deny,allow
+    Allow from all
+</Files>
+
+# ----------------------------------------------------------------------
+# 3. WEITERLEITUNG
+# ----------------------------------------------------------------------
+DirectoryIndex index.php
