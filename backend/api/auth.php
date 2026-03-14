@@ -22,8 +22,8 @@ header('Access-Control-Allow-Methods: POST, GET, DELETE');
 // 2. LADEN DER UMGEBUNGSVARIABLEN (.env)
 // ============================================================
 
-// Pfad zur .env-Datei (Sollte im 'private' Ordner liegen)
-$envPath = __DIR__ . '/../../private/.env';
+// Pfad zur .env-Datei (im backend Ordner)
+$envPath = __DIR__ . '/../.env';
 
 // Wenn eine .env-Datei gefunden wurde, laden wir die ADMIN_PIN
 if (file_exists($envPath)) {

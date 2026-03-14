@@ -1,36 +1,44 @@
-#  Milo Radio App
+# Milo Radio App
 
-Milo Radio ist eine moderne, progressive Web-App (PWA) zum Streamen deiner Lieblingsradiosender. Sie bietet ein intuitives Design, Echtzeit-Metadaten und ist für die mobile Nutzung optimiert.
+Milo Radio ist eine moderne, progressive Web-App (PWA) zum Streamen deiner Lieblingsradiosender. Die App wurde komplett refactoriert und bietet nun eine strikte Trennung zwischen Frontend und Backend sowie fortschrittliche Statistiken.
 
-##  Features
+## Live Demo
 
-- **Multi-Genre Player**: Große Auswahl an Sendern von Jazz bis Techno.
-- **Echtzeit-Metadaten**: Anzeige von Titel und Interpret über einen eigenen PHP-Proxy.
-- **PWA-Support**: Kann als App auf dem Smartphone installiert werden (Offline-Caching inklusive).
-- **Admin-Bereich**: Integrierte Verwaltung zum Hinzufügen, Bearbeiten oder Löschen von Sendern.
-- **QR-Code Sharing**: Schnelles Teilen der App über das integrierte Logo-Modal.
-- **Responsive Design**: Optimiert für Desktop und mobile Endgeräte (Dark-Mode fähig).
+Die App ist live erreichbar unter: **[milo-radio.de](https://milo-radio.de)**
 
-##  Technologie-Stack
+## Features
 
-- **Frontend**: Vanilla HTML5, CSS3 (Custom Properties), JavaScript (ES Modules).
-- **Backend**: PHP (für Metadaten-Proxy und Authentifizierung).
-- **Styling**: Bootstrap 5 + Custom CSS.
-- **Daten**: JSON-basierte Senderverwaltung.
+- **Multi-Genre Player**: Große Auswahl an Sendern, präsentiert in einer für Mobilgeräte optimierten Kachel- oder Listenansicht.
+- **Statistik-Dashboard**: Verfolge dein Hörverhalten mit interaktiven Charts (Top-Sender, Hörzeit heute).
+- **QR-Code Sharing**: Teile die App blitzschnell über ein integriertes Logo-Modal.
+- **Echtzeit-Metadaten**: PHP-gestützter Proxy für aktuelle Song-Informationen ohne CORS-Probleme.
+- **Premium UI/UX**: Modernes Dark-Design mit Glassmorphism-Effekten und flüssigen Animationen.
+- **PWA-Support**: Vollständig installierbar als App auf Android und iOS (Offline-Caching inklusive).
+- **Zentrale DB-Steuerung**: Alle Sender und Statistiken werden in einer SQL-Datenbank verwaltet.
 
-##  Projektstruktur
+## Technologie-Stack
 
-Details zur Ordnerhierarchie findest du im [Strukturplan](./strukturplan.txt).
+- **Frontend**: Vanilla JavaScript (ES Modules), HTML5, CSS3, Bootstrap 5.
+- **Backend**: PHP 8.x (REST-API), MariaDB/MySQL für Analytics & Content.
+- **Visualisierung**: Chart.js für interaktive Dashboard-Statistiken.
+
+## Projektstruktur
+
+Das Projekt folgt einer klaren Architektur:
+
+- **/frontend**: Client-Logik, Styles, Assets und PWA-Service-Worker.
+- **/backend**: API-Endpunkte, Datenbankanbindung via PDO und `.env` Konfiguration.
+- **/index.php**: Zentraler Einstiegspunkt mit automatischem Routing.
 
 ## Installation (Lokal)
 
 1. Repository klonen oder herunterladen.
-2. Einen lokalen Webserver mit PHP-Unterstützung starten (z.B. XAMPP, MAMP oder PHP built-in server).
-3. `index.html` im Browser aufrufen.
-
-##  Mobile Nutzung
-
-Du kannst milo-radio zu deinem Home-Bildschirm hinzufügen. Dank der PWA-Konfiguration wird ein schickes Icon angezeigt und die App fühlt sich wie eine native App an.
+2. Projekt in den Webserver-Root legen (z.B. XAMPP `htdocs`).
+3. Datenbank konfigurieren:
+   - Erstelle eine MariaDB/MySQL Datenbank.
+   - Importiere die Datei `backend/db_schema_mysql.sql`.
+   - Kopiere `backend/.env.example` nach `backend/.env` und trage deine Zugangsdaten ein.
+4. Die App über `http://localhost/milo-radio` aufrufen.
 
 ## Autor
 
@@ -39,4 +47,5 @@ Du kannst milo-radio zu deinem Home-Bildschirm hinzufügen. Dank der PWA-Konfigu
 [Strato Radio-App](https://milo-radio.de/)
 
 ---
-© 2026 Milo Radio
+
+© 2026 Milo Radio • **Premium Radio Experience**
