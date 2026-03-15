@@ -56,7 +56,7 @@ function renderNavbar() {
 /**
  * Handle Admin PIN Login
  */
-async function handleAdminLogin(targetPage) {
+export async function handleAdminLogin(targetPage) {
     const pin = prompt("Admin PIN eingeben:");
     if (!pin) return;
 
@@ -71,7 +71,9 @@ async function handleAdminLogin(targetPage) {
         if (result.success) {
             sessionStorage.setItem("isAdmin", "true");
             window.location.hash = targetPage;
+            // Immediate UI update
             renderNavbar();
+            router();
         } else {
             alert("Falscher PIN");
         }

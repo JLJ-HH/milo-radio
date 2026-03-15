@@ -2,7 +2,7 @@
  * SEITE 2: ADMIN-VERWALTUNG (settingsPage.js)
  */
 import { stationService } from "../services/stationServiceV5.js";
-import { isAdmin } from "../main.js";
+import { isAdmin, handleAdminLogin } from "../main.js";
 
 export function render(container) {
   container.innerHTML = `
@@ -79,10 +79,15 @@ export function render(container) {
             <div id="adminLoginPrompt" class="text-center p-5 ${isAdmin() ? 'd-none' : ''}">
                 <i class="bi bi-shield-lock display-4 text-warning mb-3"></i>
                 <p class="text-white-50">Admin-Funktionen sind passwortgeschützt.</p>
-                <button class="btn btn-outline-primary" onclick="location.hash='#settings'; location.reload();">Admin Login</button>
+                <button class="btn btn-outline-primary" id="loginBtn">Admin Login</button>
             </div>
         </div>
     `;
+
+  const loginBtn = container.querySelector("#loginBtn");
+  if (loginBtn) {
+    loginBtn.onclick = () => handleAdminLogin("settings");
+  }
 
   const logoutBtn = container.querySelector("#logoutBtn");
   const form = container.querySelector("#radioForm");
