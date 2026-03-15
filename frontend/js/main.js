@@ -10,12 +10,13 @@ const navList = document.getElementById("nav-list");
 const pages = {
     radio: { title: "Radio", module: "radioPage", icon: "bi-play-circle" },
     genres: { title: "Genres", module: "genresPage", icon: "bi-tags" },
-    stats: { title: "Statistiken", module: "statsPage", icon: "bi-graph-up" },
+    stats: { title: "Meine Stats", module: "statsPage", icon: "bi-graph-up" },
+    admin: { title: "Admin", module: "adminPage", icon: "bi-shield-lock", adminOnly: true },
     settings: { title: "Einstellungen", module: "settingsPage", icon: "bi-gear" }
 };
 
 // Navigation sequence for swipes
-const pageSequence = ["radio", "genres", "stats", "settings"];
+const pageSequence = ["radio", "genres", "stats", "admin", "settings"];
 
 /**
  * Check if admin is logged in
