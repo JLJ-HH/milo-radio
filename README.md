@@ -1,50 +1,51 @@
 # Milo Radio App
 
-Milo Radio ist eine moderne, progressive Web-App (PWA) zum Streamen deiner Lieblingsradiosender. Die App wurde komplett refactoriert und bietet nun eine strikte Trennung zwischen Frontend und Backend sowie fortschrittliche Statistiken.
+Milo Radio ist eine moderne, progressive Web-App (PWA) zum Streamen deiner Lieblingsradiosender. Die App wurde vollständig refactoriert und bietet eine saubere Trennung zwischen Frontend und Backend sowie fortschrittliche Echtzeit-Analysen.
 
 ## Live Demo
 
 Die App ist live erreichbar unter: **[milo-radio.de](https://milo-radio.de)**
 
-## Features
+## Neue Highlights: Deep Analytics & Design
 
-- **Multi-Genre Player**: Große Auswahl an Sendern, präsentiert in einer für Mobilgeräte optimierten Kachel- oder Listenansicht.
-- **Statistik-Dashboard**: Verfolge dein Hörverhalten mit interaktiven Charts (Top-Sender, Hörzeit heute).
-- **QR-Code Sharing**: Teile die App blitzschnell über ein integriertes Logo-Modal.
-- **Echtzeit-Metadaten**: PHP-gestützter Proxy für aktuelle Song-Informationen ohne CORS-Probleme.
-- **Premium UI/UX**: Modernes Dark-Design mit Glassmorphism-Effekten und flüssigen Animationen.
-- **PWA-Support**: Vollständig installierbar als App auf Android und iOS (Offline-Caching inklusive).
-- **Zentrale DB-Steuerung**: Alle Sender und Statistiken werden in einer SQL-Datenbank verwaltet.
+- **Analytics Deep-Dive**: Verfolge dein Hörverhalten über verschiedene Zeiträume (Heute, Woche, Monat).
+- **Interaktive Charts**: 
+  - **Hörverlauf**: Ein Line-Chart zeigt deine Aktivität über die Zeit.
+  - **Top 5 Sender**: Ein dynamisches Balkendiagramm deiner meistgehörten Sender.
+  - **Genre-Verteilung**: Ein Doughnut-Chart visualisiert deine musikalischen Vorlieben.
+- **Enlarged Player UI**: Der aktuelle Song und Interpret werden nun besonders groß und leserlich im Player dargestellt – ideal für die Nutzung aus der Ferne oder auf dem Tablet.
+- **QR-Code Sharing**: Integriertes Logo-Modal für blitzschnelles Teilen.
+- **Premium Dark Design**: Glassmorphism-Effekte, flüssige Animationen und ein konsistentes modernes Farbschema.
 
 ## Technologie-Stack
 
 - **Frontend**: Vanilla JavaScript (ES Modules), HTML5, CSS3, Bootstrap 5.
-- **Backend**: PHP 8.x (REST-API), MariaDB/MySQL für Analytics & Content.
-- **Visualisierung**: Chart.js für interaktive Dashboard-Statistiken.
+- **Backend**: PHP 8.x (REST-API) mit PDO-Anbindung.
+- **Datenbank**: MariaDB/MySQL (optimiert für Strato-Kompatibilität).
+- **Visualisierung**: Chart.js für die interaktiven Dashboard-Statistiken.
 
 ## Projektstruktur
 
-Das Projekt folgt einer klaren Architektur:
-
 - **/frontend**: Client-Logik, Styles, Assets und PWA-Service-Worker.
-- **/backend**: API-Endpunkte, Datenbankanbindung via PDO und `.env` Konfiguration.
+- **/backend**: API-Endpunkte, Datenbank-Logic und Konfiguration.
+  - **/api**: REST-Endpunkte für Stations, Stats und Metadata.
 - **/index.php**: Zentraler Einstiegspunkt mit automatischem Routing.
 
-## Installation (Lokal)
+## Installation & Lokale Entwicklung
 
-1. Repository klonen oder herunterladen.
-2. Projekt in den Webserver-Root legen (z.B. XAMPP `htdocs`).
-3. Datenbank konfigurieren:
-   - Erstelle eine MariaDB/MySQL Datenbank.
-   - Importiere die Datei `backend/db_schema_mysql.sql`.
-   - Kopiere `backend/.env.example` nach `backend/.env` und trage deine Zugangsdaten ein.
-4. Die App über `http://localhost/milo-radio` aufrufen.
+Für die lokale Entwicklung und das Testen der Datenbank-Features wird folgendes Setup empfohlen:
+
+1. **Repository klonen** und in den Webserver-Root legen (z.B. XAMPP `htdocs`).
+2. **Datenbank-Tool**: Wir empfehlen **HeidiSQL** (Windows) für die lokale Verwaltung der MariaDB. Es ist schneller und leistungsfähiger als phpMyAdmin.
+3. **Setup**:
+   - Starte Apache und MySQL in XAMPP.
+   - Importiere die `backend/init_local_db.sql` via HeidiSQL, um die Struktur und Testdaten anzulegen.
+   - Kopiere `backend/.env.example` nach `backend/.env` und trage deine lokalen Zugangsdaten ein (Standard: `root`, kein Passwort).
+4. **Import**: Führe die `backend/api/import_json_to_db.php` einmalig im Browser aus, um deine eigenen Sender aus der JSON-Datei in die Datenbank zu laden.
 
 ## Autor
 
 **José Luis Juárez** - Angehender Anwendungsentwickler aus Hamburg.
-
-[Strato Radio-App](https://milo-radio.de/)
 
 ---
 

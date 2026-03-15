@@ -230,6 +230,33 @@ footer {
 }
 
 /* Scrollbar */
+/* Player Enhancements */
+.player-info-title {
+  font-size: 1.2rem;
+  color: var(--text-dim);
+  font-weight: 500;
+}
+
+.player-now-playing {
+  font-size: 2.8rem;
+  font-weight: 800;
+  color: #fff;
+  text-shadow: 0 0 20px var(--primary-glow);
+  line-height: 1.1;
+  background: linear-gradient(to right, #fff, #818cf8);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+  margin-top: 0.5rem;
+}
+
+@media (max-width: 768px) {
+  .player-now-playing {
+    font-size: 1.8rem;
+  }
+}
+
 ::-webkit-scrollbar {
   width: 8px;
 }

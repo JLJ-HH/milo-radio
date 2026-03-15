@@ -13,8 +13,8 @@ export function render(container) {
         <div class="col-12 col-md-10 ps-md-3">
             <h1 class="mb-1 d-none d-md-block h3">Radio Player</h1>
             <h2 class="mb-0 d-md-none h4" style="color: var(--bs-primary);">Milo Radio</h2>
-            <p id="stationTitle" class="mb-1 fw-bold fs-5 text-light">Keine Sender ausgewählt</p>
-            <p id="nowPlayingText" class="mb-0 badge bg-primary d-inline-block p-2" style="min-height: 28px;"></p>
+            <p id="stationTitle" class="mb-1 player-info-title">Wähle einen Sender</p>
+            <div id="nowPlayingText" class="mb-0 player-now-playing" style="min-height: 1.2em;"></div>
         </div>
     </div>
 
