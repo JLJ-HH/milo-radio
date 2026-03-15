@@ -11,13 +11,16 @@ const pages = {
     radio: { title: "Radio", module: "radioPage", icon: "bi-play-circle" },
     genres: { title: "Genres", module: "genresPage", icon: "bi-tags" },
     stats: { title: "Statistiken", module: "statsPage", icon: "bi-graph-up" },
-    settings: { title: "Einstellungen", module: "settingsPage", icon: "bi-gear", adminOnly: true }
+    settings: { title: "Einstellungen", module: "settingsPage", icon: "bi-gear" }
 };
+
+// Navigation sequence for swipes
+const pageSequence = ["radio", "genres", "stats", "settings"];
 
 /**
  * Check if admin is logged in
  */
-function isAdmin() {
+export function isAdmin() {
     return sessionStorage.getItem("isAdmin") === "true";
 }
 
@@ -112,6 +115,48 @@ async function router() {
         `;
     }
 }
+
+// --- Swipe Gestures Implementation ---
+let touchStartX = 0;
+let touchEndX = 0;
+let touchStartY = 0;
+let touchEndY = 0;
+
+function handleSwipe() {
+    const swipeDistanceX = touchEndX - touchStartX;
+    const swipeDistanceY = touchEndY - touchStartY;
+    
+    // Check if horizontal swipe is dominant and significant
+    if (Math.abs(swipeDistanceX) > Math.abs(swipeDistanceY) && Math.abs(swipeDistanceX) > 70) {
+        const currentHash = window.location.hash.substring(1) || "radio";
+        const currentIndex = pageSequence.indexOf(currentHash);
+        
+        if (swipeDistanceX > 0) {
+            // Swipe Right -> Next Page (Radio -> Genres)
+            if (currentIndex < pageSequence.length - 1) {
+                const nextHash = pageSequence[currentIndex + 1];
+                window.location.hash = nextHash;
+            }
+        } else {
+            // Swipe Left -> Previous Page (Genres -> Radio)
+            if (currentIndex > 0) {
+                const prevHash = pageSequence[currentIndex - 1];
+                window.location.hash = prevHash;
+            }
+        }
+    }
+}
+
+document.addEventListener("touchstart", (e) => {
+    touchStartX = e.changedTouches[0].screenX;
+    touchStartY = e.changedTouches[0].screenY;
+}, { passive: true });
+
+document.addEventListener("touchend", (e) => {
+    touchEndX = e.changedTouches[0].screenX;
+    touchEndY = e.changedTouches[0].screenY;
+    handleSwipe();
+}, { passive: true });
 
 // Event Listeners
 window.addEventListener("hashchange", router);
