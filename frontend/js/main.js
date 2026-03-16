@@ -43,6 +43,9 @@ function renderNavbar() {
         a.innerHTML = `<span>${page.title}</span>`;
         
         a.onclick = (e) => {
+            // Close mobile navbar on click
+            closeMobileNavbar();
+            
             if (page.adminOnly && !isAdmin()) {
                 e.preventDefault();
                 handleAdminLogin(key);
@@ -98,8 +101,9 @@ async function router() {
     }
 
     try {
-        // Dynamic import of the page module
-        const module = await import(`./pages/${page.module}.js?v=${Date.now()}`);
+        // Dynamic import of the page module (Cache-busting only when strictly needed, 
+        // using version from main script or fixed version to avoid 'dauert es' issues)
+        const module = await import(`./pages/${page.module}.js?v=7`);
         
         appContent.innerHTML = "";
         module.render(appContent);
@@ -125,23 +129,49 @@ let touchEndX = 0;
 let touchStartY = 0;
 let touchEndY = 0;
 
+/**
+ * Close mobile navbar programmatically
+ */
+function closeMobileNavbar() {
+    const navbarCollapse = document.getElementById("navbarNav");
+    if (navbarCollapse && typeof bootstrap !== "undefined") {
+        const bsCollapse = bootstrap.Collapse.getInstance(navbarCollapse);
+        if (bsCollapse && navbarCollapse.classList.contains("show")) {
+            bsCollapse.hide();
+        } else if (navbarCollapse.classList.contains("show")) {
+            // Fallback if instance not found but menu is open
+            new bootstrap.Collapse(navbarCollapse).hide();
+        }
+    }
+}
+
 function handleSwipe() {
     const swipeDistanceX = touchEndX - touchStartX;
     const swipeDistanceY = touchEndY - touchStartY;
     
-    // Check if horizontal swipe is dominant and significant
-    if (Math.abs(swipeDistanceX) > Math.abs(swipeDistanceY) && Math.abs(swipeDistanceX) > 70) {
+    // 1. Edge Protection: Ignore swipes starting within 10% of the screen width
+    // to avoid conflict with native OS back gestures.
+    const edgeThreshold = window.innerWidth * 0.1;
+    if (touchStartX < edgeThreshold || touchStartX > window.innerWidth - edgeThreshold) {
+        return;
+    }
+
+    // 2. Thresholds: Horizontal > 50px, Vertical < 30px
+    const isHorizontal = Math.abs(swipeDistanceX) > 50;
+    const isStraight = Math.abs(swipeDistanceY) < 30;
+    
+    if (isHorizontal && isStraight) {
         const currentHash = window.location.hash.substring(1) || "radio";
         const currentIndex = pageSequence.indexOf(currentHash);
         
         if (swipeDistanceX > 0) {
-            // Swipe Right -> Next Page (Radio -> Genres)
+            // Swipe Right (L to R) -> Vorwärts (Next Page)
             if (currentIndex < pageSequence.length - 1) {
                 const nextHash = pageSequence[currentIndex + 1];
                 window.location.hash = nextHash;
             }
         } else {
-            // Swipe Left -> Previous Page (Genres -> Radio)
+            // Swipe Left (R to L) -> Zurück (Previous Page)
             if (currentIndex > 0) {
                 const prevHash = pageSequence[currentIndex - 1];
                 window.location.hash = prevHash;
