@@ -60,6 +60,10 @@ try {
     ");
     $stats['activeSessions'] = $stmtUsers->fetchAll();
 
+    // 4. SQL for Table Size (from User Request)
+    $stmtSize = $pdo->query("SELECT round(((data_length + index_length) / 1024 / 1024), 2) AS size_mb FROM information_schema.TABLES WHERE table_schema = 'milo_radio' AND table_name = 'listen_events'");
+    $stats['tableSizeMB'] = $stmtSize->fetchColumn() ?: 0;
+
     echo json_encode(['success' => true, 'data' => $stats]);
 
 } catch (Exception $e) {

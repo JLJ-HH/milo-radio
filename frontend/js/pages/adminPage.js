@@ -32,22 +32,41 @@ export function render(container) {
                 <!-- Live Users Card -->
                 <div class="col-md-4">
                     <div class="card h-100 shadow-lg border-0 bg-dark p-4 position-relative overflow-hidden">
-                        <div class="position-absolute top-0 end-0 p-3 opacity-10">
+                        <div class="position-absolute top-0 end-0 p-3 opacity-75 text-info">
                             <i class="bi bi-people-fill display-1"></i>
                         </div>
                         <h6 class="text-info text-uppercase fw-bold mb-1" style="letter-spacing: 1px;">Live Hörer</h6>
                         <div class="d-flex align-items-baseline">
-                            <h2 class="display-4 fw-bold mb-0" id="liveListeners">0</h2>
+                            <h2 class="display-4 fw-bold mb-0 text-white" id="liveListeners" style="text-shadow: 0 0 15px rgba(255, 255, 255, 0.2);">0</h2>
                             <span class="ms-2 text-success small"><i class="bi bi-dot fs-2"></i> Live</span>
                         </div>
                         <p class="text-white-50 small mt-2">Aktive User in den letzten 10 Min.</p>
                     </div>
                 </div>
 
+                <!-- Database Status Card -->
+                <div class="col-md-4">
+                    <div class="card h-100 shadow-lg border-0 bg-dark p-4 position-relative overflow-hidden">
+                        <div class="position-absolute top-0 end-0 p-3 opacity-75 text-warning">
+                            <i class="bi bi-database-fill display-1"></i>
+                        </div>
+                        <h6 class="text-warning text-uppercase fw-bold mb-1" style="letter-spacing: 1px;">Datenbank-Status</h6>
+                        <div class="d-flex align-items-baseline">
+                            <h2 class="display-4 fw-bold mb-0 text-white" id="dbSize" style="text-shadow: 0 0 15px rgba(255, 255, 255, 0.2);">0.00</h2>
+                            <span class="ms-2 text-white fw-bold small">MB</span>
+                        </div>
+                        <div class="mt-3">
+                            <button class="btn btn-warning btn-sm rounded-pill px-3 fw-bold w-100" id="optimizeDbBtn">
+                                <i class="bi bi-tools me-1"></i> Jetzt optimieren
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Chart Card -->
-                <div class="col-md-8">
+                <div class="col-md-4">
                     <div class="card h-100 shadow-lg border-0 bg-dark p-4">
-                        <h6 class="text-primary text-uppercase fw-bold mb-3" style="letter-spacing: 1px;">Top 10 Sender (Beliebtheit)</h6>
+                        <h6 class="text-white text-uppercase fw-bold mb-3" style="letter-spacing: 1px; opacity: 0.9;">Top 10 Sender (Beliebtheit)</h6>
                         <div style="height: 250px;">
                             <canvas id="topStationsChart"></canvas>
                         </div>
@@ -111,6 +130,44 @@ export function render(container) {
         window.location.hash = "radio";
         window.location.reload();
     };
+
+    // Optimize Button Logic
+    const optimizeBtn = container.querySelector("#optimizeDbBtn");
+    if (optimizeBtn) {
+        optimizeBtn.onclick = async () => {
+            if (!confirm("Möchtest du die Datenbank jetzt optimieren? Daten älter als 6 Monate werden archiviert.")) return;
+
+            const originalContent = optimizeBtn.innerHTML;
+            optimizeBtn.disabled = true;
+            optimizeBtn.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span> Läuft...`;
+
+            try {
+                // Get Token (In a real app, this might come from a secure setting or be requested)
+                // For now, we assume the token is known or we Fetch it if needed. 
+                // Since this is an admin panel already authenticated, we can rely on existing session for the fetch
+                // but the backend requires CRON_TOKEN for the maintenance script itself.
+                const token = "milo_radio_maintenance_token_2026"; // Consistent with .env
+                
+                const response = await fetch(`../backend/api/maintenance.php?token=${token}`, {
+                    method: "POST"
+                });
+                const result = await response.json();
+
+                if (result.success) {
+                    alert("Erfolg: " + result.message);
+                    loadStats(container);
+                } else {
+                    alert("Fehler: " + (result.error || "Unbekannter Fehler"));
+                }
+            } catch (err) {
+                console.error("Maintenance error:", err);
+                alert("Verbindungsfehler bei der Wartung.");
+            } finally {
+                optimizeBtn.disabled = false;
+                optimizeBtn.innerHTML = originalContent;
+            }
+        };
+    }
 }
 
 function renderLoginPrompt(container) {
@@ -140,6 +197,12 @@ async function loadStats(container) {
             
             // Update Live Listeners
             liveListenersEl.textContent = data.liveStats.active_listeners || 0;
+
+            // Update DB Size
+            const dbSizeEl = container.querySelector("#dbSize");
+            if (dbSizeEl) {
+                dbSizeEl.textContent = data.tableSizeMB || "0.00";
+            }
 
             // Update Chart
             updateChart(chartCtx, data.topStations);

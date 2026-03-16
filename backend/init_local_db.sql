@@ -1,4 +1,4 @@
--- Milo Radio Local Database Initialization Script
+milo_radio-- Milo Radio Local Database Initialization Script
 -- For use with HeidiSQL or phpMyAdmin (XAMPP MariaDB)
 
 -- 1. Create Database

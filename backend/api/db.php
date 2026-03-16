@@ -24,15 +24,21 @@ $options = [
 ];
 
 try {
-    if (empty($host) || empty($db) || empty($user)) {
-        throw new Exception("Konfiguration unvollständig (Host/DB/User leer in .env)");
+    if (!file_exists($envPath)) {
+        throw new Exception("Konfigurationsdatei (.env) fehlt unter: $envPath");
     }
+    
+    if (empty($host) || empty($db) || empty($user)) {
+        throw new Exception("Konfiguration unvollständig: Host, Datenbank oder Benutzer fehlt in der .env.");
+    }
+    
     $pdo = new PDO($dsn, $user, $pass, $options);
 } catch (\Exception $e) {
     header('Content-Type: application/json');
     http_response_code(500);
     echo json_encode([
-        'error' => 'Database connection failed',
+        'success' => false,
+        'error' => 'Datenbank-Verbindung fehlgeschlagen',
         'debug' => [
             'message' => $e->getMessage(),
             'attempted_host' => $host,

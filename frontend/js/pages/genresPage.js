@@ -84,6 +84,9 @@ export function render(container) {
         };
         genreContainer.appendChild(col);
       });
+
+      // Auto-Scroll: Scroll to results
+      genreContainer.scrollIntoView({ behavior: 'smooth' });
     }
   };
 
