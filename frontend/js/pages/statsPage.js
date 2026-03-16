@@ -113,23 +113,35 @@ export function render(container) {
     async function loadStats(period) {
         try {
             const response = await fetch(`../backend/api/get_stats.php?period=${period}`);
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
             const data = await response.json();
 
             if (data.error) {
                 console.error("API Error:", data.error);
+                const lastActiveContent = document.getElementById('lastActiveContent');
+                if (lastActiveContent) lastActiveContent.innerHTML = `<p class="text-danger small">API Fehler: ${data.error}</p>`;
                 return;
             }
 
-            updateSummary(data.summary);
-            renderHistoryChart(data.history);
-            renderTopStationsChart(data.top_stations);
-            renderGenreChart(data.genres);
+            // Update components individually with try-catch to prevent one failure from breaking everything
+            try { updateSummary(data.summary); } catch (e) { console.error("Error updating summary:", e); }
+            try { renderHistoryChart(data.history || []); } catch (e) { console.error("Error rendering history chart:", e); }
+            try { renderTopStationsChart(data.top_stations || []); } catch (e) { console.error("Error rendering top stations chart:", e); }
+            try { renderGenreChart(data.genres || []); } catch (e) { console.error("Error rendering genre chart:", e); }
 
         } catch (err) {
             console.error("Error loading stats:", err);
             const lastActiveContent = document.getElementById('lastActiveContent');
-            if (lastActiveContent) lastActiveContent.innerHTML = '<p class="text-danger small">Ladefehler.</p>';
+            if (lastActiveContent) lastActiveContent.innerHTML = '<p class="text-danger small">Ladefehler. Bitte später erneut versuchen.</p>';
         }
+    }
+
+    function parseMySQLDate(dateString) {
+        if (!dateString) return new Date();
+        // Replace space with T to make it ISO-8601 compliant for broader browser support if needed
+        const t = dateString.split(/[- :]/);
+        if (t.length < 3) return new Date(dateString); // Fallback
+        return new Date(t[0], t[1] - 1, t[2], t[3] || 0, t[4] || 0, t[5] || 0);
     }
 
     function formatDuration(minutes) {
@@ -140,16 +152,28 @@ export function render(container) {
     }
 
     function updateSummary(summary) {
-        document.getElementById('totalTimeDisplay').textContent = formatDuration(summary.total_minutes).split(' ')[0];
-        document.getElementById('totalTimeLabel').textContent = formatDuration(summary.total_minutes).split(' ').slice(1).join(' ');
+        if (!summary) return;
+        
+        const totalMin = summary.total_minutes || 0;
+        const formatted = formatDuration(totalMin);
+        const parts = formatted.split(' ');
+        
+        document.getElementById('totalTimeDisplay').textContent = parts[0] || '0';
+        document.getElementById('totalTimeLabel').textContent = parts.slice(1).join(' ') || 'Minuten';
 
         const lastActiveContent = document.getElementById('lastActiveContent');
-        if (summary.last_active) {
+        if (summary.last_active && summary.last_active.sender_name) {
+            const date = parseMySQLDate(summary.last_active.created_at);
+            const dateStr = !isNaN(date.getTime()) ? date.toLocaleString('de-DE') : summary.last_active.created_at;
+            
             lastActiveContent.innerHTML = `
-                <img src="${summary.last_active.sender_logo || './images/cholo_love.png'}" class="rounded-circle shadow" style="width: 50px; height: 50px; object-fit: cover;">
+                <img src="${summary.last_active.sender_logo || './images/cholo_love.png'}" 
+                     class="rounded-circle shadow" 
+                     style="width: 50px; height: 50px; object-fit: cover;"
+                     onerror="this.src='./images/cholo_love.png'">
                 <div>
                     <div class="fw-bold">${summary.last_active.sender_name}</div>
-                    <div class="small text-white-50">${new Date(summary.last_active.created_at).toLocaleString('de-DE')}</div>
+                    <div class="small text-white-50">${dateStr}</div>
                 </div>
             `;
         } else {
@@ -158,16 +182,21 @@ export function render(container) {
     }
 
     function renderHistoryChart(history) {
-        const ctx = document.getElementById('historyChart').getContext('2d');
+        const canvas = document.getElementById('historyChart');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
         if (historyChart) historyChart.destroy();
+
+        const labels = history.map(h => h.label || '');
+        const dataValues = history.map(h => Math.round(((h.pings || 0) * 30) / 60));
 
         historyChart = new Chart(ctx, {
             type: 'line',
             data: {
-                labels: history.map(h => h.label),
+                labels: labels,
                 datasets: [{
                     label: 'Hörzeit (Minuten)',
-                    data: history.map(h => Math.round((h.pings * 30) / 60)),
+                    data: dataValues,
                     borderColor: '#0dcaf0',
                     backgroundColor: 'rgba(13, 202, 240, 0.1)',
                     fill: true,
@@ -189,15 +218,17 @@ export function render(container) {
     }
 
     function renderTopStationsChart(stations) {
-        const ctx = document.getElementById('topStationsChart').getContext('2d');
+        const canvas = document.getElementById('topStationsChart');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
         if (topStationsChart) topStationsChart.destroy();
 
         topStationsChart = new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: stations.map(s => s.sender_name),
+                labels: stations.map(s => s.sender_name || 'Unbekannt'),
                 datasets: [{
-                    data: stations.map(s => s.ping_count),
+                    data: stations.map(s => s.ping_count || 0),
                     backgroundColor: 'rgba(13, 202, 240, 0.6)',
                     borderRadius: 5
                 }]
@@ -216,8 +247,16 @@ export function render(container) {
     }
 
     function renderGenreChart(genres) {
-        const ctx = document.getElementById('genreChart').getContext('2d');
+        const canvas = document.getElementById('genreChart');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
         if (genreChart) genreChart.destroy();
+
+        if (genres.length === 0) {
+            const info = document.getElementById('genreInfo');
+            if (info) info.innerHTML = '<div class="text-muted">Keine Genre-Daten.</div>';
+            return;
+        }
 
         const colors = [
             'rgba(13, 202, 240, 0.7)', 'rgba(102, 16, 242, 0.7)', 
@@ -230,7 +269,7 @@ export function render(container) {
             data: {
                 labels: genres.map(g => g.genre || 'Unbekannt'),
                 datasets: [{
-                    data: genres.map(g => g.ping_count),
+                    data: genres.map(g => g.ping_count || 0),
                     backgroundColor: colors,
                     borderWidth: 0
                 }]
@@ -250,6 +289,8 @@ export function render(container) {
         
         // Update simple list below
         const info = document.getElementById('genreInfo');
-        info.innerHTML = genres.slice(0, 3).map(g => `<div>${g.genre || 'Andere'}: <strong>${Math.round((g.ping_count * 30) / 60)} Min.</strong></div>`).join('');
+        if (info) {
+            info.innerHTML = genres.slice(0, 3).map(g => `<div>${g.genre || 'Andere'}: <strong>${Math.round(((g.ping_count || 0) * 30) / 60)} Min.</strong></div>`).join('');
+        }
     }
 }
