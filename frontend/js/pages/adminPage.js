@@ -289,5 +289,9 @@ function initStationManagement(container) {
         submitBtn.textContent = "Speichern";
     };
 
+    stationService.on("loaded", () => {
+        renderGenreButtons();
+    });
+
     renderGenreButtons();
 }

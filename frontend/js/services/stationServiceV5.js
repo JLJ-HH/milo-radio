@@ -8,7 +8,22 @@ class StationService {
   constructor() {
     this.stations = []; // Die Liste aller Sender
     this.isLoaded = false; // Status: Sind die Daten schon bereit?
+    this.listeners = {}; // Event-Listener
     this.init(); // Startet den Ladevorgang sofort im Hintergrund
+  }
+
+  /**
+   * Event-Handling System
+   */
+  on(event, callback) {
+    if (!this.listeners[event]) this.listeners[event] = [];
+    this.listeners[event].push(callback);
+  }
+
+  emit(event, data) {
+    if (this.listeners[event]) {
+      this.listeners[event].forEach(cb => cb(data));
+    }
   }
 
   /**
@@ -18,6 +33,7 @@ class StationService {
     await this.loadFromAPI(); // Schritt 1: Standard-Sender aus DB laden
     this.isLoaded = true; // Status auf "bereit" setzen
     this.loadFromStorage(); // Schritt 2: Eigene Änderungen des Admins laden
+    this.emit("loaded", this.stations); // Event feuern
   }
 
   /**
