@@ -60,7 +60,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Eingegebene PIN mit der PIN aus der .env vergleichen
     if ($userPin === $realPin) {
-        // Erfolg: Login in der Session vermerken
+        // Erfolg: Session-ID regenerieren, um Session Hijacking zu verhindern
+        session_regenerate_id(true);
+        // Login in der Session vermerken
         $_SESSION['isAdmin'] = true;
         echo json_encode(['success' => true]);
     }

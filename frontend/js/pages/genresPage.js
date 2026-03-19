@@ -50,7 +50,11 @@ export function render(container) {
       const color = colors[index % colors.length];
       btn.className = `btn btn-sm btn-${color} rounded-pill px-4 shadow-sm genre-btn`;
       btn.textContent = genre;
-      btn.onclick = () => renderStationsByGenre(genre);
+      btn.onclick = () => {
+        renderStationsByGenre(genre);
+        // Smooth scroll to the results container
+        genreContainer.scrollIntoView({ behavior: "smooth", block: "start" });
+      };
       genreButtonsContainer.appendChild(btn);
     });
 

@@ -106,7 +106,12 @@ export function render(container) {
 
     // Event Listeners
     container.querySelector("#refreshStatsBtn").onclick = () => loadStats(container);
-    container.querySelector("#logoutBtn").onclick = () => {
+    container.querySelector("#logoutBtn").onclick = async () => {
+        try {
+            await fetch("../backend/api/auth.php", { method: "DELETE" });
+        } catch (err) {
+            console.warn("Logout-API-Fehler:", err);
+        }
         sessionStorage.removeItem("isAdmin");
         window.location.hash = "radio";
         window.location.reload();

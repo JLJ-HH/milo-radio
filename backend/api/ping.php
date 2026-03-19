@@ -17,7 +17,14 @@ if (!$stationId || !is_numeric($stationId)) {
 }
 if (!isset($_COOKIE['milo_session_token'])) {
     $sessionToken = bin2hex(random_bytes(32));
-    setcookie('milo_session_token', $sessionToken, time() + (365 * 24 * 60 * 60), '/');
+    // Cookie mit modernen Security-Optionen setzen
+    setcookie('milo_session_token', $sessionToken, [
+        'expires' => time() + (365 * 24 * 60 * 60),
+        'path' => '/',
+        'secure' => true, // Nur über HTTPS
+        'httponly' => true, // Nicht via JS lesbar (Schutz vor XSS)
+        'samesite' => 'Lax' // Schutz vor CSRF
+    ]);
 } else {
     $sessionToken = $_COOKIE['milo_session_token'];
 }

@@ -9,6 +9,21 @@ if (!isset($_GET['stream']) || empty($_GET['stream'])) {
     exit;
 }
 $streamUrl = urldecode($_GET['stream']);
+
+// SSRF PROTECTION
+$host = parse_url($streamUrl, PHP_URL_HOST);
+if (!$host) {
+    echo json_encode(['error' => 'Ungültige URL', 'title' => '']);
+    exit;
+}
+
+// Block localhost, private IPs, and file:// (implicit by parse_url/stream_socket_client)
+$blocked = ['localhost', '127.0.0.1', '::1', '0.0.0.0'];
+if (in_array(strtolower($host), $blocked) || preg_match('/^192\.168\.|^10\.|^172\.(1[6-9]|2[0-9]|3[01])\./', $host)) {
+    echo json_encode(['error' => 'Zugriff auf interne Ressourcen verweigert', 'title' => '']);
+    exit;
+}
+
 $title = get_shoutcast_metadata($streamUrl);
 if ($title) {
     echo json_encode(['title' => $title]);

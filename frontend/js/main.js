@@ -19,10 +19,27 @@ const pages = {
 const pageSequence = ["radio", "genres", "stats", "admin", "settings"];
 
 /**
- * Check if admin is logged in
+ * Check if admin is logged in (synced with server)
  */
 export function isAdmin() {
     return sessionStorage.getItem("isAdmin") === "true";
+}
+
+/**
+ * Sync authentication state with server
+ */
+async function syncAuth() {
+    try {
+        const response = await fetch(API_AUTH_URL);
+        const result = await response.json();
+        if (result.success) {
+            sessionStorage.setItem("isAdmin", "true");
+        } else {
+            sessionStorage.removeItem("isAdmin");
+        }
+    } catch (err) {
+        console.error("Auth-Sync-Fehler:", err);
+    }
 }
 
 /**
@@ -108,6 +125,9 @@ async function router() {
         appContent.innerHTML = "";
         module.render(appContent);
         
+        // Ensure new page starts at the top
+        window.scrollTo({ top: 0, behavior: "instant" });
+
         // Update active state in navbar
         renderNavbar();
         
@@ -193,7 +213,10 @@ document.addEventListener("touchend", (e) => {
 
 // Event Listeners
 window.addEventListener("hashchange", router);
-window.addEventListener("load", () => {
+window.addEventListener("load", async () => {
+    // 1. Sync auth before first render to avoid "Admin Flash"
+    await syncAuth();
+    // 2. Render UI
     renderNavbar();
     router();
 });

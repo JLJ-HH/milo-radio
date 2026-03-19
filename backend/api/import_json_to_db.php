@@ -1,5 +1,10 @@
 <?php
 // backend/api/import_json_to_db.php
+session_start();
+if (!isset($_SESSION['isAdmin']) || $_SESSION['isAdmin'] !== true) {
+    http_response_code(403);
+    die("Unauthorized.");
+}
 require_once __DIR__ . '/db.php';
 
 // Pfad angepasst: zeigt nun auf den neuen frontend/json Ordner
