@@ -7,6 +7,40 @@ let topStationsChart = null;
 let genreChart = null;
 let currentPeriod = 'today';
 
+const genreColors = {
+    'Jazz': 'rgba(168, 85, 247, 0.8)',      // Purple
+    'Ranchera': 'rgba(239, 68, 68, 0.8)',   // Red
+    'Rancheras': 'rgba(239, 68, 68, 0.8)',  // Red (Alias)
+    'Hip Hop': 'rgba(59, 130, 246, 0.8)',   // Blue
+    'Pop': 'rgba(251, 191, 36, 0.8)',       // Amber/Yellow
+    'Afro': 'rgba(249, 115, 22, 0.8)',      // Orange
+    'Electronic': 'rgba(236, 72, 153, 0.8)', // Pink
+    'Electro': 'rgba(236, 72, 153, 0.8)',    // Pink (Alias)
+    'Rock': 'rgba(185, 28, 28, 0.8)',       // Dark Red
+    'Classic': 'rgba(34, 197, 94, 0.8)',    // Green
+    'Chill': 'rgba(20, 184, 166, 0.8)',     // Teal
+    'Oldies': 'rgba(120, 113, 108, 0.8)',   // Stone/Gray
+    'Default': 'rgba(99, 102, 241, 0.8)'    // Indigo
+};
+
+function getGenreColor(genre) {
+    if (!genre) return genreColors.Default;
+    
+    const normalized = genre.trim();
+    // 1. Exact or Alias match
+    const key = Object.keys(genreColors).find(k => k.toLowerCase() === normalized.toLowerCase());
+    if (key) return genreColors[key];
+    
+    // 2. Deterministic but distinct generator for unknowns
+    // We use a different saturation/lightness to keep them looking "premium"
+    let hash = 0;
+    for (let i = 0; i < normalized.length; i++) {
+        hash = normalized.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    const h = Math.abs(hash % 360);
+    return `hsla(${h}, 75%, 60%, 0.8)`;
+}
+
 export function render(container) {
     container.innerHTML = `
         <div class="text-white">
@@ -172,8 +206,8 @@ export function render(container) {
                      style="width: 50px; height: 50px; object-fit: cover;"
                      onerror="this.src='./images/cholo_love.png'">
                 <div>
-                    <div class="fw-bold">${summary.last_active.sender_name}</div>
-                    <div class="small text-white-50">${dateStr}</div>
+                    <div class="fw-bold text-white">${summary.last_active.sender_name}</div>
+                    <div class="small text-white-50" style="opacity: 0.8 !important;">${dateStr}</div>
                 </div>
             `;
         } else {
@@ -210,8 +244,8 @@ export function render(container) {
                 maintainAspectRatio: false,
                 plugins: { legend: { display: false } },
                 scales: {
-                    x: { grid: { display: false }, ticks: { color: '#aaa', font: { size: 10 } } },
-                    y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#666', font: { size: 10 } } }
+                    x: { grid: { display: false }, ticks: { color: '#f8fafc', font: { size: 10 } } },
+                    y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#f8fafc', font: { size: 10 } } }
                 }
             }
         });
@@ -229,7 +263,7 @@ export function render(container) {
                 labels: stations.map(s => s.sender_name || 'Unbekannt'),
                 datasets: [{
                     data: stations.map(s => s.ping_count || 0),
-                    backgroundColor: 'rgba(13, 202, 240, 0.6)',
+                    backgroundColor: stations.map(s => getGenreColor(s.genre)),
                     borderRadius: 5
                 }]
             },
@@ -239,8 +273,8 @@ export function render(container) {
                 maintainAspectRatio: false,
                 plugins: { legend: { display: false } },
                 scales: {
-                    x: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#aaa' } },
-                    y: { grid: { display: false }, ticks: { color: '#fff' } }
+                    x: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#f8fafc' } },
+                    y: { grid: { display: false }, ticks: { color: '#f8fafc' } }
                 }
             }
         });
@@ -270,7 +304,7 @@ export function render(container) {
                 labels: genres.map(g => g.genre || 'Unbekannt'),
                 datasets: [{
                     data: genres.map(g => g.ping_count || 0),
-                    backgroundColor: colors,
+                    backgroundColor: genres.map(g => getGenreColor(g.genre)),
                     borderWidth: 0
                 }]
             },
@@ -281,7 +315,7 @@ export function render(container) {
                 plugins: {
                     legend: {
                         position: 'bottom',
-                        labels: { color: '#aaa', padding: 20, usePointStyle: true }
+                        labels: { color: '#eee', padding: 20, usePointStyle: true }
                     }
                 }
             }
