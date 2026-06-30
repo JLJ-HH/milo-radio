@@ -147,13 +147,8 @@ export function render(container) {
             optimizeBtn.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span> Läuft...`;
 
             try {
-                // Get Token (In a real app, this might come from a secure setting or be requested)
-                // For now, we assume the token is known or we Fetch it if needed. 
-                // Since this is an admin panel already authenticated, we can rely on existing session for the fetch
-                // but the backend requires CRON_TOKEN for the maintenance script itself.
-                const token = "milo_radio_maintenance_token_2026"; // Consistent with .env
-                
-                const response = await fetch(`../backend/api/maintenance.php?token=${token}`, {
+                // Since this is an admin panel already authenticated, we rely on the existing admin session for verification.
+                const response = await fetch(`../backend/api/maintenance.php`, {
                     method: "POST"
                 });
                 const result = await response.json();

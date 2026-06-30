@@ -1,5 +1,19 @@
 <?php
-// backend/api/get_stations.php
+session_start();
+
+// Session-Token (milo_session_token) initialisieren, falls noch nicht vorhanden.
+// Dadurch wird der Cookie gesetzt, sobald der Benutzer die App lädt.
+if (!isset($_COOKIE['milo_session_token'])) {
+    $sessionToken = bin2hex(random_bytes(32));
+    setcookie('milo_session_token', $sessionToken, [
+        'expires' => time() + (365 * 24 * 60 * 60),
+        'path' => '/',
+        'secure' => true, // Nur über HTTPS
+        'httponly' => true, // Nicht via JS lesbar
+        'samesite' => 'Lax' // Schutz vor CSRF
+    ]);
+}
+
 require_once __DIR__ . '/db.php';
 header('Content-Type: application/json');
 try {

@@ -6,17 +6,29 @@
  * Protected by CRON_TOKEN.
  */
 
+session_start();
 require_once 'db.php';
 
 header('Content-Type: application/json');
 
-// 1. Check CRON_TOKEN (from .env)
+// 1. Authorisierung prüfen (Admin-Session ODER CRON_TOKEN)
 $expectedToken = $config['CRON_TOKEN'] ?? '';
 $providedToken = $_GET['token'] ?? $_POST['token'] ?? $_SERVER['HTTP_X_CRON_TOKEN'] ?? '';
 
-if (empty($expectedToken) || $providedToken !== $expectedToken) {
+$isAuthorized = false;
+
+// Check if user is logged in as Admin
+if (isset($_SESSION['isAdmin']) && $_SESSION['isAdmin'] === true) {
+    $isAuthorized = true;
+}
+// Or check if valid CRON_TOKEN is provided (e.g. for external cronjobs)
+elseif (!empty($expectedToken) && $providedToken === $expectedToken) {
+    $isAuthorized = true;
+}
+
+if (!$isAuthorized) {
     http_response_code(403);
-    echo json_encode(['success' => false, 'error' => 'Nicht autorisiert. Ungültiger Token.']);
+    echo json_encode(['success' => false, 'error' => 'Nicht autorisiert.']);
     exit;
 }
 

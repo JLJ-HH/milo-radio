@@ -58,18 +58,43 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $input = json_decode(file_get_contents('php://input'), true);
     $userPin = $input['pin'] ?? '';
 
+    // Prüfen, ob der Login aktuell wegen zu vieler Fehlversuche gesperrt ist
+    if (isset($_SESSION['lockout_until']) && $_SESSION['lockout_until'] > time()) {
+        $remaining = $_SESSION['lockout_until'] - time();
+        http_response_code(429);
+        echo json_encode(['success' => false, 'error' => "Zu viele Fehlversuche. Login vorübergehend gesperrt. Bitte warte noch $remaining Sekunden."]);
+        exit;
+    }
+
     // Eingegebene PIN mit der PIN aus der .env vergleichen
     if ($userPin === $realPin) {
         // Erfolg: Session-ID regenerieren, um Session Hijacking zu verhindern
         session_regenerate_id(true);
         // Login in der Session vermerken
         $_SESSION['isAdmin'] = true;
+        
+        // Zähler zurücksetzen
+        $_SESSION['login_attempts'] = 0;
+        unset($_SESSION['lockout_until']);
+        
         echo json_encode(['success' => true]);
     }
     else {
         // Fehler: PIN ist falsch
-        http_response_code(401);
-        echo json_encode(['success' => false, 'error' => 'Falscher PIN']);
+        $_SESSION['login_attempts'] = ($_SESSION['login_attempts'] ?? 0) + 1;
+        
+        // Künstliche Verzögerung (1,5 Sekunden), um Brute-Force-Bots drastisch zu verlangsamen
+        usleep(1500000);
+
+        if ($_SESSION['login_attempts'] >= 5) {
+            $_SESSION['lockout_until'] = time() + 300; // 5 Minuten Sperre
+            http_response_code(429);
+            echo json_encode(['success' => false, 'error' => 'Zu viele Fehlversuche. Der Login wurde für 5 Minuten gesperrt.']);
+        } else {
+            http_response_code(401);
+            $attemptsLeft = 5 - $_SESSION['login_attempts'];
+            echo json_encode(['success' => false, 'error' => "Falscher PIN. Noch $attemptsLeft Versuche vor der Sperrung."]);
+        }
     }
     exit;
 }

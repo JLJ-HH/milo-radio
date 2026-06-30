@@ -1,13 +1,13 @@
 <?php
-// backend/api/ping.php
-require_once __DIR__ . '/db.php';
 session_start();
 header('Content-Type: application/json');
+
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
     echo json_encode(['error' => 'Method not allowed. Use POST.']);
     exit;
 }
+
 $input = json_decode(file_get_contents('php://input'), true);
 $stationId = $input['station_id'] ?? null;
 if (!$stationId || !is_numeric($stationId)) {
@@ -15,19 +15,30 @@ if (!$stationId || !is_numeric($stationId)) {
     echo json_encode(['error' => 'Missing or invalid station_id.']);
     exit;
 }
+
+// 1. Session-Cookie Validierung (Spam-Schutz: Keine Pings ohne vorherige App-Initialisierung)
 if (!isset($_COOKIE['milo_session_token'])) {
-    $sessionToken = bin2hex(random_bytes(32));
-    // Cookie mit modernen Security-Optionen setzen
-    setcookie('milo_session_token', $sessionToken, [
-        'expires' => time() + (365 * 24 * 60 * 60),
-        'path' => '/',
-        'secure' => true, // Nur über HTTPS
-        'httponly' => true, // Nicht via JS lesbar (Schutz vor XSS)
-        'samesite' => 'Lax' // Schutz vor CSRF
-    ]);
-} else {
-    $sessionToken = $_COOKIE['milo_session_token'];
+    http_response_code(400);
+    echo json_encode(['error' => 'Invalid session. Please reload the app.']);
+    exit;
 }
+
+$sessionToken = $_COOKIE['milo_session_token'];
+
+// 2. Rate-Limiting (Spam-Schutz: Pings dürfen max. alle 15 Sekunden gesendet werden)
+$now = time();
+if (isset($_SESSION['last_ping_time'])) {
+    $elapsed = $now - $_SESSION['last_ping_time'];
+    if ($elapsed < 15) {
+        http_response_code(429);
+        echo json_encode(['error' => 'Too many requests. Please wait.']);
+        exit;
+    }
+}
+$_SESSION['last_ping_time'] = $now;
+
+// Erst laden wir die Datenbank, wenn alle Checks bestanden wurden (Ressourcen-Schonung)
+require_once __DIR__ . '/db.php';
 try {
     $pdo->beginTransaction();
     $stmt = $pdo->prepare("SELECT id FROM users WHERE session_token = :token");
