@@ -63,7 +63,10 @@ Milo Radio ist eine moderne, Progressive Web App (PWA) zum Streamen deiner Liebl
 
 - [frontend/](file:///c:/github/milo-radio/frontend) — Client-Anwendung (HTML, CSS, JS, Assets).
   - [index.html](file:///c:/github/milo-radio/frontend/index.html) — Haupt-Einstiegspunkt (Single Page App).
-  - [js/](file:///c:/github/milo-radio/frontend/js) — JS-Architektur mit SPA Router, Page-Modulen und Services.
+  - [js/](file:///c:/github/milo-radio/frontend/js) — JS-Architektur mit SPA-Router, Services und Seiten-Modulen:
+    - [radioPage.js](file:///c:/github/milo-radio/frontend/js/pages/radioPage.js) — Die Hauptseite des Players für die Radiostreams.
+    - [adminPage.js](file:///c:/github/milo-radio/frontend/js/pages/adminPage.js) — Das Admin-Verwaltungs-Dashboard.
+    - [statsPage.js](file:///c:/github/milo-radio/frontend/js/pages/statsPage.js) — Das persönliche Statistik-Dashboard (Chart.js).
   - [sw.js](file:///c:/github/milo-radio/frontend/sw.js) — Service Worker für Offline-Caching und PWA-Funktionalität.
 - [backend/](file:///c:/github/milo-radio/backend) — Server-Logik und Datenbank-Skripte.
   - [api/](file:///c:/github/milo-radio/backend/api) — REST-Endpunkte (Authentifizierung, Sender, Statistiken, Wartung, Metadaten).
