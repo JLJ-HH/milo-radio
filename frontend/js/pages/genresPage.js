@@ -1,6 +1,6 @@
 /**
  * SEITE 3: GENRES / SENDER-AUSWAHL (genresPage.js)
- * Mit einklappbarer Genre-Leiste, 100% Null-Safety & Status-Feedback
+ * Mit einklappbarer Genre-Leiste, 100% Null-Safety & großzügigem Padding
  */
 import { userStationService } from "../services/userStationService.js";
 import { stationService } from "../services/stationServiceV5.js";
@@ -8,7 +8,7 @@ import { radioService } from "../services/radioServiceV2.js";
 
 export function render(container) {
   container.innerHTML = `
-        <div class="text-white">
+        <div class="text-white pb-5">
             <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
                 <div class="d-flex align-items-center gap-3">
                     <i class="bi bi-tags display-5 text-primary"></i>
@@ -48,7 +48,7 @@ export function render(container) {
             </div>
 
             <!-- Sender-Ergebnisbereich -->
-            <div id="genreContainer" class="row g-3">
+            <div id="genreContainer" class="row g-3 pb-5 mb-5" style="min-height: 250px;">
                  <div class="col-12 text-center p-5 text-white-50">
                     <i class="bi bi-music-note-beamed display-3 text-primary opacity-50 mb-3 d-block"></i>
                     <p class="fs-5">Wähle oben ein Genre aus, um Sender zu entdecken.</p>
@@ -77,7 +77,7 @@ export function render(container) {
       } else {
         genreButtonsCard.classList.remove("d-none");
         toggleGenreButtonsBtn.innerHTML = `<i class="bi bi-chevron-up"></i> <span>Genres einklappen</span>`;
-        genreButtonsCard.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        window.scrollTo({ top: 0, behavior: "smooth" });
       }
     };
   }
@@ -148,7 +148,7 @@ export function render(container) {
       }
 
       renderStationsByGenre(genre);
-      genreContainer.scrollIntoView({ behavior: "smooth", block: "start" });
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
     function renderStationsByGenre(selectedGenre) {

@@ -252,9 +252,13 @@ footer {
   to { transform: translateY(0); }
 }
 
-/* Ausgleichs-Padding für Seiteninhalte, damit nichts verdeckt wird */
+/* Ausgleichs-Padding für Seiteninhalte, damit nichts vom Player verdeckt wird */
+#app-content {
+  padding-bottom: 150px !important;
+}
+
 .has-sticky-player #app-content {
-  padding-bottom: 110px !important;
+  padding-bottom: 150px !important;
 }
 
 .player-thumb {

@@ -1,9 +1,53 @@
 /**
  * USERSTATIONSERVICE (userStationService.js)
  *
- * Verwaltet die Liste der Top 6 Favoriten des Nutzers.
- * Keine zirkulären Abhängigkeiten, 100% autark und robust.
+ * Verwaltet die Top 6 Favoriten des Nutzers mit fest integrierten Default-Sendern.
  */
+const DEFAULT_TOP6_STATIONS = [
+  {
+    sender_Name: "Cumbias Inmortales / Monterrey",
+    sender_Url: "https://ssl.nexuscast.com:9046/;",
+    sender_Logo: "./images/cholo_love.png",
+    genre: "Cumbia",
+    now_playing_url: ""
+  },
+  {
+    sender_Name: "Salsamania - Salsa Radio - 24/7",
+    sender_Url: "https://stream.laut.fm/salsamania",
+    sender_Logo: "./images/cholo_love.png",
+    genre: "Salsa",
+    now_playing_url: ""
+  },
+  {
+    sender_Name: "Jazz / Hamburg",
+    sender_Url: "https://stream.laut.fm/jazz",
+    sender_Logo: "./images/cholo_love.png",
+    genre: "Jazz",
+    now_playing_url: ""
+  },
+  {
+    sender_Name: "Sensimedia - Hip Hop Radio / USA",
+    sender_Url: "https://stream.laut.fm/sensimedia-hiphop",
+    sender_Logo: "./images/cholo_love.png",
+    genre: "Hip Hop",
+    now_playing_url: ""
+  },
+  {
+    sender_Name: "Solo Merengue",
+    sender_Url: "https://stream.laut.fm/solomerengue",
+    sender_Logo: "./images/cholo_love.png",
+    genre: "Merengue",
+    now_playing_url: ""
+  },
+  {
+    sender_Name: "Latina Bachata",
+    sender_Url: "https://stream.laut.fm/latinabachata",
+    sender_Logo: "./images/cholo_love.png",
+    genre: "Bachata",
+    now_playing_url: ""
+  }
+];
+
 class UserStationService {
   constructor() {
     this.events = {};
@@ -32,7 +76,10 @@ class UserStationService {
     } catch (e) {
       console.warn("Fehler beim Laden der userStations:", e);
     }
-    return [];
+
+    // Wenn leer: Standard-Sender setzen und dauerhaft speichern
+    localStorage.setItem("userStations", JSON.stringify(DEFAULT_TOP6_STATIONS));
+    return [...DEFAULT_TOP6_STATIONS];
   }
 
   setStations(list) {
@@ -41,7 +88,7 @@ class UserStationService {
           .filter((s) => s && typeof s === "object" && (s.sender_Url || s.sender_url || s.url))
           .slice(0, 6)
       : [];
-    this.stations = valid;
+    this.stations = valid.length > 0 ? valid : [...DEFAULT_TOP6_STATIONS];
     localStorage.setItem("userStations", JSON.stringify(this.stations));
     this.emit("update", this.stations);
   }
@@ -63,14 +110,12 @@ class UserStationService {
       now_playing_url: station.now_playing_url || station.nowPlayingUrl || ""
     };
 
-    // Duplikate filtern
     const filtered = this.stations.filter((s) => {
       if (!s || typeof s !== "object") return false;
       const sUrl = this.normalizeUrl(s.sender_Url || s.sender_url || s.url || "");
       return sUrl !== cleanUrl;
     });
 
-    // Ganz oben anfügen (Platz 1) & auf maxLimit begrenzen
     const updated = [normalizedStation, ...filtered].slice(0, maxLimit);
 
     this.setStations(updated);

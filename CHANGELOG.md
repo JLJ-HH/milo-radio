@@ -7,6 +7,14 @@ und dieses Projekt hält sich an [Semantic Versioning](https://semver.org/lang/d
 
 ---
 
+## [1.4.5] - 2026-09-03
+
+### Behoben
+- **Integrierte Standard-Favoriten:** `userStationService` enthält nun 6 feste Standard-Favoriten, falls der Speicher auf dem Smartphone noch leer ist oder zurückgesetzt wurde.
+- **Sichtbarkeit von Kacheln auf mobilen Displays:** Generelles `padding-bottom: 150px` auf `#app-content` und `#genreContainer`, damit Karten bei kleineren Bildschirmhöhen niemals von der fixierten Player-Leiste überdeckt werden.
+- **Sanfter Seitenanfang-Scroll bei Genre-Auswahl:** Die Seite scrollt beim Auswählen eines Genres nun sauber nach oben an den Anfang, anstatt den Inhalt über den sichtbaren Rand hinaus zu schieben.
+- **Service Worker & PWA Update v18:** Cache-Version auf `milo-radio-v18` aktualisiert.
+
 ## [1.4.4] - 2026-09-03
 
 ### Hinzugefügt / Behoben
