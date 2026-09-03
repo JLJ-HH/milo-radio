@@ -18,7 +18,7 @@ class UserStationService {
   loadFromStorage() {
     try {
       const saved = localStorage.getItem("userStations");
-      return saved ? JSON.parse(saved) : [];
+      return saved ? JSON.parse(saved).slice(0, 6) : [];
     } catch (e) {
       console.warn("Fehler beim Laden der userStations:", e);
       return [];
@@ -36,6 +36,29 @@ class UserStationService {
     localStorage.setItem("userStations", JSON.stringify(this.stations));
     // Allen Seiten sagen: "Die Liste hat sich geändert!"
     this.emit("update", this.stations);
+  }
+
+  /**
+   * Fügt einen Sender ganz oben an (Position 1 / Index 0).
+   * Falls bereits vorhanden, wird er an den Anfang verschoben.
+   * Begrenzt die Liste automatisch auf maximal `maxLimit` (Standard: 6 Sender),
+   * ältere Sender am Ende der Liste fallen automatisch heraus.
+   * @param {Object} station 
+   * @param {number} maxLimit 
+   */
+  addStation(station, maxLimit = 6) {
+    if (!station || !station.sender_Url) return this.stations;
+    // 1. Vorheriges Vorkommen herausfiltern (verhindert Duplikate)
+    let updated = this.stations.filter((s) => s.sender_Url !== station.sender_Url);
+    // 2. Ganz oben anfügen
+    updated.unshift(station);
+    // 3. Auf maximal maxLimit Sender begrenzen (der älteste fällt am Ende weg)
+    if (updated.length > maxLimit) {
+      updated = updated.slice(0, maxLimit);
+    }
+    // 4. Speichern & Benachrichtigung
+    this.setStations(updated);
+    return updated;
   }
 
   /**

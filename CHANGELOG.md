@@ -7,6 +7,15 @@ und dieses Projekt hält sich an [Semantic Versioning](https://semver.org/lang/d
 
 ---
 
+## [1.2.0] - 2026-09-03
+
+### Hinzugefügt / Geändert
+- **Top 6 Favoriten-Limit mit Auto-FIFO:** Begrenzung der aktiven Senderliste auf maximal 6 Sender für ein aufgeräumtes, übersichtliches Dashboard ohne horizontales/vertikales Überladen.
+- **Neueste Sender an Position 1:** Beim Hinzufügen eines Senders über die Genres-Seite wird dieser sofort an oberster Stelle (Index 0 / Position 1) eingefügt.
+- **Automatisches Verdrängen alter Sender:** Sobald mehr als 6 Sender vorhanden sind, fällt der älteste Sender am Ende der Liste automatisch heraus. Bereits vorhandene Sender rücken bei erneuter Auswahl auf Platz 1 vor.
+- **Interaktives Feedback in Genres:** Anzeige der aktuellen Position (`✓ Platz X`) und visuelle Rückmeldung beim Hinzufügen.
+- **Service Worker & PWA Update v9:** Aktualisierung des Cache-Managements (`milo-radio-v9`) für sofortige Verfügbarkeit auf Mobilgeräten.
+
 ## [1.1.0] - 2026-09-03
 
 ### Geändert
