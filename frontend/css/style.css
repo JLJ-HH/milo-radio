@@ -224,6 +224,9 @@ footer {
   background: var(--glass-bg) !important;
   backdrop-filter: blur(10px);
   border-top: 1px solid var(--glass-border) !important;
+  margin-bottom: 95px !important;
+  position: relative;
+  z-index: 100;
 }
 
 /* ============================================================
@@ -252,13 +255,13 @@ footer {
   to { transform: translateY(0); }
 }
 
-/* Ausgleichs-Padding für Seiteninhalte, damit nichts vom Player verdeckt wird */
+/* Ausgleichs-Padding für Seiteninhalte */
 #app-content {
-  padding-bottom: 150px !important;
+  padding-bottom: 40px !important;
 }
 
 .has-sticky-player #app-content {
-  padding-bottom: 150px !important;
+  padding-bottom: 40px !important;
 }
 
 .player-thumb {

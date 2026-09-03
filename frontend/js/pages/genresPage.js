@@ -1,6 +1,6 @@
 /**
  * SEITE 3: GENRES / SENDER-AUSWAHL (genresPage.js)
- * Mit einklappbarer Genre-Leiste, 100% Null-Safety & großzügigem Padding
+ * Mit flexibel ein-/ausklappbarer Genre-Leiste & dauerhaft sichtbarem Footer
  */
 import { userStationService } from "../services/userStationService.js";
 import { stationService } from "../services/stationServiceV5.js";
@@ -8,7 +8,7 @@ import { radioService } from "../services/radioServiceV2.js";
 
 export function render(container) {
   container.innerHTML = `
-        <div class="text-white pb-5">
+        <div class="text-white pb-4">
             <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
                 <div class="d-flex align-items-center gap-3">
                     <i class="bi bi-tags display-5 text-primary"></i>
@@ -37,10 +37,13 @@ export function render(container) {
                 </button>
             </div>
 
-            <!-- Einklappbare Genre-Button-Auswahl -->
+            <!-- Einklappbare Genre-Button-Auswahl mit eigenem Schließen-Button -->
             <div id="genreButtonsCard" class="card bg-dark border-secondary p-3 rounded-4 mb-4 shadow-sm">
-                <div class="d-flex align-items-center justify-content-between mb-2">
+                <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
                     <span class="text-white-50 small fw-bold text-uppercase" style="letter-spacing: 0.5px;">Wähle eine Musikrichtung:</span>
+                    <button id="cardCollapseBtn" class="btn btn-outline-secondary btn-sm rounded-pill px-3 py-1 text-white-50 small" style="font-size: 0.78rem;">
+                        <i class="bi bi-chevron-up" id="cardCollapseIcon"></i> <span id="cardCollapseText">Einklappen</span>
+                    </button>
                 </div>
                 <div id="genreButtons" class="d-flex flex-wrap gap-2">
                     <div class="text-white-50 small py-2">Genres werden geladen...</div>
@@ -48,7 +51,7 @@ export function render(container) {
             </div>
 
             <!-- Sender-Ergebnisbereich -->
-            <div id="genreContainer" class="row g-3 pb-5 mb-5" style="min-height: 250px;">
+            <div id="genreContainer" class="row g-3" style="min-height: 250px;">
                  <div class="col-12 text-center p-5 text-white-50">
                     <i class="bi bi-music-note-beamed display-3 text-primary opacity-50 mb-3 d-block"></i>
                     <p class="fs-5">Wähle oben ein Genre aus, um Sender zu entdecken.</p>
@@ -65,20 +68,37 @@ export function render(container) {
   const activeGenreBadge = container.querySelector("#activeGenreBadge");
   const activeStationCount = container.querySelector("#activeStationCount");
   const toggleGenreButtonsBtn = container.querySelector("#toggleGenreButtonsBtn");
+  const cardCollapseBtn = container.querySelector("#cardCollapseBtn");
+  const cardCollapseIcon = container.querySelector("#cardCollapseIcon");
+  const cardCollapseText = container.querySelector("#cardCollapseText");
 
-  let isGenreListCollapsed = false;
+  let isButtonsBodyCollapsed = false;
 
+  // Einklappen/Ausklappen direkt in der Genre-Box
+  if (cardCollapseBtn) {
+    cardCollapseBtn.onclick = () => {
+      isButtonsBodyCollapsed = !isButtonsBodyCollapsed;
+      if (isButtonsBodyCollapsed) {
+        genreButtonsContainer.classList.add("d-none");
+        cardCollapseIcon.className = "bi bi-chevron-down";
+        cardCollapseText.textContent = "Ausklappen";
+      } else {
+        genreButtonsContainer.classList.remove("d-none");
+        cardCollapseIcon.className = "bi bi-chevron-up";
+        cardCollapseText.textContent = "Einklappen";
+      }
+    };
+  }
+
+  // Umschalten über die aktive Genre-Leiste
   if (toggleGenreButtonsBtn) {
     toggleGenreButtonsBtn.onclick = () => {
-      isGenreListCollapsed = !isGenreListCollapsed;
-      if (isGenreListCollapsed) {
-        genreButtonsCard.classList.add("d-none");
-        toggleGenreButtonsBtn.innerHTML = `<i class="bi bi-chevron-down"></i> <span>Genre wechseln</span>`;
-      } else {
-        genreButtonsCard.classList.remove("d-none");
-        toggleGenreButtonsBtn.innerHTML = `<i class="bi bi-chevron-up"></i> <span>Genres einklappen</span>`;
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      }
+      genreButtonsCard.classList.remove("d-none");
+      genreButtonsContainer.classList.remove("d-none");
+      isButtonsBodyCollapsed = false;
+      cardCollapseIcon.className = "bi bi-chevron-up";
+      cardCollapseText.textContent = "Einklappen";
+      genreButtonsCard.scrollIntoView({ behavior: "smooth", block: "nearest" });
     };
   }
 
@@ -141,11 +161,8 @@ export function render(container) {
       activeGenreBadge.textContent = genre;
       activeStationCount.textContent = `• ${stationsInGenre.length} Sender`;
 
+      // Nach Auswahl die große Button-Box einklappen
       genreButtonsCard.classList.add("d-none");
-      isGenreListCollapsed = true;
-      if (toggleGenreButtonsBtn) {
-        toggleGenreButtonsBtn.innerHTML = `<i class="bi bi-chevron-down"></i> <span>Genre wechseln</span>`;
-      }
 
       renderStationsByGenre(genre);
       window.scrollTo({ top: 0, behavior: "smooth" });

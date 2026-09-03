@@ -7,6 +7,13 @@ und dieses Projekt hält sich an [Semantic Versioning](https://semver.org/lang/d
 
 ---
 
+## [1.4.6] - 2026-09-03
+
+### Hinzugefügt / Behoben
+- **Flexibles Genre-Einklappen:** Neuer `Einklappen ▴` / `Ausklappen ▾`-Button direkt im Header der Musikrichtungs-Box, sodass die 20+ Genre-Buttons auch ohne vorherige Genre-Auswahl jederzeit manuell ein- oder ausgeklappt werden können.
+- **Dauerhaft erreichbarer Footer:** `footer` mit `margin-bottom: 95px` ausgestattet, sodass Impressum, Datenschutz und Versionshinweis beim Herunterscrollen auf allen Geräten oberhalb der fixierten Player-Leiste frei sichtbar und anklickbar sind.
+- **Service Worker & PWA Update v19:** Aktualisierung auf `milo-radio-v19`.
+
 ## [1.4.5] - 2026-09-03
 
 ### Behoben
