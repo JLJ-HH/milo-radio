@@ -2,6 +2,8 @@
  * Milo Radio - Main entry point (SPA Router)
  */
 
+import { playerBar } from "./components/playerBar.js";
+
 const API_AUTH_URL = "../backend/api/auth.php";
 const appContent = document.getElementById("app-content");
 const navList = document.getElementById("nav-list");
@@ -111,9 +113,6 @@ async function router() {
     const pageKey = pages[hash] ? hash : "radio";
     const page = pages[pageKey];
 
-    // Reset sticky player layout class
-    document.body.classList.remove("has-sticky-player");
-
     // Check permissions
     if (page.adminOnly && !isAdmin()) {
         window.location.hash = "radio";
@@ -122,7 +121,7 @@ async function router() {
 
     try {
         // Dynamic import of the page module
-        const module = await import(`./pages/${page.module}.js?v=9`);
+        const module = await import(`./pages/${page.module}.js?v=10`);
         
         appContent.innerHTML = "";
         module.render(appContent);
@@ -211,14 +210,16 @@ document.addEventListener("touchend", (e) => {
     touchEndX = e.changedTouches[0].screenX;
     touchEndY = e.changedTouches[0].screenY;
     handleSwipe();
-}, { passive: true });
+});
 
 // Event Listeners
 window.addEventListener("hashchange", router);
 window.addEventListener("load", async () => {
     // 1. Sync auth before first render to avoid "Admin Flash"
     await syncAuth();
-    // 2. Render UI
+    // 2. Initialize global player bar
+    playerBar.init();
+    // 3. Render UI
     renderNavbar();
     router();
 });

@@ -7,6 +7,14 @@ und dieses Projekt hält sich an [Semantic Versioning](https://semver.org/lang/d
 
 ---
 
+## [1.3.0] - 2026-09-03
+
+### Hinzugefügt / Geändert
+- **Global persistente Sticky-Bottom-Player-Bar:** Die Player-Leiste ist nun app-weit über alle Seiten (Radio, Genres, Stats, Einstellungen, Admin) dauerhaft aktiv. Wiedergabe, Lautstärke und Now-Playing-Fetches laufen beim Stöbern in Genres nahtlos und unterbrechungsfrei weiter.
+- **Direktes Play & Top-6-Hinzufügen in Genres:** Auf der Genres-Seite kann jeder Sender nun sowohl direkt Probe gehört (`Play` / `Läuft`) als auch zu den Top 6 (`+ Zu Top 6` / `✓ Platz X`) hinzugefügt werden.
+- **Robuste Daten-Normalisierung:** Absicherung von Sender-URLs und Logo-Attributen in `userStationService`, sodass das Hinzufügen von Sendern unter allen Bedingungen fehlerfrei funktioniert.
+- **Service Worker & PWA Update v10:** Aktualisierung auf `milo-radio-v10` mit automatischer Registrierung des neuen globalen `playerBar.js` Moduls.
+
 ## [1.2.0] - 2026-09-03
 
 ### Hinzugefügt / Geändert

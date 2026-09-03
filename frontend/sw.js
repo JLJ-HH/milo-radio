@@ -5,7 +5,7 @@
  * im Browser-Cache gespeichert werden.
  */
 
-const CACHE_NAME = "milo-radio-v9";
+const CACHE_NAME = "milo-radio-v10";
 
 // Liste der Dateien, die für den Offline-Betrieb gespeichert werden sollen
 // Pfade sind nun relativ zum Frontend-Root
@@ -14,6 +14,7 @@ const urlsToCache = [
   "./index.html",
   "./css/style.css",
   "./js/main.js",
+  "./js/components/playerBar.js",
   "./js/services/radioServiceV2.js",
   "./js/services/stationServiceV5.js",
   "./js/services/userStationService.js",

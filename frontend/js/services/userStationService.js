@@ -47,11 +47,23 @@ class UserStationService {
    * @param {number} maxLimit 
    */
   addStation(station, maxLimit = 6) {
-    if (!station || !station.sender_Url) return this.stations;
+    if (!station) return this.stations;
+    const url = station.sender_Url || station.sender_url || station.url;
+    if (!url) return this.stations;
+
+    const normalized = {
+      ...station,
+      sender_Url: url,
+      sender_Name: station.sender_Name || station.sender_name || station.name || "Radio",
+      sender_Logo: station.sender_Logo || station.sender_logo || station.logo || "./images/cholo_love.png",
+      genre: station.genre || "Allgemein",
+      now_playing_url: station.now_playing_url || station.nowPlayingUrl || ""
+    };
+
     // 1. Vorheriges Vorkommen herausfiltern (verhindert Duplikate)
-    let updated = this.stations.filter((s) => s.sender_Url !== station.sender_Url);
+    let updated = this.stations.filter((s) => (s.sender_Url || s.sender_url || s.url) !== url);
     // 2. Ganz oben anfügen
-    updated.unshift(station);
+    updated.unshift(normalized);
     // 3. Auf maximal maxLimit Sender begrenzen (der älteste fällt am Ende weg)
     if (updated.length > maxLimit) {
       updated = updated.slice(0, maxLimit);

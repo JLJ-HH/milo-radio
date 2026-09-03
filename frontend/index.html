@@ -33,7 +33,7 @@
     <link rel="manifest" href="./manifest.json" />
 
     <!-- Eigene Styles (Design-Anpassungen) -->
-    <link rel="stylesheet" href="./css/style.css?v=9" />
+    <link rel="stylesheet" href="./css/style.css?v=10" />
 
     <!-- Lesezeichen-Icons (Favicon) -->
     <link rel="icon" href="./images/android.png" type="image/png" />
@@ -67,6 +67,50 @@
     <main id="app-content" class="container py-4 flex-grow-1"></main>
 
     <!-- 
+      GLOBAL STICKY-BOTTOM PLAYER BAR
+      Permanente Player-Bar über alle Seiten (Radio, Genres, Stats, Settings, Admin)
+    -->
+    <div id="stickyPlayerBar" class="sticky-player-bar shadow-lg">
+      <div class="container-fluid px-2 px-md-4">
+        <div class="row align-items-center g-2">
+          
+          <!-- 1. Fetch / Now-Playing Bereich -->
+          <div class="col-12 col-md-5 col-lg-5 d-flex align-items-center gap-3">
+            <div class="position-relative flex-shrink-0">
+              <img src="./images/milo.jpg" id="playerThumb" class="rounded-circle player-thumb shadow-sm border border-2 border-secondary" alt="Station">
+              <div id="playerPlayingBadge" class="mini-wave-badge d-none">
+                <span class="mini-wave"></span>
+                <span class="mini-wave"></span>
+                <span class="mini-wave"></span>
+              </div>
+            </div>
+            <div class="text-truncate flex-grow-1 text-start" style="min-width: 0;">
+              <div id="stationTitle" class="player-station-name text-truncate">Bereit zum Abspielen</div>
+              <div id="nowPlayingText" class="player-now-playing-text text-truncate" style="min-height: 1.25em;"></div>
+            </div>
+          </div>
+
+          <!-- 2. Play & Stop Controls -->
+          <div class="col-6 col-md-4 col-lg-4 d-flex align-items-center justify-content-start justify-content-md-center gap-2">
+            <button id="playBtn" class="btn btn-primary rounded-pill px-4 fw-semibold d-flex align-items-center gap-2 shadow-sm" disabled>
+              <i class="bi bi-play-fill fs-5"></i><span>Play</span>
+            </button>
+            <button id="stopBtn" class="btn btn-outline-light rounded-pill px-3 fw-semibold d-flex align-items-center gap-2" disabled>
+              <i class="bi bi-stop-fill fs-5"></i><span>Stop</span>
+            </button>
+          </div>
+
+          <!-- 3. Lautstärke & Extras -->
+          <div class="col-6 col-md-3 col-lg-3 d-flex align-items-center justify-content-end gap-2">
+            <i class="bi bi-volume-up text-white-50 fs-5"></i>
+            <input type="range" id="volumeSlider" min="0" max="1" step="0.01" class="form-range custom-range flex-grow-1" style="max-width: 120px;">
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- 
       BOTTOM BAR: Fußzeile der App (nicht mehr fixed-bottom, fließt am Seitenende)
     -->
     <footer id="app-footer" class="bg-dark text-white-50 py-3 border-top border-secondary mt-auto">
@@ -87,15 +131,15 @@
       if ("serviceWorker" in navigator) {
         window.addEventListener("load", () => {
           navigator.serviceWorker
-            .register("./sw.js?v=9")
-            .then((reg) => console.log("SW v9 aktiv"))
+            .register("./sw.js?v=10")
+            .then((reg) => console.log("SW v10 aktiv"))
             .catch((err) => console.log("SW Fehler:", err));
         });
       }
     </script>
 
     <!-- Main JS entry point -->
-    <script type="module" src="./js/main.js?v=9"></script>
+    <script type="module" src="./js/main.js?v=10"></script>
 
     <!-- Privacy & Impressum Modal -->
     <div class="modal fade" id="privacyModal" tabindex="-1" aria-hidden="true">
