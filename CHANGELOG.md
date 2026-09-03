@@ -7,6 +7,13 @@ und dieses Projekt hält sich an [Semantic Versioning](https://semver.org/lang/d
 
 ---
 
+## [1.4.9] - 2026-09-03
+
+### Hinzugefügt / Verbessert (Modern App Architecture)
+- **Umstellung auf Best-Practice App-Design (Option 2):** Der separate Footer-Balken wurde entfernt. Die Player-Leiste schließt die App nun am unteren Rand absolut sauber und nativ ab.
+- **Zentrale App-Verwaltung in Einstellungen (`#settings`):** Buttons für `Impressum & Datenschutz` (Modal) und `App aktualisieren / Cache leeren` sind jetzt übersichtlich und aufgeräumt in der Einstellungsseite integriert.
+- **Service Worker & PWA Update v22:** Cache-Version auf `milo-radio-v22` aktualisiert.
+
 ## [1.4.8] - 2026-09-03
 
 ### Behoben

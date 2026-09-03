@@ -217,23 +217,6 @@ body {
     margin-bottom: 0.25rem;
   }
 
-  #totalTime {
-    font-size: 3.5rem !important;
-  }
-}
-
-#app-footer, footer {
-  background: var(--glass-bg) !important;
-  backdrop-filter: blur(10px);
-  border-top: 1px solid var(--glass-border) !important;
-  margin-top: auto !important;
-  margin-bottom: 0 !important;
-  padding-top: 1.5rem !important;
-  padding-bottom: calc(140px + env(safe-area-inset-bottom, 0px)) !important;
-  position: relative;
-  z-index: 100;
-}
-
 /* ============================================================
    STICKY BOTTOM PLAYER BAR
    ============================================================ */
@@ -263,12 +246,12 @@ body {
 /* Ausgleichs-Padding für Seiteninhalte */
 #app-content {
   flex: 1 0 auto;
-  padding-bottom: 1.5rem !important;
+  padding-bottom: 110px !important;
 }
 
 .has-sticky-player #app-content {
   flex: 1 0 auto;
-  padding-bottom: 1.5rem !important;
+  padding-bottom: 110px !important;
 }
 
 .player-thumb {

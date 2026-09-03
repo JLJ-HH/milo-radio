@@ -33,7 +33,7 @@
     <link rel="manifest" href="./manifest.json" />
 
     <!-- Eigene Styles (Design-Anpassungen) -->
-    <link rel="stylesheet" href="./css/style.css?v=21" />
+    <link rel="stylesheet" href="./css/style.css?v=22" />
 
     <!-- Lesezeichen-Icons (Favicon) -->
     <link rel="icon" href="./images/android.png" type="image/png" />
@@ -110,49 +110,14 @@
       </div>
     </div>
 
-    <!-- 
-      BOTTOM BAR: Fußzeile der App (nicht mehr fixed-bottom, fließt am Seitenende)
-    -->
-    <footer id="app-footer" class="bg-dark text-white-50 border-top border-secondary mt-auto">
-      <div class="container text-center small d-flex align-items-center justify-content-center flex-wrap gap-2 gap-md-4">
-        <span>© 2026 Milo Radio • <span class="text-info fw-semibold">v1.4.7</span></span>
-        <a href="#" class="text-white-50 text-decoration-none" data-bs-toggle="modal" data-bs-target="#privacyModal">Impressum & Datenschutz</a>
-        <button id="resetAppCacheBtn" class="btn btn-outline-secondary btn-sm rounded-pill px-3 text-white-50 small border-secondary" style="font-size: 0.75rem;">
-          <i class="bi bi-arrow-repeat"></i> <span>App aktualisieren / Cache leeren</span>
-        </button>
-      </div>
-    </footer>
-
     <!-- Bootstrap JS (Für Modals und UI-Elemente) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 
     <!-- Chart.js für die Statistiken -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <!-- PWA SERVICE WORKER & Cache-Reset Handler -->
+    <!-- PWA SERVICE WORKER -->
     <script>
-      const resetBtn = document.getElementById("resetAppCacheBtn");
-      if (resetBtn) {
-        resetBtn.onclick = async () => {
-          resetBtn.innerHTML = '<i class="bi bi-arrow-repeat"></i> <span>Wird aktualisiert...</span>';
-          try {
-            if ("caches" in window) {
-              const keys = await caches.keys();
-              await Promise.all(keys.map((k) => caches.delete(k)));
-            }
-            if ("serviceWorker" in navigator) {
-              const regs = await navigator.serviceWorker.getRegistrations();
-              for (const r of regs) await r.unregister();
-            }
-            localStorage.removeItem("userStations");
-            sessionStorage.clear();
-          } catch (e) {
-            console.warn("Reset Fehler:", e);
-          }
-          window.location.href = window.location.pathname + "?updated=" + Date.now();
-        };
-      }
-
       if ("serviceWorker" in navigator) {
         let refreshing = false;
         navigator.serviceWorker.addEventListener("controllerchange", () => {
@@ -163,9 +128,9 @@
         });
         window.addEventListener("load", () => {
           navigator.serviceWorker
-            .register("./sw.js?v=21")
+            .register("./sw.js?v=22")
             .then((reg) => {
-              console.log("SW v21 registriert");
+              console.log("SW v22 registriert");
               reg.update();
             })
             .catch((err) => console.log("SW Fehler:", err));
@@ -174,7 +139,7 @@
     </script>
 
     <!-- Main JS entry point -->
-    <script type="module" src="./js/main.js?v=21"></script>
+    <script type="module" src="./js/main.js?v=22"></script>
 
     <!-- Privacy & Impressum Modal -->
     <div class="modal fade" id="privacyModal" tabindex="-1" aria-hidden="true">
