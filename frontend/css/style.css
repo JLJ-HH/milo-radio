@@ -224,7 +224,9 @@ footer {
   background: var(--glass-bg) !important;
   backdrop-filter: blur(10px);
   border-top: 1px solid var(--glass-border) !important;
-  margin-bottom: 95px !important;
+  margin-bottom: 0 !important;
+  padding-top: 1.25rem !important;
+  padding-bottom: calc(95px + env(safe-area-inset-bottom, 0px)) !important;
   position: relative;
   z-index: 100;
 }
@@ -257,11 +259,11 @@ footer {
 
 /* Ausgleichs-Padding für Seiteninhalte */
 #app-content {
-  padding-bottom: 40px !important;
+  padding-bottom: 2rem !important;
 }
 
 .has-sticky-player #app-content {
-  padding-bottom: 40px !important;
+  padding-bottom: 2rem !important;
 }
 
 .player-thumb {

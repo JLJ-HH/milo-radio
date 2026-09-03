@@ -7,6 +7,12 @@ und dieses Projekt hält sich an [Semantic Versioning](https://semver.org/lang/d
 
 ---
 
+## [1.4.7] - 2026-09-03
+
+### Behoben
+- **Footer-Positionierung am Seitenende:** `margin-bottom` am Footer vollständig entfernt (`margin-bottom: 0`). Der Footer sitzt jetzt wie gewünscht ganz unten am Seitenabschluss und wird erst beim Herunterscrollen an das Seitenende sichtbar, mit passendem Innen-Abstand (`padding-bottom: 95px`), damit die Links nahtlos über der Player-Leiste liegen.
+- **Service Worker & PWA Update v20:** Cache-Version auf `milo-radio-v20` aktualisiert.
+
 ## [1.4.6] - 2026-09-03
 
 ### Hinzugefügt / Behoben
