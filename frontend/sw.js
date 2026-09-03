@@ -1,14 +1,12 @@
 /**
  * SERVICE WORKER (sw.js)
  *
- * Ermöglicht die Offline-Nutzeung der App, indem wichtige Dateien
- * im Browser-Cache gespeichert werden.
+ * Ermöglicht die Offline-Nutzung der App mit intelligenter Network-First-Strategie
+ * für sofortige Aktualisierungen auf Mobilgeräten.
  */
 
-const CACHE_NAME = "milo-radio-v13";
+const CACHE_NAME = "milo-radio-v14";
 
-// Liste der Dateien, die für den Offline-Betrieb gespeichert werden sollen
-// Pfade sind nun relativ zum Frontend-Root
 const urlsToCache = [
   "./",
   "./index.html",
@@ -28,19 +26,13 @@ const urlsToCache = [
   "./manifest.json",
 ];
 
-/**
- * INSTALL-EVENT: Wird beim ersten Laden oder bei Updates ausgeführt.
- */
 self.addEventListener("install", (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => cache.addAll(urlsToCache)),
   );
-  self.skipWaiting(); 
+  self.skipWaiting();
 });
 
-/**
- * ACTIVATE-EVENT: Wird nach der Installation ausgeführt.
- */
 self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches.keys().then((cacheNames) => {
@@ -54,24 +46,51 @@ self.addEventListener("activate", (event) => {
       );
     }),
   );
-  self.clients.claim(); 
+  self.clients.claim();
 });
 
-/**
- * FETCH-EVENT: Wird bei jeder Netzwerkanfrage der App aufgerufen.
- */
 self.addEventListener("fetch", (event) => {
   const url = new URL(event.request.url);
 
-  // Bypass Cache für Backend-API-Anfragen (../backend/api/)
-  // Wenn der Request "api" im Namen hat, gehen wir direkt ins Web
+  // 1. API Anfragen immer direkt ans Netzwerk
   if (url.pathname.includes("/api/")) {
-    return; 
+    return;
   }
 
+  // 2. Network-First für Navigation, HTML und JS-Dateien:
+  // Immer zuerst die neueste Version vom Server laden!
+  if (
+    event.request.mode === "navigate" ||
+    url.pathname.endsWith(".html") ||
+    url.pathname.endsWith(".js")
+  ) {
+    event.respondWith(
+      fetch(event.request)
+        .then((networkResponse) => {
+          if (networkResponse && networkResponse.status === 200) {
+            const copy = networkResponse.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy));
+          }
+          return networkResponse;
+        })
+        .catch(() => caches.match(event.request)),
+    );
+    return;
+  }
+
+  // 3. Cache-First für statische Assets (Bilder, Icons, CSS)
   event.respondWith(
-    caches
-      .match(event.request)
-      .then((response) => response || fetch(event.request)),
+    caches.match(event.request).then((response) => {
+      return (
+        response ||
+        fetch(event.request).then((networkResponse) => {
+          if (networkResponse && networkResponse.status === 200) {
+            const copy = networkResponse.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy));
+          }
+          return networkResponse;
+        })
+      );
+    }),
   );
 });

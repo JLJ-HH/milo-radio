@@ -33,7 +33,7 @@
     <link rel="manifest" href="./manifest.json" />
 
     <!-- Eigene Styles (Design-Anpassungen) -->
-    <link rel="stylesheet" href="./css/style.css?v=13" />
+    <link rel="stylesheet" href="./css/style.css?v=14" />
 
     <!-- Lesezeichen-Icons (Favicon) -->
     <link rel="icon" href="./images/android.png" type="image/png" />
@@ -129,17 +129,27 @@
     <!-- PWA SERVICE WORKER -->
     <script>
       if ("serviceWorker" in navigator) {
+        let refreshing = false;
+        navigator.serviceWorker.addEventListener("controllerchange", () => {
+          if (!refreshing) {
+            refreshing = true;
+            window.location.reload();
+          }
+        });
         window.addEventListener("load", () => {
           navigator.serviceWorker
-            .register("./sw.js?v=13")
-            .then((reg) => console.log("SW v13 aktiv"))
+            .register("./sw.js?v=14")
+            .then((reg) => {
+              console.log("SW v14 registriert");
+              reg.update();
+            })
             .catch((err) => console.log("SW Fehler:", err));
         });
       }
     </script>
 
     <!-- Main JS entry point -->
-    <script type="module" src="./js/main.js?v=13"></script>
+    <script type="module" src="./js/main.js?v=14"></script>
 
     <!-- Privacy & Impressum Modal -->
     <div class="modal fade" id="privacyModal" tabindex="-1" aria-hidden="true">

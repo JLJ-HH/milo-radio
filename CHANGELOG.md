@@ -7,6 +7,12 @@ und dieses Projekt hält sich an [Semantic Versioning](https://semver.org/lang/d
 
 ---
 
+## [1.4.1] - 2026-09-03
+
+### Behoben
+- **Network-First PWA Cache Strategie:** Der Service Worker nutzt für Navigation, HTML und JS-Dateien nun eine strikte Network-First-Strategie mit automatischem Reload bei Updates (`controllerchange`). Dadurch werden neue Features auf Smartphones sofort beim Öffnen geladen, ohne dass ein manuelles Löschen des Browser-Caches nötig ist.
+- **Mobile Touch-Event-Optimierung & Audio Buffer Reset:** Direkte Ausführung von `play()` im Touch-Kontext sowie Bereinigung des Audio-Puffers beim Senderwechsel.
+
 ## [1.4.0] - 2026-09-03
 
 ### Hinzugefügt / Geändert
