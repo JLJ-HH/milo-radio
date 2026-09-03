@@ -7,6 +7,13 @@ und dieses Projekt hält sich an [Semantic Versioning](https://semver.org/lang/d
 
 ---
 
+## [1.4.0] - 2026-09-03
+
+### Hinzugefügt / Geändert
+- **MRU-Sortierung beim Abspielen & Auto-Scroll:** Wird ein Sender auf der Radio-Player-Seite abgespielt, rückt dieser automatisch auf **Platz #1** (Position 1) vor. Die Ansicht scrollt sanft nach ganz oben (`window.scrollTo`), sodass der Nutzer sofort sieht, dass der laufende Sender jetzt auf Platz #1 liegt.
+- **Einklappbare Genre-Auswahl mit Fokus-Modus:** Beim Auswählen eines Genres klappt die 20+ Button-Leiste automatisch zusammen und zeigt eine kompakte Statusleiste (`[🎵 Genre] • X Sender verfügbar [Genre wechseln ▾]`). Dadurch rücken die Senderkarten direkt in den Fokus, ohne den halben Bildschirm für Buttons zu blockieren.
+- **Service Worker & PWA Update v12:** Cache-Version auf `milo-radio-v12` angehoben für sofortige Synchronisation auf Mobilgeräten.
+
 ## [1.3.0] - 2026-09-03
 
 ### Hinzugefügt / Geändert

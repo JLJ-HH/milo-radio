@@ -122,7 +122,7 @@ async function router() {
 
     try {
         // Dynamic import of the page module
-        const module = await import(`./pages/${page.module}.js?v=11`);
+        const module = await import(`./pages/${page.module}.js?v=12`);
         
         appContent.innerHTML = "";
         module.render(appContent);

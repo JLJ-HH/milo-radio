@@ -1,5 +1,6 @@
 /**
  * SEITE 3: GENRES / SENDER-AUSWAHL (genresPage.js)
+ * Mit einklappbarer Genre-Leiste & Fokus-Ansicht
  */
 import { userStationService } from "../services/userStationService.js";
 import { stationService } from "../services/stationServiceV5.js";
@@ -8,7 +9,7 @@ import { radioService } from "../services/radioServiceV2.js";
 export function render(container) {
   container.innerHTML = `
         <div class="text-white">
-            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-4">
+            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
                 <div class="d-flex align-items-center gap-3">
                     <i class="bi bi-tags display-5 text-primary"></i>
                     <div>
@@ -24,20 +25,65 @@ export function render(container) {
             <!-- Floating Toast Notification Container -->
             <div id="toastContainer" class="position-fixed bottom-0 start-50 translate-middle-x p-3" style="z-index: 1060; margin-bottom: 90px; pointer-events: none;"></div>
             
-            <div id="genreButtons" class="d-flex flex-wrap gap-2 mb-4 bg-dark p-3 rounded shadow-sm">
-                <div class="text-white-50 small py-2">Genres werden geladen...</div>
+            <!-- Aktives Genre Header (erscheint wenn ein Genre gewählt ist) -->
+            <div id="activeGenreBar" class="d-none bg-dark border border-secondary p-3 rounded-4 mb-3 shadow-sm d-flex align-items-center justify-content-between flex-wrap gap-2">
+                <div class="d-flex align-items-center gap-2">
+                    <span class="text-white-50 small">Aktives Genre:</span>
+                    <span id="activeGenreBadge" class="badge rounded-pill bg-primary px-3 py-2 fs-6"></span>
+                    <span id="activeStationCount" class="text-white-50 small ms-1"></span>
+                </div>
+                <button id="toggleGenreButtonsBtn" class="btn btn-outline-light btn-sm rounded-pill px-3 d-flex align-items-center gap-1">
+                    <i class="bi bi-chevron-down" id="toggleGenreIcon"></i> <span>Genre wechseln</span>
+                </button>
             </div>
+
+            <!-- Einklappbare Genre-Button-Auswahl -->
+            <div id="genreButtonsCard" class="card bg-dark border-secondary p-3 rounded-4 mb-4 shadow-sm">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                    <span class="text-white-50 small fw-bold text-uppercase" style="letter-spacing: 0.5px;">Wähle eine Musikrichtung:</span>
+                </div>
+                <div id="genreButtons" class="d-flex flex-wrap gap-2">
+                    <div class="text-white-50 small py-2">Genres werden geladen...</div>
+                </div>
+            </div>
+
+            <!-- Sender-Ergebnisbereich -->
             <div id="genreContainer" class="row g-3">
                  <div class="col-12 text-center p-5 text-white-50">
-                    <p>Wähle ein Genre aus, um Sender zu sehen.</p>
+                    <i class="bi bi-music-note-beamed display-3 text-primary opacity-50 mb-3 d-block"></i>
+                    <p class="fs-5">Wähle oben ein Genre aus, um Sender zu entdecken.</p>
                 </div>
             </div>
         </div>
     `;
 
   const genreButtonsContainer = container.querySelector("#genreButtons");
+  const genreButtonsCard = container.querySelector("#genreButtonsCard");
   const genreContainer = container.querySelector("#genreContainer");
   const toastContainer = container.querySelector("#toastContainer");
+  const activeGenreBar = container.querySelector("#activeGenreBar");
+  const activeGenreBadge = container.querySelector("#activeGenreBadge");
+  const activeStationCount = container.querySelector("#activeStationCount");
+  const toggleGenreButtonsBtn = container.querySelector("#toggleGenreButtonsBtn");
+  const toggleGenreIcon = container.querySelector("#toggleGenreIcon");
+
+  let currentSelectedGenre = null;
+  let isGenreListCollapsed = false;
+
+  // Umschalten der Genre-Buttons (Ein-/Ausklappen)
+  if (toggleGenreButtonsBtn) {
+    toggleGenreButtonsBtn.onclick = () => {
+      isGenreListCollapsed = !isGenreListCollapsed;
+      if (isGenreListCollapsed) {
+        genreButtonsCard.classList.add("d-none");
+        toggleGenreButtonsBtn.innerHTML = `<i class="bi bi-chevron-down"></i> <span>Genre wechseln</span>`;
+      } else {
+        genreButtonsCard.classList.remove("d-none");
+        toggleGenreButtonsBtn.innerHTML = `<i class="bi bi-chevron-up"></i> <span>Genres einklappen</span>`;
+        genreButtonsCard.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }
+    };
+  }
 
   function showToast(stationName) {
     if (!toastContainer) return;
@@ -86,16 +132,39 @@ export function render(container) {
       btn.className = `btn btn-sm btn-${color} rounded-pill px-4 shadow-sm genre-btn`;
       btn.textContent = genre;
       btn.onclick = () => {
-        renderStationsByGenre(genre, true);
+        selectGenre(genre);
       };
       genreButtonsContainer.appendChild(btn);
     });
 
-    function renderStationsByGenre(selectedGenre, shouldScroll = false) {
+    function selectGenre(genre) {
+      currentSelectedGenre = genre;
+      const stationsInGenre = masterStations.filter((s) => (s.genre ?? "Unbekannt") === genre);
+
+      // 1. Aktive Leiste aktualisieren & einblenden
+      activeGenreBar.classList.remove("d-none");
+      activeGenreBadge.textContent = genre;
+      activeStationCount.textContent = `• ${stationsInGenre.length} Sender`;
+
+      // 2. Genre-Buttons einklappen für maximalen Platz
+      genreButtonsCard.classList.add("d-none");
+      isGenreListCollapsed = true;
+      if (toggleGenreButtonsBtn) {
+        toggleGenreButtonsBtn.innerHTML = `<i class="bi bi-chevron-down"></i> <span>Genre wechseln</span>`;
+      }
+
+      // 3. Sender rendern
+      renderStationsByGenre(genre);
+
+      // 4. Sanft zum Ergebnis scrollen
+      genreContainer.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    function renderStationsByGenre(selectedGenre) {
       genreContainer.innerHTML = "";
       const stationsInGenre = masterStations.filter((s) => (s.genre ?? "Unbekannt") === selectedGenre);
       const userStations = userStationService.getStations();
-      const currentPlayingUrl = radioService.getCurrentStation();
+      const currentPlayingUrl = (radioService.getCurrentStation() || "").trim();
 
       stationsInGenre.forEach((station) => {
         const url = (station.sender_Url || station.sender_url || "").trim();
@@ -138,22 +207,18 @@ export function render(container) {
         playBtn.onclick = (e) => {
           e.stopPropagation();
           radioService.play(station);
-          renderStationsByGenre(selectedGenre, false);
+          renderStationsByGenre(selectedGenre);
         };
 
         addBtn.onclick = (e) => {
           e.stopPropagation();
           userStationService.addStation(station, 6);
           showToast(name);
-          renderStationsByGenre(selectedGenre, false);
+          renderStationsByGenre(selectedGenre);
         };
 
         genreContainer.appendChild(col);
       });
-
-      if (shouldScroll) {
-        genreContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
     }
   };
 

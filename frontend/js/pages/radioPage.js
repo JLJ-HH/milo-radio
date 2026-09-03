@@ -1,6 +1,6 @@
 /**
  * SEITE 1: RADIO PLAYER (radioPage.js)
- * Favoriten-Übersicht (Top 6)
+ * Favoriten-Übersicht (Top 6 mit MRU-Sortierung & Auto-Scroll)
  */
 import { radioService } from "../services/radioServiceV2.js";
 import { userStationService } from "../services/userStationService.js";
@@ -77,7 +77,7 @@ export function render(container) {
       return;
     }
 
-    const currentUrl = radioService.getCurrentStation();
+    const currentUrl = (radioService.getCurrentStation() || "").trim();
 
     activeStations.forEach((station, index) => {
       const col = document.createElement("div");
@@ -112,8 +112,14 @@ export function render(container) {
       const removeB = col.querySelector(".btn-remove");
 
       playB.onclick = () => {
+        // 1. Ausgewählten Sender auf Platz 1 rücken
+        userStationService.addStation(station, 6);
+        // 2. Wiedergabe starten
         radioService.play(station);
+        // 3. UI neu rendern
         renderRadioCards();
+        // 4. Sanft nach oben scrollen, als optischer Beweis für Platz #1
+        window.scrollTo({ top: 0, behavior: "smooth" });
       };
 
       removeB.onclick = (e) => {

@@ -33,7 +33,7 @@
     <link rel="manifest" href="./manifest.json" />
 
     <!-- Eigene Styles (Design-Anpassungen) -->
-    <link rel="stylesheet" href="./css/style.css?v=11" />
+    <link rel="stylesheet" href="./css/style.css?v=12" />
 
     <!-- Lesezeichen-Icons (Favicon) -->
     <link rel="icon" href="./images/android.png" type="image/png" />
@@ -131,15 +131,15 @@
       if ("serviceWorker" in navigator) {
         window.addEventListener("load", () => {
           navigator.serviceWorker
-            .register("./sw.js?v=11")
-            .then((reg) => console.log("SW v11 aktiv"))
+            .register("./sw.js?v=12")
+            .then((reg) => console.log("SW v12 aktiv"))
             .catch((err) => console.log("SW Fehler:", err));
         });
       }
     </script>
 
     <!-- Main JS entry point -->
-    <script type="module" src="./js/main.js?v=11"></script>
+    <script type="module" src="./js/main.js?v=12"></script>
 
     <!-- Privacy & Impressum Modal -->
     <div class="modal fade" id="privacyModal" tabindex="-1" aria-hidden="true">
