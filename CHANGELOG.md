@@ -7,6 +7,12 @@ und dieses Projekt hält sich an [Semantic Versioning](https://semver.org/lang/d
 
 ---
 
+## [1.4.4] - 2026-09-03
+
+### Hinzugefügt / Behoben
+- **In-App Cache-Reset-Button im Footer:** Hinzufügen einer 1-Klick-Aktualisierungsfunktion (`App aktualisieren / Cache leeren`), die ServiceWorker-Caches, Cache-Storage und Session-Storage auf Smartphones automatisch leert und die neueste Version erzwingt.
+- **Service Worker & PWA Update v17:** Strikte Network-First-Strategie für alle JavaScript-, HTML- und Versions-Anfragen.
+
 ## [1.4.3] - 2026-09-03
 
 ### Behoben
