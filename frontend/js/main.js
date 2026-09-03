@@ -3,6 +3,7 @@
  */
 
 import { playerBar } from "./components/playerBar.js";
+import { stationService } from "./services/stationServiceV5.js";
 
 const API_AUTH_URL = "../backend/api/auth.php";
 const appContent = document.getElementById("app-content");
@@ -121,7 +122,7 @@ async function router() {
 
     try {
         // Dynamic import of the page module
-        const module = await import(`./pages/${page.module}.js?v=10`);
+        const module = await import(`./pages/${page.module}.js?v=11`);
         
         appContent.innerHTML = "";
         module.render(appContent);
@@ -217,9 +218,11 @@ window.addEventListener("hashchange", router);
 window.addEventListener("load", async () => {
     // 1. Sync auth before first render to avoid "Admin Flash"
     await syncAuth();
-    // 2. Initialize global player bar
+    // 2. Warten bis Sender & Genres vollständig geladen sind
+    await stationService.initPromise;
+    // 3. Initialize global player bar
     playerBar.init();
-    // 3. Render UI
+    // 4. Render UI
     renderNavbar();
     router();
 });

@@ -1,20 +1,17 @@
 /**
- * STATIONSERVICE (stationService.js)
+ * STATIONSERVICE (stationServiceV5.js)
  *
  * Verwaltet die "Master-Liste" aller verfügbaren Radiosender.
  * Lädt Daten aus der DB und speichert Änderungen im LocalStorage.
  */
 class StationService {
   constructor() {
-    this.stations = []; // Die Liste aller Sender
-    this.isLoaded = false; // Status: Sind die Daten schon bereit?
-    this.listeners = {}; // Event-Listener
-    this.init(); // Startet den Ladevorgang sofort im Hintergrund
+    this.stations = [];
+    this.isLoaded = false;
+    this.listeners = {};
+    this.initPromise = this.init();
   }
 
-  /**
-   * Event-Handling System
-   */
   on(event, callback) {
     if (!this.listeners[event]) this.listeners[event] = [];
     this.listeners[event].push(callback);
@@ -22,99 +19,96 @@ class StationService {
 
   emit(event, data) {
     if (this.listeners[event]) {
-      this.listeners[event].forEach(cb => cb(data));
+      this.listeners[event].forEach((cb) => cb(data));
     }
   }
 
-  /**
-   * Initialisierung: Lädt Daten erst aus der Datei, dann aus dem Speicher.
-   */
   async init() {
-    await this.loadFromAPI(); // Schritt 1: Standard-Sender aus DB laden
-    this.isLoaded = true; // Status auf "bereit" setzen
-    this.loadFromStorage(); // Schritt 2: Eigene Änderungen des Admins laden
-    this.emit("loaded", this.stations); // Event feuern
+    await this.loadFromAPI();
+    this.loadFromStorage();
+    this.isLoaded = true;
+    this.emit("loaded", this.stations);
+    return this.stations;
   }
 
-  /**
-   * Lädt die vordefinierten Sender aus der Datenbank via API.
-   */
   async loadFromAPI() {
+    let loaded = false;
     try {
       const response = await fetch("../backend/api/get_stations.php");
-      const data = await response.json();
-      
-      // Falls die API ein Error-Objekt statt eines Arrays schickt:
-      if (Array.isArray(data)) {
-        this.stations = data;
-      } else {
-        console.error("API Error oder ungültiges Format:", data);
-        this.stations = [];
+      if (response.ok) {
+        const text = await response.text();
+        if (text && text.trim().startsWith("[")) {
+          const data = JSON.parse(text);
+          if (Array.isArray(data) && data.length > 0) {
+            this.stations = data;
+            loaded = true;
+          }
+        }
       }
     } catch (e) {
-      console.warn("API konnte nicht geladen werden:", e);
-      this.stations = [];
+      console.warn("API get_stations.php nicht erreichbar, nutze Fallback:", e);
+    }
+
+    if (!loaded) {
+      try {
+        const fallbackRes = await fetch("./json/sender_daten.json");
+        if (fallbackRes.ok) {
+          const fallbackData = await fallbackRes.json();
+          if (Array.isArray(fallbackData) && fallbackData.length > 0) {
+            this.stations = fallbackData;
+            loaded = true;
+          }
+        }
+      } catch (err) {
+        console.error("Fallback auf sender_daten.json fehlgeschlagen:", err);
+      }
     }
   }
 
-  /**
-   * Lädt die vom Admin geänderten oder hinzugefügten Sender aus dem Browser-Speicher.
-   */
   loadFromStorage() {
     try {
       const saved = localStorage.getItem("masterStations");
       if (saved) {
-        this.stations = JSON.parse(saved);
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          this.stations = parsed;
+        }
       }
     } catch (e) {
       console.warn("Fehler beim Laden aus LocalStorage:", e);
     }
   }
 
-  /**
-   * Gibt alle Sender zurück.
-   */
   getAll() {
-    // Falls noch geladen wird, leeres Array senden, sonst Kopie der Liste
-    return this.isLoaded ? [...this.stations] : [];
+    return [...this.stations];
   }
 
-  /**
-   * Admin-Funktion: Neuen Sender hinzufügen.
-   */
   add(station) {
     const newStation = {
       ...station,
-      id: Date.now(), // Eindeutige ID basierend auf der Zeit
+      id: Date.now(),
     };
     this.stations.push(newStation);
-    this.save(); // Sofort dauerhaft speichern
+    this.save();
+    this.emit("update", this.stations);
     return newStation;
   }
 
-  /**
-   * Admin-Funktion: Bestehenden Sender bearbeiten.
-   */
   update(index, station) {
     this.stations[index] = { ...station };
     this.save();
+    this.emit("update", this.stations);
   }
 
-  /**
-   * Admin-Funktion: Sender aus der Master-Liste löschen.
-   */
   remove(index) {
     this.stations.splice(index, 1);
     this.save();
+    this.emit("update", this.stations);
   }
 
-  /**
-   * Speichert die aktuelle Master-Liste im Browser-Speicher (LocalStorage).
-   */
   save() {
     localStorage.setItem("masterStations", JSON.stringify(this.stations));
   }
 }
 
-// Singleton-Instanz exportieren
 export const stationService = new StationService();

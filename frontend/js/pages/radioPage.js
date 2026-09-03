@@ -13,7 +13,7 @@ export function render(container) {
         <img src="./images/milo.jpg" id="mobileLogo" class="logo-clickable rounded-circle shadow border border-2 border-primary" alt="Milo Radio" style="width: 50px; height: 50px; object-fit: cover;">
         <div>
           <h1 class="h3 mb-0 text-white fw-bold">Deine Radiosender</h1>
-          <p class="text-white-50 small mb-0">Wähle einen Sender (max. 6 Favoriten aktiv)</p>
+          <p id="stationCountSubtitle" class="text-white-50 small mb-0">Wähle einen Sender (max. 6 Favoriten aktiv)</p>
         </div>
       </div>
       <div class="d-flex gap-2">
@@ -37,6 +37,7 @@ export function render(container) {
   const feedback = container.querySelector("#feedback");
   const mobileLogo = container.querySelector("#mobileLogo");
   const qrShareBtn = container.querySelector("#qrShareBtn");
+  const stationCountSubtitle = container.querySelector("#stationCountSubtitle");
 
   // QR Code Modal Handler
   const openQrModal = () => {
@@ -50,8 +51,6 @@ export function render(container) {
   if (mobileLogo) mobileLogo.onclick = openQrModal;
   if (qrShareBtn) qrShareBtn.onclick = openQrModal;
 
-  let activeStations = userStationService.getStations();
-
   function showFeedback(msg, isError = false) {
     feedback.textContent = msg;
     feedback.className = `alert alert-${isError ? "danger" : "info"} text-center mb-3`;
@@ -61,7 +60,11 @@ export function render(container) {
 
   function renderRadioCards() {
     stationsContainer.innerHTML = "";
-    activeStations = userStationService.getStations();
+    const activeStations = userStationService.getStations();
+
+    if (stationCountSubtitle) {
+      stationCountSubtitle.textContent = `Deine Top 6 Favoriten (${activeStations.length} / 6 belegt)`;
+    }
 
     if (activeStations.length === 0) {
       stationsContainer.innerHTML = `
@@ -80,7 +83,7 @@ export function render(container) {
       const col = document.createElement("div");
       col.className = "col-6 col-md-4 col-lg-2";
       
-      const url = station.sender_Url || station.sender_url;
+      const url = (station.sender_Url || station.sender_url || "").trim();
       const isActive = currentUrl && currentUrl === url;
       const logo = station.sender_Logo || station.sender_logo || "./images/cholo_love.png";
       const name = station.sender_Name || station.sender_name || "Radio";
@@ -88,6 +91,9 @@ export function render(container) {
       col.innerHTML = `
         <div class="card h-100 bg-dark text-white border-secondary shadow-sm card-glow ${isActive ? "border-primary border-2" : ""}">
             <div class="position-relative overflow-hidden pt-2 text-center">
+                <span class="badge rounded-pill bg-dark bg-opacity-75 border border-secondary text-white-50 position-absolute top-0 start-0 m-2 px-2 py-1 small">
+                  #${index + 1}
+                </span>
                 <img src="${logo}" class="card-img-top rounded-circle p-2 mx-auto" alt="${name}" style="width: 90px; height: 90px; object-fit: cover;">
                 ${isActive ? '<div class="playing-overlay"><div class="wave"></div></div>' : ""}
             </div>
@@ -113,8 +119,8 @@ export function render(container) {
       removeB.onclick = (e) => {
         e.stopPropagation();
         if (confirm(`Möchtest du "${name}" wirklich entfernen?`)) {
-          activeStations = activeStations.filter((s) => (s.sender_Url || s.sender_url) !== url);
-          userStationService.setStations(activeStations);
+          const updated = activeStations.filter((s) => (s.sender_Url || s.sender_url || "").trim() !== url);
+          userStationService.setStations(updated);
           if (currentUrl === url) {
             radioService.stop();
           }

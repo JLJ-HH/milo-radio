@@ -51,6 +51,9 @@ class UserStationService {
     const url = station.sender_Url || station.sender_url || station.url;
     if (!url) return this.stations;
 
+    // Aktuellen Stand aus dem Speicher laden
+    this.stations = this.loadFromStorage();
+
     const normalized = {
       ...station,
       sender_Url: url,
@@ -74,9 +77,10 @@ class UserStationService {
   }
 
   /**
-   * Gibt eine Kopie der aktuellen Benutzer-Senderliste zurück.
+   * Gibt eine Kopie der aktuellen Benutzer-Senderliste zurück (immer aktuell aus LocalStorage).
    */
   getStations() {
+    this.stations = this.loadFromStorage();
     return [...this.stations];
   }
 
