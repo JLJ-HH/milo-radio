@@ -7,6 +7,12 @@ und dieses Projekt hält sich an [Semantic Versioning](https://semver.org/lang/d
 
 ---
 
+## [1.4.8] - 2026-09-03
+
+### Behoben
+- **Footer-CSS-Spezifität & Bootstrap-Klassen-Korrektur:** `.py-3` vom `footer`-Element entfernt und `#app-footer, footer` Selektor mit `padding-bottom: 140px` definiert. Der Footer mit Impressum, Datenschutz und Reset-Button scrollt nun beim Erreichen des Seitenendes auf allen Bildschirmen einwandfrei ins Bild direkt über der festen Player-Leiste.
+- **Service Worker & PWA Update v21:** Cache-Version auf `milo-radio-v21` aktualisiert.
+
 ## [1.4.7] - 2026-09-03
 
 ### Behoben

@@ -21,6 +21,8 @@ body {
   margin: 0;
   -webkit-font-smoothing: antialiased;
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
   background-image: 
     radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
     radial-gradient(at 100% 100%, rgba(14, 165, 233, 0.1) 0px, transparent 50%);
@@ -220,13 +222,14 @@ body {
   }
 }
 
-footer {
+#app-footer, footer {
   background: var(--glass-bg) !important;
   backdrop-filter: blur(10px);
   border-top: 1px solid var(--glass-border) !important;
+  margin-top: auto !important;
   margin-bottom: 0 !important;
-  padding-top: 1.25rem !important;
-  padding-bottom: calc(95px + env(safe-area-inset-bottom, 0px)) !important;
+  padding-top: 1.5rem !important;
+  padding-bottom: calc(140px + env(safe-area-inset-bottom, 0px)) !important;
   position: relative;
   z-index: 100;
 }
@@ -259,11 +262,13 @@ footer {
 
 /* Ausgleichs-Padding für Seiteninhalte */
 #app-content {
-  padding-bottom: 2rem !important;
+  flex: 1 0 auto;
+  padding-bottom: 1.5rem !important;
 }
 
 .has-sticky-player #app-content {
-  padding-bottom: 2rem !important;
+  flex: 1 0 auto;
+  padding-bottom: 1.5rem !important;
 }
 
 .player-thumb {

@@ -33,7 +33,7 @@
     <link rel="manifest" href="./manifest.json" />
 
     <!-- Eigene Styles (Design-Anpassungen) -->
-    <link rel="stylesheet" href="./css/style.css?v=20" />
+    <link rel="stylesheet" href="./css/style.css?v=21" />
 
     <!-- Lesezeichen-Icons (Favicon) -->
     <link rel="icon" href="./images/android.png" type="image/png" />
@@ -113,9 +113,9 @@
     <!-- 
       BOTTOM BAR: Fußzeile der App (nicht mehr fixed-bottom, fließt am Seitenende)
     -->
-    <footer id="app-footer" class="bg-dark text-white-50 py-3 border-top border-secondary mt-auto">
+    <footer id="app-footer" class="bg-dark text-white-50 border-top border-secondary mt-auto">
       <div class="container text-center small d-flex align-items-center justify-content-center flex-wrap gap-2 gap-md-4">
-        <span>© 2026 Milo Radio • <span class="text-info fw-semibold">v1.4.4</span></span>
+        <span>© 2026 Milo Radio • <span class="text-info fw-semibold">v1.4.7</span></span>
         <a href="#" class="text-white-50 text-decoration-none" data-bs-toggle="modal" data-bs-target="#privacyModal">Impressum & Datenschutz</a>
         <button id="resetAppCacheBtn" class="btn btn-outline-secondary btn-sm rounded-pill px-3 text-white-50 small border-secondary" style="font-size: 0.75rem;">
           <i class="bi bi-arrow-repeat"></i> <span>App aktualisieren / Cache leeren</span>
@@ -163,9 +163,9 @@
         });
         window.addEventListener("load", () => {
           navigator.serviceWorker
-            .register("./sw.js?v=20")
+            .register("./sw.js?v=21")
             .then((reg) => {
-              console.log("SW v20 registriert");
+              console.log("SW v21 registriert");
               reg.update();
             })
             .catch((err) => console.log("SW Fehler:", err));
@@ -174,7 +174,7 @@
     </script>
 
     <!-- Main JS entry point -->
-    <script type="module" src="./js/main.js?v=20"></script>
+    <script type="module" src="./js/main.js?v=21"></script>
 
     <!-- Privacy & Impressum Modal -->
     <div class="modal fade" id="privacyModal" tabindex="-1" aria-hidden="true">
