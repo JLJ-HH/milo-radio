@@ -1,6 +1,6 @@
 /**
  * SEITE 3: GENRES / SENDER-AUSWAHL (genresPage.js)
- * Mit einklappbarer Genre-Leiste, robuster URL-Erkennung & Status-Feedback
+ * Mit einklappbarer Genre-Leiste, 100% Null-Safety & Status-Feedback
  */
 import { userStationService } from "../services/userStationService.js";
 import { stationService } from "../services/stationServiceV5.js";
@@ -113,7 +113,7 @@ export function render(container) {
 
   const renderActualContent = () => {
     const masterStations = stationService.getAll();
-    if (masterStations.length === 0) return;
+    if (!Array.isArray(masterStations) || masterStations.length === 0) return;
 
     genreButtonsContainer.innerHTML = "";
     const genres = [...new Set(masterStations.map((s) => s.genre ?? "Unbekannt"))].sort();
@@ -156,19 +156,22 @@ export function render(container) {
       const stationsInGenre = masterStations.filter((s) => (s.genre ?? "Unbekannt") === selectedGenre);
       const userStations = userStationService.getStations();
       const currentPlayingUrl = (radioService.getCurrentStation() || "").trim();
+      const cleanCurrentPlayingUrl = userStationService.normalizeUrl(currentPlayingUrl);
 
       stationsInGenre.forEach((station) => {
+        if (!station || typeof station !== "object") return;
         const url = (station.sender_Url || station.sender_url || station.url || "").trim();
         const cleanUrl = userStationService.normalizeUrl(url);
         const name = station.sender_Name || station.sender_name || station.name || "Radio";
         const logo = station.sender_Logo || station.sender_logo || station.logo || "./images/cholo_love.png";
         
         const stationIndex = userStations.findIndex((s) => {
+          if (!s || typeof s !== "object") return false;
           return userStationService.normalizeUrl(s.sender_Url || s.sender_url || s.url) === cleanUrl;
         });
 
         const alreadyAdded = stationIndex !== -1;
-        const isPlaying = currentPlayingUrl && userStationService.normalizeUrl(currentPlayingUrl) === cleanUrl;
+        const isPlaying = cleanCurrentPlayingUrl && cleanCurrentPlayingUrl === cleanUrl;
 
         const col = document.createElement("div");
         col.className = "col-6 col-md-4 col-lg-3";

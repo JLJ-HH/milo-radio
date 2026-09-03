@@ -4,6 +4,7 @@
 
 import { playerBar } from "./components/playerBar.js";
 import { stationService } from "./services/stationServiceV5.js";
+import { userStationService } from "./services/userStationService.js";
 
 const API_AUTH_URL = "../backend/api/auth.php";
 const appContent = document.getElementById("app-content");
@@ -58,12 +59,11 @@ function renderNavbar() {
         li.className = "nav-item";
         
         const a = document.createElement("a");
-        a.className = `nav-link ${window.location.hash === '#' + key ? 'active' : ''}`;
+        a.className = `nav-link ${window.location.hash === '#' + key || (!window.location.hash && key === 'radio') ? 'active' : ''}`;
         a.href = `#${key}`;
         a.innerHTML = `<span>${page.title}</span>`;
         
         a.onclick = (e) => {
-            // Close mobile navbar on click
             closeMobileNavbar();
             
             if (page.adminOnly && !isAdmin()) {
@@ -95,7 +95,6 @@ export async function handleAdminLogin(targetPage) {
         if (result.success) {
             sessionStorage.setItem("isAdmin", "true");
             window.location.hash = targetPage;
-            // Immediate UI update
             renderNavbar();
             router();
         } else {
@@ -121,16 +120,12 @@ async function router() {
     }
 
     try {
-        // Dynamic import of the page module
-        const module = await import(`./pages/${page.module}.js?v=15`);
+        const module = await import(`./pages/${page.module}.js?v=16`);
         
         appContent.innerHTML = "";
         module.render(appContent);
         
-        // Ensure new page starts at the top
         window.scrollTo({ top: 0, behavior: "instant" });
-
-        // Update active state in navbar
         renderNavbar();
         
     } catch (err) {
@@ -151,9 +146,6 @@ let touchEndX = 0;
 let touchStartY = 0;
 let touchEndY = 0;
 
-/**
- * Close mobile navbar programmatically
- */
 function closeMobileNavbar() {
     const navbarCollapse = document.getElementById("navbarNav");
     if (navbarCollapse && typeof bootstrap !== "undefined") {
@@ -161,7 +153,6 @@ function closeMobileNavbar() {
         if (bsCollapse && navbarCollapse.classList.contains("show")) {
             bsCollapse.hide();
         } else if (navbarCollapse.classList.contains("show")) {
-            // Fallback if instance not found but menu is open
             new bootstrap.Collapse(navbarCollapse).hide();
         }
     }
@@ -171,14 +162,11 @@ function handleSwipe() {
     const swipeDistanceX = touchEndX - touchStartX;
     const swipeDistanceY = touchEndY - touchStartY;
     
-    // 1. Edge Protection: Ignore swipes starting within 10% of the screen width
-    // to avoid conflict with native OS back gestures.
     const edgeThreshold = window.innerWidth * 0.1;
     if (touchStartX < edgeThreshold || touchStartX > window.innerWidth - edgeThreshold) {
         return;
     }
 
-    // 2. Thresholds: Horizontal > 50px, Vertical < 30px
     const isHorizontal = Math.abs(swipeDistanceX) > 50;
     const isStraight = Math.abs(swipeDistanceY) < 30;
     
@@ -187,13 +175,11 @@ function handleSwipe() {
         const currentIndex = pageSequence.indexOf(currentHash);
         
         if (swipeDistanceX > 0) {
-            // Swipe Right (L to R) -> Vorwärts (Next Page)
             if (currentIndex < pageSequence.length - 1) {
                 const nextHash = pageSequence[currentIndex + 1];
                 window.location.hash = nextHash;
             }
         } else {
-            // Swipe Left (R to L) -> Zurück (Previous Page)
             if (currentIndex > 0) {
                 const prevHash = pageSequence[currentIndex - 1];
                 window.location.hash = prevHash;
@@ -213,16 +199,27 @@ document.addEventListener("touchend", (e) => {
     handleSwipe();
 });
 
-// Event Listeners
-window.addEventListener("hashchange", router);
-window.addEventListener("load", async () => {
-    // 1. Sync auth before first render to avoid "Admin Flash"
+// App Initialization
+async function initApp() {
     await syncAuth();
-    // 2. Warten bis Sender & Genres vollständig geladen sind
     await stationService.initPromise;
-    // 3. Initialize global player bar
+    
+    if (userStationService.getStations().length === 0) {
+        const master = stationService.getAll();
+        if (Array.isArray(master) && master.length > 0) {
+            userStationService.setStations(master.slice(0, 6));
+        }
+    }
+
     playerBar.init();
-    // 4. Render UI
     renderNavbar();
     router();
-});
+}
+
+window.addEventListener("hashchange", router);
+
+if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initApp);
+} else {
+    initApp();
+}

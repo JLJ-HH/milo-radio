@@ -7,6 +7,13 @@ und dieses Projekt hält sich an [Semantic Versioning](https://semver.org/lang/d
 
 ---
 
+## [1.4.3] - 2026-09-03
+
+### Behoben
+- **Null-Safety in `userStationService`, `genresPage` und `radioPage`:** Vollständige Absicherung gegen fehlerhafte oder leere `localStorage`-Einträge auf Mobilgeräten.
+- **Automatischer Fallback auf Standard-Sender:** Sollte der mobile Speicher leer sein, lädt die App automatisch die ersten 6 Master-Sender, sodass keine leere Ansicht entsteht.
+- **Service Worker & PWA Update v16:** Aktualisierung auf `milo-radio-v16`.
+
 ## [1.4.2] - 2026-09-03
 
 ### Behoben

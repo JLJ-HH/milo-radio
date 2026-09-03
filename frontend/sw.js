@@ -5,7 +5,7 @@
  * für sofortige Aktualisierungen auf Mobilgeräten.
  */
 
-const CACHE_NAME = "milo-radio-v15";
+const CACHE_NAME = "milo-radio-v16";
 
 const urlsToCache = [
   "./",

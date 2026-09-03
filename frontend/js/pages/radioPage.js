@@ -1,6 +1,6 @@
 /**
  * SEITE 1: RADIO PLAYER (radioPage.js)
- * Favoriten-Übersicht (Top 6 mit MRU-Sortierung & Auto-Scroll)
+ * Favoriten-Übersicht (Top 6 mit MRU-Sortierung, Auto-Scroll & Null-Safety)
  */
 import { radioService } from "../services/radioServiceV2.js";
 import { userStationService } from "../services/userStationService.js";
@@ -66,7 +66,7 @@ export function render(container) {
       stationCountSubtitle.textContent = `Deine Top 6 Favoriten (${activeStations.length} / 6 belegt)`;
     }
 
-    if (activeStations.length === 0) {
+    if (!Array.isArray(activeStations) || activeStations.length === 0) {
       stationsContainer.innerHTML = `
         <div class="col-12 text-center p-5 text-white-50">
             <i class="bi bi-music-note-list display-1 mb-3 text-primary opacity-50"></i>
@@ -78,13 +78,16 @@ export function render(container) {
     }
 
     const currentUrl = (radioService.getCurrentStation() || "").trim();
+    const cleanCurrentUrl = userStationService.normalizeUrl(currentUrl);
 
     activeStations.forEach((station, index) => {
+      if (!station || typeof station !== "object") return;
       const col = document.createElement("div");
       col.className = "col-6 col-md-4 col-lg-2";
       
       const url = (station.sender_Url || station.sender_url || station.url || "").trim();
-      const isActive = currentUrl && currentUrl === url;
+      const cleanUrl = userStationService.normalizeUrl(url);
+      const isActive = cleanCurrentUrl && cleanCurrentUrl === cleanUrl;
       const logo = station.sender_Logo || station.sender_logo || station.logo || "./images/cholo_love.png";
       const name = station.sender_Name || station.sender_name || station.name || "Radio";
 
@@ -113,22 +116,21 @@ export function render(container) {
 
       playB.onclick = (e) => {
         if (e) e.stopPropagation();
-        // 1. ZUERST den Sender im Speicher an Position 1 rücken
         userStationService.addStation(station, 6);
-        // 2. Audio starten
         radioService.play(station);
-        // 3. Karten sofort neu aufbauen
         renderRadioCards();
-        // 4. Sanft nach oben scrollen
         window.scrollTo({ top: 0, behavior: "smooth" });
       };
 
       removeB.onclick = (e) => {
         if (e) e.stopPropagation();
         if (confirm(`Möchtest du "${name}" wirklich entfernen?`)) {
-          const updated = activeStations.filter((s) => (s.sender_Url || s.sender_url || s.url || "").trim() !== url);
+          const updated = activeStations.filter((s) => {
+            if (!s || typeof s !== "object") return false;
+            return userStationService.normalizeUrl(s.sender_Url || s.sender_url || s.url) !== cleanUrl;
+          });
           userStationService.setStations(updated);
-          if (currentUrl === url) {
+          if (cleanCurrentUrl === cleanUrl) {
             radioService.stop();
           }
           showFeedback(`"${name}" wurde entfernt`);
