@@ -1,12 +1,12 @@
 /**
  * RADIOSERVICE (radioServiceV2.js)
  *
- * Diese Klasse kümmert sich um die eigentliche Audio-Wiedergabe.
- * Sie steuert das Abspielen, Stoppen und die Lautstärke.
+ * Robuste Audio-Engine für Desktop & Mobile (iOS / Android)
  */
 class RadioService {
   constructor() {
     this.audio = new Audio();
+    this.audio.preload = "none";
     this.currentStation = null;
     this.events = {};
     this.pingInterval = null;
@@ -15,22 +15,34 @@ class RadioService {
 
   play(station) {
     if (!station) return;
-    const url = station.sender_Url;
+    const url = (station.sender_Url || station.sender_url || station.url || "").trim();
+    if (!url) {
+      console.error("Keine gültige Stream-URL:", station);
+      return;
+    }
 
-    this.audio.src = url; 
+    try {
+      this.audio.pause();
+      this.audio.src = url;
+      this.audio.load();
+    } catch (e) {
+      console.warn("Audio reset Warnung:", e);
+    }
+
     this.currentStation = url;
+    this.currentStationData = station;
     localStorage.setItem("lastStationUrl", url);
     localStorage.setItem("isPlaying", "true");
 
-    this.audio.play().then(() => {
-      // Wiedergabe erfolgreich
-    }).catch((err) => {
-      console.error("Audio-Wiedergabe-Fehler:", err);
-      this.emit("error", err);
-    });
+    const playPromise = this.audio.play();
+    if (playPromise !== undefined) {
+      playPromise.catch((err) => {
+        console.error("Audio-Wiedergabe Fehler:", err);
+        this.emit("error", err);
+      });
+    }
 
     this.emit("play", this.currentStation);
-    this.currentStationData = station;
     this.startPing();
   }
 
@@ -52,7 +64,6 @@ class RadioService {
 
   async sendPing(stationId) {
     try {
-      // API Pfad angepasst
       await fetch("../backend/api/ping.php", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -64,16 +75,24 @@ class RadioService {
   }
 
   stop() {
-    this.audio.pause();
-    this.audio.currentTime = 0;
+    try {
+      this.audio.pause();
+      this.audio.removeAttribute("src");
+      this.audio.load();
+    } catch (e) {
+      console.warn("Audio stop Warnung:", e);
+    }
+    
+    this.currentStation = null;
     localStorage.setItem("isPlaying", "false");
     this.stopPing();
     this.emit("stop");
   }
 
   setVolume(value) {
-    this.audio.volume = value;
-    this.emit("volumeChange", value);
+    const num = Math.max(0, Math.min(1, parseFloat(value) || 0));
+    this.audio.volume = num;
+    this.emit("volumeChange", num);
   }
 
   getVolume() {

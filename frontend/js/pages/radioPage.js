@@ -83,10 +83,10 @@ export function render(container) {
       const col = document.createElement("div");
       col.className = "col-6 col-md-4 col-lg-2";
       
-      const url = (station.sender_Url || station.sender_url || "").trim();
+      const url = (station.sender_Url || station.sender_url || station.url || "").trim();
       const isActive = currentUrl && currentUrl === url;
-      const logo = station.sender_Logo || station.sender_logo || "./images/cholo_love.png";
-      const name = station.sender_Name || station.sender_name || "Radio";
+      const logo = station.sender_Logo || station.sender_logo || station.logo || "./images/cholo_love.png";
+      const name = station.sender_Name || station.sender_name || station.name || "Radio";
 
       col.innerHTML = `
         <div class="card h-100 bg-dark text-white border-secondary shadow-sm card-glow ${isActive ? "border-primary border-2" : ""}">
@@ -100,7 +100,7 @@ export function render(container) {
             <div class="card-body p-2 text-center d-flex flex-column justify-content-between">
                 <h6 class="card-title small mb-2 text-truncate" title="${name}">${name}</h6>
                 <div class="d-grid gap-1 mt-auto">
-                    <button class="btn btn-sm ${isActive ? "btn-success" : "btn-primary"} btn-play rounded-pill">
+                    <button class="btn btn-sm ${isActive ? "btn-success fw-bold" : "btn-primary"} btn-play rounded-pill shadow-sm">
                       <i class="bi ${isActive ? "bi-volume-up-fill" : "bi-play-fill"}"></i> ${isActive ? "Läuft" : "Play"}
                     </button>
                     <button class="btn btn-sm btn-outline-danger btn-remove border-0 small">×</button>
@@ -111,27 +111,25 @@ export function render(container) {
       const playB = col.querySelector(".btn-play");
       const removeB = col.querySelector(".btn-remove");
 
-      playB.onclick = () => {
-        // 1. Ausgewählten Sender auf Platz 1 rücken
-        userStationService.addStation(station, 6);
-        // 2. Wiedergabe starten
+      playB.onclick = (e) => {
+        e.stopPropagation();
+        // 1. Audio sofort im Click-Handler starten (kritisch für Mobile iOS/Android)
         radioService.play(station);
-        // 3. UI neu rendern
-        renderRadioCards();
-        // 4. Sanft nach oben scrollen, als optischer Beweis für Platz #1
+        // 2. Ausgewählten Sender auf Platz 1 rücken
+        userStationService.addStation(station, 6);
+        // 3. Sanft nach oben scrollen
         window.scrollTo({ top: 0, behavior: "smooth" });
       };
 
       removeB.onclick = (e) => {
         e.stopPropagation();
         if (confirm(`Möchtest du "${name}" wirklich entfernen?`)) {
-          const updated = activeStations.filter((s) => (s.sender_Url || s.sender_url || "").trim() !== url);
+          const updated = activeStations.filter((s) => (s.sender_Url || s.sender_url || s.url || "").trim() !== url);
           userStationService.setStations(updated);
           if (currentUrl === url) {
             radioService.stop();
           }
           showFeedback(`"${name}" wurde entfernt`);
-          renderRadioCards();
         }
       };
 

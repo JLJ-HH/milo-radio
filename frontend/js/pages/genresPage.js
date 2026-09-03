@@ -1,6 +1,6 @@
 /**
  * SEITE 3: GENRES / SENDER-AUSWAHL (genresPage.js)
- * Mit einklappbarer Genre-Leiste & Fokus-Ansicht
+ * Mit einklappbarer Genre-Leiste & Touch-optimierten Buttons
  */
 import { userStationService } from "../services/userStationService.js";
 import { stationService } from "../services/stationServiceV5.js";
@@ -65,9 +65,7 @@ export function render(container) {
   const activeGenreBadge = container.querySelector("#activeGenreBadge");
   const activeStationCount = container.querySelector("#activeStationCount");
   const toggleGenreButtonsBtn = container.querySelector("#toggleGenreButtonsBtn");
-  const toggleGenreIcon = container.querySelector("#toggleGenreIcon");
 
-  let currentSelectedGenre = null;
   let isGenreListCollapsed = false;
 
   // Umschalten der Genre-Buttons (Ein-/Ausklappen)
@@ -138,7 +136,6 @@ export function render(container) {
     });
 
     function selectGenre(genre) {
-      currentSelectedGenre = genre;
       const stationsInGenre = masterStations.filter((s) => (s.genre ?? "Unbekannt") === genre);
 
       // 1. Aktive Leiste aktualisieren & einblenden
@@ -167,12 +164,12 @@ export function render(container) {
       const currentPlayingUrl = (radioService.getCurrentStation() || "").trim();
 
       stationsInGenre.forEach((station) => {
-        const url = (station.sender_Url || station.sender_url || "").trim();
-        const name = station.sender_Name || station.sender_name || "Radio";
-        const logo = station.sender_Logo || station.sender_logo || "./images/cholo_love.png";
+        const url = (station.sender_Url || station.sender_url || station.url || "").trim();
+        const name = station.sender_Name || station.sender_name || station.name || "Radio";
+        const logo = station.sender_Logo || station.sender_logo || station.logo || "./images/cholo_love.png";
         
         const stationIndex = userStations.findIndex((s) => {
-          const sUrl = (s.sender_Url || s.sender_url || "").trim();
+          const sUrl = (s.sender_Url || s.sender_url || s.url || "").trim();
           return sUrl === url;
         });
 
@@ -191,10 +188,10 @@ export function render(container) {
               <div class="card-body p-2 text-center d-flex flex-column justify-content-between">
                   <h6 class="card-title small text-truncate mb-2" title="${name}">${name}</h6>
                   <div class="d-grid gap-1 mt-auto">
-                    <button class="btn btn-sm ${isPlaying ? 'btn-success' : 'btn-outline-primary'} btn-genre-play rounded-pill">
+                    <button class="btn btn-sm ${isPlaying ? 'btn-success fw-bold' : 'btn-primary'} btn-genre-play rounded-pill shadow-sm">
                       <i class="bi ${isPlaying ? 'bi-volume-up-fill' : 'bi-play-fill'}"></i> ${isPlaying ? 'Läuft' : 'Play'}
                     </button>
-                    <button class="btn btn-sm ${alreadyAdded ? 'btn-success' : 'btn-outline-light'} btn-genre-add rounded-pill">
+                    <button class="btn btn-sm ${alreadyAdded ? 'btn-success fw-bold' : 'btn-outline-primary text-white'} btn-genre-add rounded-pill">
                       ${alreadyAdded ? `✓ In Top 6 (Platz ${stationIndex + 1})` : '+ Zu Top 6'}
                     </button>
                   </div>
