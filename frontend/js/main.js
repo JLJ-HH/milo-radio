@@ -111,6 +111,9 @@ async function router() {
     const pageKey = pages[hash] ? hash : "radio";
     const page = pages[pageKey];
 
+    // Reset sticky player layout class
+    document.body.classList.remove("has-sticky-player");
+
     // Check permissions
     if (page.adminOnly && !isAdmin()) {
         window.location.hash = "radio";
@@ -118,9 +121,8 @@ async function router() {
     }
 
     try {
-        // Dynamic import of the page module (Cache-busting only when strictly needed, 
-        // using version from main script or fixed version to avoid 'dauert es' issues)
-        const module = await import(`./pages/${page.module}.js?v=7`);
+        // Dynamic import of the page module
+        const module = await import(`./pages/${page.module}.js?v=8`);
         
         appContent.innerHTML = "";
         module.render(appContent);
