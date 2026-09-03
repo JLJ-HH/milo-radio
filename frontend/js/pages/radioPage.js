@@ -112,17 +112,19 @@ export function render(container) {
       const removeB = col.querySelector(".btn-remove");
 
       playB.onclick = (e) => {
-        e.stopPropagation();
-        // 1. Audio sofort im Click-Handler starten (kritisch für Mobile iOS/Android)
-        radioService.play(station);
-        // 2. Ausgewählten Sender auf Platz 1 rücken
+        if (e) e.stopPropagation();
+        // 1. ZUERST den Sender im Speicher an Position 1 rücken
         userStationService.addStation(station, 6);
-        // 3. Sanft nach oben scrollen
+        // 2. Audio starten
+        radioService.play(station);
+        // 3. Karten sofort neu aufbauen
+        renderRadioCards();
+        // 4. Sanft nach oben scrollen
         window.scrollTo({ top: 0, behavior: "smooth" });
       };
 
       removeB.onclick = (e) => {
-        e.stopPropagation();
+        if (e) e.stopPropagation();
         if (confirm(`Möchtest du "${name}" wirklich entfernen?`)) {
           const updated = activeStations.filter((s) => (s.sender_Url || s.sender_url || s.url || "").trim() !== url);
           userStationService.setStations(updated);
@@ -130,6 +132,7 @@ export function render(container) {
             radioService.stop();
           }
           showFeedback(`"${name}" wurde entfernt`);
+          renderRadioCards();
         }
       };
 

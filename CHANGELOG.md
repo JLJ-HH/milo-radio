@@ -7,6 +7,13 @@ und dieses Projekt hält sich an [Semantic Versioning](https://semver.org/lang/d
 
 ---
 
+## [1.4.2] - 2026-09-03
+
+### Behoben
+- **Event-Entkopplung & Klick-Ausführung:** Asynchrone Entkopplung von UI-Render-Events (`setTimeout`), damit DOM-Elemente während laufender Klick- und Touch-Events auf mobilen Geräten nicht vorzeitig zerstört werden.
+- **Normalisiertes URL-Matching:** Robuster URL-Abgleich in `userStationService` (Bereinigung von Protocol, trailing slashes, Groß-/Kleinschreibung) für 100% verlässliche Erkennung von Favoriten in allen Genres.
+- **Service Worker & PWA Update v15:** Cache-Version auf `milo-radio-v15` angehoben.
+
 ## [1.4.1] - 2026-09-03
 
 ### Behoben

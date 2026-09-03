@@ -115,7 +115,17 @@ class RadioService {
 
   emit(event, data) {
     if (!this.events[event]) return;
-    this.events[event].forEach((cb) => cb(data));
+    setTimeout(() => {
+      if (this.events[event]) {
+        this.events[event].forEach((cb) => {
+          try {
+            cb(data);
+          } catch (err) {
+            console.error("Audio Event Error:", err);
+          }
+        });
+      }
+    }, 0);
   }
 }
 

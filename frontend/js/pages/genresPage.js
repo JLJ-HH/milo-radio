@@ -1,6 +1,6 @@
 /**
  * SEITE 3: GENRES / SENDER-AUSWAHL (genresPage.js)
- * Mit einklappbarer Genre-Leiste & Touch-optimierten Buttons
+ * Mit einklappbarer Genre-Leiste, robuster URL-Erkennung & Status-Feedback
  */
 import { userStationService } from "../services/userStationService.js";
 import { stationService } from "../services/stationServiceV5.js";
@@ -68,7 +68,6 @@ export function render(container) {
 
   let isGenreListCollapsed = false;
 
-  // Umschalten der Genre-Buttons (Ein-/Ausklappen)
   if (toggleGenreButtonsBtn) {
     toggleGenreButtonsBtn.onclick = () => {
       isGenreListCollapsed = !isGenreListCollapsed;
@@ -138,22 +137,17 @@ export function render(container) {
     function selectGenre(genre) {
       const stationsInGenre = masterStations.filter((s) => (s.genre ?? "Unbekannt") === genre);
 
-      // 1. Aktive Leiste aktualisieren & einblenden
       activeGenreBar.classList.remove("d-none");
       activeGenreBadge.textContent = genre;
       activeStationCount.textContent = `• ${stationsInGenre.length} Sender`;
 
-      // 2. Genre-Buttons einklappen für maximalen Platz
       genreButtonsCard.classList.add("d-none");
       isGenreListCollapsed = true;
       if (toggleGenreButtonsBtn) {
         toggleGenreButtonsBtn.innerHTML = `<i class="bi bi-chevron-down"></i> <span>Genre wechseln</span>`;
       }
 
-      // 3. Sender rendern
       renderStationsByGenre(genre);
-
-      // 4. Sanft zum Ergebnis scrollen
       genreContainer.scrollIntoView({ behavior: "smooth", block: "start" });
     }
 
@@ -165,16 +159,16 @@ export function render(container) {
 
       stationsInGenre.forEach((station) => {
         const url = (station.sender_Url || station.sender_url || station.url || "").trim();
+        const cleanUrl = userStationService.normalizeUrl(url);
         const name = station.sender_Name || station.sender_name || station.name || "Radio";
         const logo = station.sender_Logo || station.sender_logo || station.logo || "./images/cholo_love.png";
         
         const stationIndex = userStations.findIndex((s) => {
-          const sUrl = (s.sender_Url || s.sender_url || s.url || "").trim();
-          return sUrl === url;
+          return userStationService.normalizeUrl(s.sender_Url || s.sender_url || s.url) === cleanUrl;
         });
 
         const alreadyAdded = stationIndex !== -1;
-        const isPlaying = currentPlayingUrl && currentPlayingUrl === url;
+        const isPlaying = currentPlayingUrl && userStationService.normalizeUrl(currentPlayingUrl) === cleanUrl;
 
         const col = document.createElement("div");
         col.className = "col-6 col-md-4 col-lg-3";
@@ -202,13 +196,13 @@ export function render(container) {
         const addBtn = col.querySelector(".btn-genre-add");
 
         playBtn.onclick = (e) => {
-          e.stopPropagation();
+          if (e) e.stopPropagation();
           radioService.play(station);
           renderStationsByGenre(selectedGenre);
         };
 
         addBtn.onclick = (e) => {
-          e.stopPropagation();
+          if (e) e.stopPropagation();
           userStationService.addStation(station, 6);
           showToast(name);
           renderStationsByGenre(selectedGenre);
