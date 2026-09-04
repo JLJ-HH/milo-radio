@@ -15,6 +15,11 @@ und dieses Projekt hält sich an [Semantic Versioning](https://semver.org/lang/d
   - Projektstruktur-Übersicht um alle SPA-Pages (`genresPage.js`, `settingsPage.js`), Components (`playerBar.js`), Services (`userStationService.js`, `stationServiceV5.js`, `radioServiceV2.js`) und Server-Fallbacks erweitert.
   - Versions-Badge (`v1.5.0`) hinzugefügt.
 
+### Sicherheit
+- **Entfernung sensibler Umgebungskonfigurationen aus dem Git-Tracking:**
+  - `backend/.env.strato` und `backend/.env.remote` aus der Git-Versionsverwaltung entfernt (bleiben lokal erhalten).
+  - `.gitignore` erweitert (`.env.*`, `**/.env.*`), um alle künftigen `.env`-Dateivarianten zuverlässig zu ignorieren, während `.env.example` als Vorlage erhalten bleibt.
+
 ### Behoben
 - **PWA Installation & 403 Forbidden Fehler behoben:** 
   - `DirectoryIndex index.php index.html` in `.htaccess` ergänzt, sodass der Aufruf des Ordners `/frontend/` durch PWA-Starter oder Browser nicht mehr mit einem 403 Forbidden Fehler abbricht.
