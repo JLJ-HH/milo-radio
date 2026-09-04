@@ -7,6 +7,17 @@ und dieses Projekt hält sich an [Semantic Versioning](https://semver.org/lang/d
 
 ---
 
+## [1.5.1] - 2026-09-04
+
+### Hinzugefügt / Verbessert (Admin UX & Mobile Optimization)
+- **5 individuell einklappbare Bereiche im Admin-Panel (`adminPage.js`):**
+  - **Live Hörer:** Klickbarer Header mit Chevron-Toggle zum Ein-/Ausblenden der Echtzeit-Höreranzeige.
+  - **Datenbank-Status:** Klickbarer Header zum Ein-/Ausklappen der Tabellengröße und des Optimierungs-Buttons.
+  - **Top 10 Sender (Beliebtheit):** Einklappbares Chart-Diagramm mit automatischem Re-Rendering (`chart.resize()`) beim Ausklappen.
+  - **Sender hinzufügen / bearbeiten:** Einklappbares Formular zur Vermeidung von Vollbild-Überladung auf Smartphones. Automatisches Aufklappen (`Auto-Expand`) und sanftes Hinscrollen bei Klick auf „Edit“ eines Senders.
+  - **Vorhandene Sender:** Eigene Card mit Gesamtanzahl-Badge, Genre-Buttons mit aktiver Hervorhebung und Senderkarten, vollständig ein- und ausklappbar.
+- **Service Worker & PWA Update v24:** Cache-Version auf `milo-radio-v24` angehoben und `adminPage.js` explizit in den Cache aufgenommen.
+
 ## [1.5.0] - 2026-09-04
 
 ### Dokumentation

@@ -1,6 +1,6 @@
 # Milo Radio App
 
-[![Version](https://img.shields.io/badge/Version-1.5.0-blue?style=flat-square)](#)
+[![Version](https://img.shields.io/badge/Version-1.5.1-blue?style=flat-square)](#)
 [![PWA](https://img.shields.io/badge/PWA-Progressive%20Web%20App-purple?style=flat-square&logo=pwa)](https://developer.mozilla.org/de/docs/Web/Progressive_web_apps)
 [![JavaScript](https://img.shields.io/badge/JS-Vanilla%20ES6-yellow?style=flat-square&logo=javascript)](https://developer.mozilla.org/de/docs/Web/JavaScript)
 [![PHP](https://img.shields.io/badge/PHP-8.x-blue?style=flat-square&logo=php)](https://www.php.net/)
@@ -57,6 +57,7 @@ Milo Radio ist eine moderne, Progressive Web App (PWA) zum Streamen deiner Liebl
 
 ### Admin-Dashboard & Wartung
 
+- **5 individuell einklappbare Bereiche:** Live Hörer, Datenbank-Status, Top-10-Sender-Chart, Sender-Formular und Vorhandene Sender lassen sich per Klick einzeln ein- und ausklappen für maximale Übersicht auf Smartphones. Bei Klick auf „Edit“ öffnet sich das Formular automatisch (`Auto-Expand`).
 - **Echtzeit-Hörer:** Zeigt die Anzahl der aktiven Hörer in den letzten 10 Minuten an.
 - **Datenbank-Status & Optimierung:** Zeigt die aktuelle Tabellengröße an und bietet einen Button zur sofortigen Datenbankbereinigung.
 - **Sender-Verwaltung (CRUD):** Sender direkt im Browser hinzufügen, bearbeiten oder löschen.
@@ -80,7 +81,7 @@ milo-radio/
 │   ├── index.html                # Haupt-Einstiegspunkt (Single Page App)
 │   ├── index.php                 # Server-Fallback für PWA- & Webserver-Routing
 │   ├── manifest.json             # PWA Web-App-Manifest
-│   ├── sw.js                     # Service Worker (Network-First, Cache v23)
+│   ├── sw.js                     # Service Worker (Network-First, Cache v24)
 │   ├── css/                      # Stylesheets (Bootstrap & Custom Glassmorphism Theme)
 │   ├── images/                   # Sender-Logos, PWA-Icons & SVGs
 │   └── js/                       # Modulare ES6-Architektur
