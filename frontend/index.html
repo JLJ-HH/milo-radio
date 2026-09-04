@@ -33,7 +33,7 @@
     <link rel="manifest" href="./manifest.json" />
 
     <!-- Eigene Styles (Design-Anpassungen) -->
-    <link rel="stylesheet" href="./css/style.css?v=22" />
+    <link rel="stylesheet" href="./css/style.css?v=23" />
 
     <!-- Lesezeichen-Icons (Favicon) -->
     <link rel="icon" href="./images/android.png" type="image/png" />
@@ -128,9 +128,9 @@
         });
         window.addEventListener("load", () => {
           navigator.serviceWorker
-            .register("./sw.js?v=22")
+            .register("./sw.js?v=23")
             .then((reg) => {
-              console.log("SW v22 registriert");
+              console.log("SW v23 registriert");
               reg.update();
             })
             .catch((err) => console.log("SW Fehler:", err));
@@ -139,7 +139,7 @@
     </script>
 
     <!-- Main JS entry point -->
-    <script type="module" src="./js/main.js?v=22"></script>
+    <script type="module" src="./js/main.js?v=23"></script>
 
     <!-- Privacy & Impressum Modal -->
     <div class="modal fade" id="privacyModal" tabindex="-1" aria-hidden="true">

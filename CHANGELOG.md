@@ -7,6 +7,16 @@ und dieses Projekt hält sich an [Semantic Versioning](https://semver.org/lang/d
 
 ---
 
+## [1.5.0] - 2026-09-04
+
+### Behoben
+- **PWA Installation & 403 Forbidden Fehler behoben:** 
+  - `DirectoryIndex index.php index.html` in `.htaccess` ergänzt, sodass der Aufruf des Ordners `/frontend/` durch PWA-Starter oder Browser nicht mehr mit einem 403 Forbidden Fehler abbricht.
+  - `start_url` im PWA `manifest.json` explizit auf `./index.html` gesetzt.
+  - `frontend/index.php` als robuster Fallback hinzugefügt, falls ein Server auf `index.php` besteht.
+  - Zugriffsberechtigungen in `.htaccess` für Apache 2.4 und 2.2 aktualisiert, damit `manifest.json` für mobile Browser und Web-App-Installation immer freigegeben ist.
+  - Service Worker und Cache auf `v23` aktualisiert.
+
 ## [1.4.9] - 2026-09-03
 
 ### Hinzugefügt / Verbessert (Modern App Architecture)
