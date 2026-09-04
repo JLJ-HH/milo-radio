@@ -9,6 +9,12 @@ und dieses Projekt hält sich an [Semantic Versioning](https://semver.org/lang/d
 
 ## [1.5.0] - 2026-09-04
 
+### Dokumentation
+- **README.md auf Version 1.5.0 aktualisiert:**
+  - Feature-Highlights um globale Sticky-Bottom-Player-Bar, Top-6-Favoriten-System (MRU & Auto-FIFO), Genre-Stöbern mit Vorhörfunktion und einklappbarer Leiste sowie die Einstellungsseite mit 1-Klick-Cache-Reset ergänzt.
+  - Projektstruktur-Übersicht um alle SPA-Pages (`genresPage.js`, `settingsPage.js`), Components (`playerBar.js`), Services (`userStationService.js`, `stationServiceV5.js`, `radioServiceV2.js`) und Server-Fallbacks erweitert.
+  - Versions-Badge (`v1.5.0`) hinzugefügt.
+
 ### Behoben
 - **PWA Installation & 403 Forbidden Fehler behoben:** 
   - `DirectoryIndex index.php index.html` in `.htaccess` ergänzt, sodass der Aufruf des Ordners `/frontend/` durch PWA-Starter oder Browser nicht mehr mit einem 403 Forbidden Fehler abbricht.
