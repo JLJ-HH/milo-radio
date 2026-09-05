@@ -4,7 +4,6 @@
 
 import { playerBar } from "./components/playerBar.js";
 import { stationService } from "./services/stationServiceV5.js";
-import { userStationService } from "./services/userStationService.js";
 
 const API_AUTH_URL = "../backend/api/auth.php";
 const appContent = document.getElementById("app-content");
@@ -203,13 +202,6 @@ document.addEventListener("touchend", (e) => {
 async function initApp() {
     await syncAuth();
     await stationService.initPromise;
-    
-    if (userStationService.getStations().length === 0) {
-        const master = stationService.getAll();
-        if (Array.isArray(master) && master.length > 0) {
-            userStationService.setStations(master.slice(0, 6));
-        }
-    }
 
     playerBar.init();
     renderNavbar();

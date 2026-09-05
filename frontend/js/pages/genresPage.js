@@ -51,7 +51,7 @@ export function render(container) {
             </div>
 
             <!-- Sender-Ergebnisbereich -->
-            <div id="genreContainer" class="row g-3" style="min-height: 250px;">
+            <div id="genreContainer" class="row g-3">
                  <div class="col-12 text-center p-5 text-white-50">
                     <i class="bi bi-music-note-beamed display-3 text-primary opacity-50 mb-3 d-block"></i>
                     <p class="fs-5">Wähle oben ein Genre aus, um Sender zu entdecken.</p>
@@ -98,6 +98,8 @@ export function render(container) {
       isButtonsBodyCollapsed = false;
       cardCollapseIcon.className = "bi bi-chevron-up";
       cardCollapseText.textContent = "Einklappen";
+      activeGenreBar.classList.add("d-none");
+      genreContainer.innerHTML = "";
       genreButtonsCard.scrollIntoView({ behavior: "smooth", block: "nearest" });
     };
   }

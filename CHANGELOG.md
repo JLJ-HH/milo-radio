@@ -7,6 +7,17 @@ und dieses Projekt hält sich an [Semantic Versioning](https://semver.org/lang/d
 
 ---
 
+## [1.5.2] - 2026-09-05
+
+### Behoben / Verbessert (Favoriten-Verwaltung & Genre-UX)
+- **Keine automatischen 6 Random-/Standard-Sender mehr:**
+  - `userStationService.js`: Automatischer Fallback auf 6 feste Default-Sender (`DEFAULT_TOP6_STATIONS`) komplett entfernt. Wenn die Favoritenliste leer ist oder alle Sender entfernt werden, bleibt die Liste leer und der Nutzer sieht den dafür vorgesehenen Empty-State ("Deine Favoritenliste ist leer") mit Direktlink zu den Genres.
+  - `main.js`: Automatisches Befüllen der Top-6 mit den ersten Sendern aus dem Master-Katalog bei App-Neustart (`initApp()`) entfernt.
+- **Fokussierte Genre-Auswahl ohne vorherige Sender (`genresPage.js`):**
+  - Beim Klick auf **"Genre wechseln"** werden die zuvor angezeigten Sender sofort aus der Ansicht entfernt und die Leiste des aktiven Genres temporär verborgen. Der Nutzer kann sich somit voll auf die Genre-Buttons konzentrieren, ohne dass alte Sender den Bildschirm auf Smartphones blockieren.
+  - Feste Mindesthöhe (`min-height: 250px`) am Senderbereich entfernt, um unnötigen Leerraum bei geöffneter Genre-Box zu vermeiden.
+- **Service Worker & PWA Update v25:** Cache-Version in `sw.js` auf `milo-radio-v25` angehoben für sofortiges Update auf Mobilgeräten.
+
 ## [1.5.1] - 2026-09-04
 
 ### Hinzugefügt / Verbessert (Admin UX & Mobile Optimization)
