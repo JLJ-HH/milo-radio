@@ -98,6 +98,34 @@ body {
   transform: scale(1.05);
 }
 
+/* Radio Card Entfernen Button */
+.btn-remove {
+  background-color: transparent !important;
+  border: 1px solid #334155 !important;
+  color: #94a3b8 !important;
+  transition: all 0.2s ease-in-out !important;
+}
+
+.btn-remove:hover,
+.btn-remove:focus-visible {
+  background-color: rgba(51, 65, 85, 0.4) !important;
+  border-color: #334155 !important;
+  color: #e2e8f0 !important;
+}
+
+.btn-remove.is-confirming,
+.btn-remove.is-confirming:focus {
+  background-color: #475569 !important;
+  border: 1px solid #64748b !important;
+  color: #ffffff !important;
+}
+
+.btn-remove.is-confirming:hover {
+  background-color: #526175 !important;
+  border-color: #64748b !important;
+  color: #ffffff !important;
+}
+
 /* Custom UI Elements */
 @media (max-width: 991.98px) {
   .navbar .container-fluid {

@@ -7,6 +7,16 @@ und dieses Projekt hält sich an [Semantic Versioning](https://semver.org/lang/d
 
 ---
 
+## [1.5.6] - 2026-09-05
+
+### Verbessert (Farbdesign Entfernen-Button)
+- **Neues Slate-Farbschema für den Entfernen-Button (`style.css`, `radioPage.js`):**
+  - **Standard-Zustand:** Dezentes Slate-Design mit transparentem Hintergrund (`background-color: transparent`), feinem Rahmen (`1px solid #334155`) und dezentem Hellgrau (`#94a3b8`) für den Text.
+  - **Hover-Zustand:** Subtile Hervorhebung (`background-color: rgba(51, 65, 85, 0.4)`, Textfarbe `#e2e8f0`).
+  - **Bestätigungs-Zustand („Sicher entfernen?“):** Solider Schiefergrau-Ton (`background-color: #475569`), heller Rahmen (`1px solid #64748b`) und weißer Text (`#ffffff`).
+- **Service Worker & Cache v29:**
+  - Cache-Version auf `milo-radio-v29` angehoben und Versions-Parameter in `index.html` und `main.js` auf `v=29` synchronisiert.
+
 ## [1.5.5] - 2026-09-05
 
 ### Verbessert (UI-Bereinigung Favoriten-Karten)
