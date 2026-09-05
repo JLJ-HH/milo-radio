@@ -172,6 +172,31 @@ export function render(container) {
             .badge-rank-2 { background: linear-gradient(135deg, #94a3b8, #64748b); color: #fff; }
             .badge-rank-3 { background: linear-gradient(135deg, #b45309, #78350f); color: #fff; }
             .badge-rank-default { background: rgba(255, 255, 255, 0.1); color: #cbd5e1; }
+            .top-station-row {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 0.5rem;
+                min-width: 0;
+                width: 100%;
+            }
+            .top-station-info {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                min-width: 0;
+                flex: 1 1 0%;
+                overflow: hidden;
+            }
+            .top-station-meta {
+                min-width: 0;
+                flex: 1 1 0%;
+                overflow: hidden;
+            }
+            .btn-top-play {
+                flex-shrink: 0;
+                white-space: nowrap;
+            }
             .rec-card {
                 background: rgba(15, 23, 42, 0.6) !important;
                 border: 1px solid rgba(255, 255, 255, 0.08) !important;
@@ -328,12 +353,12 @@ export function render(container) {
                 
                 lastActiveContent.innerHTML = `
                     <img src="${summary.last_active.sender_logo || './images/cholo_love.png'}" 
-                         class="rounded-circle shadow" 
+                         class="rounded-circle shadow flex-shrink-0" 
                          style="width: 50px; height: 50px; object-fit: cover;"
                          onerror="this.src='./images/cholo_love.png'">
-                    <div>
-                        <div class="fw-bold text-white">${summary.last_active.sender_name}</div>
-                        <div class="small text-white-50" style="opacity: 0.8 !important;">${dateStr}</div>
+                    <div class="flex-grow-1" style="min-width: 0; overflow: hidden;">
+                        <div class="fw-bold text-white text-truncate" title="${summary.last_active.sender_name}">${summary.last_active.sender_name}</div>
+                        <div class="small text-white-50 text-truncate" style="opacity: 0.8 !important;">${dateStr}</div>
                     </div>
                 `;
             } else {
@@ -467,21 +492,21 @@ export function render(container) {
                     const genre = s.genre || 'Allgemein';
 
                     return `
-                        <div class="d-flex align-items-center justify-content-between p-2 rounded-3 bg-dark bg-opacity-50 border border-secondary border-opacity-25 top-station-row" data-url="${cleanUrl}">
-                            <div class="d-flex align-items-center gap-3 min-w-0">
-                                <span class="badge rounded-circle p-2 px-2 fw-bold ${rankClass}" style="width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center; font-size: 0.75rem;">
+                        <div class="top-station-row p-2 rounded-3 bg-dark bg-opacity-50 border border-secondary border-opacity-25" data-url="${cleanUrl}">
+                            <div class="top-station-info">
+                                <span class="badge rounded-circle fw-bold flex-shrink-0 ${rankClass}" style="width: 26px; height: 26px; display: inline-flex; align-items: center; justify-content: center; font-size: 0.75rem;">
                                     #${idx + 1}
                                 </span>
-                                <img src="${logo}" alt="${name}" class="rounded-circle shadow-sm" style="width: 38px; height: 38px; object-fit: cover;" onerror="this.src='./images/cholo_love.png'">
-                                <div class="text-truncate">
+                                <img src="${logo}" alt="${name}" class="rounded-circle shadow-sm flex-shrink-0" style="width: 36px; height: 36px; object-fit: cover;" onerror="this.src='./images/cholo_love.png'">
+                                <div class="top-station-meta">
                                     <div class="text-white fw-semibold small text-truncate" title="${name}">${name}</div>
                                     <div class="d-flex align-items-center gap-2">
-                                        <span class="badge rounded-pill text-white-50 border border-secondary border-opacity-50" style="font-size: 0.65rem;">${genre}</span>
-                                        <span class="text-white-50" style="font-size: 0.72rem;">${mins} Min.</span>
+                                        <span class="badge rounded-pill text-white-50 border border-secondary border-opacity-50 text-truncate" style="font-size: 0.65rem; max-width: 95px;">${genre}</span>
+                                        <span class="text-white-50 text-nowrap flex-shrink-0" style="font-size: 0.72rem;">${mins} Min.</span>
                                     </div>
                                 </div>
                             </div>
-                            <button class="btn btn-sm ${isPlaying ? 'btn-success' : 'btn-outline-primary'} rounded-pill px-3 py-1 btn-top-play d-flex align-items-center gap-1 shadow-sm text-nowrap" data-idx="${idx}">
+                            <button class="btn btn-sm ${isPlaying ? 'btn-success' : 'btn-outline-primary'} rounded-pill px-2 px-sm-3 py-1 btn-top-play d-flex align-items-center gap-1 shadow-sm text-nowrap" data-idx="${idx}">
                                 <i class="bi ${isPlaying ? 'bi-volume-up-fill' : 'bi-play-fill'}"></i>
                                 <span>${isPlaying ? 'Läuft' : 'Play'}</span>
                             </button>

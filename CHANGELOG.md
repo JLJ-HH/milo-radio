@@ -7,6 +7,17 @@ und dieses Projekt hält sich an [Semantic Versioning](https://semver.org/lang/d
 
 ---
 
+## [1.5.7] - 2026-09-05
+
+### Behoben (Mobile Ansicht Top 5 Sender Play-Buttons)
+- **Flexbox & Text-Truncation Fix (`statsPage.js`):**
+  - Behebung des Problems, dass auf schmalen Smartphone-Bildschirmen (< 400px) lange Sendernamen die Play-Buttons der Top 5 Sender aus dem sichtbaren Bereich nach rechts geschoben haben.
+  - Dedizierte CSS-Klassen (`.top-station-row`, `.top-station-info`, `.top-station-meta`, `.btn-top-play`) mit `min-width: 0`, `overflow: hidden` und `flex-shrink: 0` implementiert.
+  - Textkürzung (`text-truncate` mit Auslassungspunkten `...`) für lange Sendernamen greift nun auf Mobilgeräten zuverlässig.
+  - Auch die Karte *„Zuletzt gehört“* (`lastActiveContent`) gegen Überlaufen bei langen Sendernamen abgesichert.
+- **Service Worker & Cache v30:**
+  - Cache-Version in `sw.js` auf `milo-radio-v30` angehoben und Versions-Parameter in `index.html` und `main.js` auf `v=30` synchronisiert.
+
 ## [1.5.6] - 2026-09-05
 
 ### Verbessert (Farbdesign Entfernen-Button)
