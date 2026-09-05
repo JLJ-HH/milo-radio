@@ -106,13 +106,16 @@ export function render(container) {
                     <button class="btn btn-sm ${isActive ? "btn-success fw-bold" : "btn-primary"} btn-play rounded-pill shadow-sm">
                       <i class="bi ${isActive ? "bi-volume-up-fill" : "bi-play-fill"}"></i> ${isActive ? "Läuft" : "Play"}
                     </button>
-                    <button class="btn btn-sm btn-outline-danger btn-remove border-0 small">×</button>
+                    <button class="btn btn-sm btn-outline-danger btn-remove rounded-pill w-100 py-1 d-flex align-items-center justify-content-center gap-1 shadow-sm mt-1" title="Aus Favoriten entfernen">
+                      <i class="bi bi-trash3"></i> <span class="small">Entfernen</span>
+                    </button>
                 </div>
             </div>
         </div>`;
 
       const playB = col.querySelector(".btn-play");
       const removeB = col.querySelector(".btn-remove");
+      let confirmTimeout = null;
 
       playB.onclick = (e) => {
         if (e) e.stopPropagation();
@@ -124,17 +127,28 @@ export function render(container) {
 
       removeB.onclick = (e) => {
         if (e) e.stopPropagation();
-        if (confirm(`Möchtest du "${name}" wirklich entfernen?`)) {
-          const updated = activeStations.filter((s) => {
-            if (!s || typeof s !== "object") return false;
-            return userStationService.normalizeUrl(s.sender_Url || s.sender_url || s.url) !== cleanUrl;
-          });
-          userStationService.setStations(updated);
+
+        // 2-Klick-Schutz ohne blockierendes window.confirm()
+        if (removeB.dataset.confirming === "true") {
+          clearTimeout(confirmTimeout);
+          userStationService.removeStation(station);
           if (cleanCurrentUrl === cleanUrl) {
             radioService.stop();
           }
-          showFeedback(`"${name}" wurde entfernt`);
+          showFeedback(`"${name}" wurde aus deinen Favoriten entfernt`);
           renderRadioCards();
+        } else {
+          removeB.dataset.confirming = "true";
+          removeB.className = "btn btn-sm btn-danger rounded-pill w-100 py-1 d-flex align-items-center justify-content-center gap-1 shadow-sm mt-1 animate__animated animate__shakeX";
+          removeB.innerHTML = '<i class="bi bi-question-circle"></i> <span class="small fw-bold">Sicher löschen?</span>';
+
+          confirmTimeout = setTimeout(() => {
+            if (removeB && removeB.isConnected) {
+              delete removeB.dataset.confirming;
+              removeB.className = "btn btn-sm btn-outline-danger btn-remove rounded-pill w-100 py-1 d-flex align-items-center justify-content-center gap-1 shadow-sm mt-1";
+              removeB.innerHTML = '<i class="bi bi-trash3"></i> <span class="small">Entfernen</span>';
+            }
+          }, 3500);
         }
       };
 

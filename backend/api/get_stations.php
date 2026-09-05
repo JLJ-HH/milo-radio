@@ -5,10 +5,11 @@ session_start();
 // Dadurch wird der Cookie gesetzt, sobald der Benutzer die App lädt.
 if (!isset($_COOKIE['milo_session_token'])) {
     $sessionToken = bin2hex(random_bytes(32));
+    $isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == 443);
     setcookie('milo_session_token', $sessionToken, [
         'expires' => time() + (365 * 24 * 60 * 60),
         'path' => '/',
-        'secure' => true, // Nur über HTTPS
+        'secure' => $isHttps, // Dynamisch für HTTPS (Produktion) und HTTP (Entwicklung)
         'httponly' => true, // Nicht via JS lesbar
         'samesite' => 'Lax' // Schutz vor CSRF
     ]);

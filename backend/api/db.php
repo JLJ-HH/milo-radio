@@ -1,7 +1,14 @@
 <?php
 // backend/api/db.php
-// Lade .env Datei aus dem backend-Ordner
-$envPath = __DIR__ . '/../.env';
+// Lade Umgebungskonfiguration: Lokale Entwicklung (.env.local) oder Produktion (.env)
+$isLocal = in_array($_SERVER['HTTP_HOST'] ?? '', ['localhost', '127.0.0.1', 'localhost:8888', '127.0.0.1:8888']) 
+    || in_array($_SERVER['SERVER_NAME'] ?? '', ['localhost', '127.0.0.1'])
+    || (php_sapi_name() === 'cli-server');
+
+$localEnvPath = __DIR__ . '/../.env.local';
+$defaultEnvPath = __DIR__ . '/../.env';
+
+$envPath = ($isLocal && file_exists($localEnvPath)) ? $localEnvPath : $defaultEnvPath;
 
 // Sicherere Methode zum Laden der Konfiguration (besonders auf shared hosting wie Strato)
 $config = [];

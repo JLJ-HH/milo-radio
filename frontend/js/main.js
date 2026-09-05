@@ -119,7 +119,7 @@ async function router() {
     }
 
     try {
-        const module = await import(`./pages/${page.module}.js?v=26`);
+        const module = await import(`./pages/${page.module}.js?v=27`);
         
         appContent.innerHTML = "";
         module.render(appContent);

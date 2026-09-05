@@ -7,6 +7,21 @@ und dieses Projekt hält sich an [Semantic Versioning](https://semver.org/lang/d
 
 ---
 
+## [1.5.4] - 2026-09-05
+
+### Behoben / Verbessert (Playlist-Entfernung & Analytics-Wiederherstellung)
+- **Zuverlässiges Entfernen von Sendern aus der Top-6-Playlist (`radioPage.js`, `userStationService.js`):**
+  - Blockierendes und fehleranfälliges `window.confirm()` durch einen modernen, berührungsfreundlichen 2-Klick-Bestätigungs-Button (`Entfernen` -> `Sicher löschen?`) mit Mülleimer-Icon und automatischem Timeout ersetzt.
+  - Neue zentrale Methode `removeStation(target)` in `userStationService.js` implementiert, die Sender zuverlässig nach Index, Objekt oder URL aus `localStorage` entfernt und Event-Subscriber reaktiv benachrichtigt.
+- **Wiederherstellung des Analytics-Dashboards (`get_stats.php`, `db.php`, `statsPage.js`):**
+  - Behebung des SQL-Fehlers bei `GROUP BY` auf `TEXT`-Spalten (`sender_url`, `sender_logo`, `now_playing_url`) in `get_stats.php` durch Aggregation mit `MAX()`.
+  - Bereitstellung sauberer Null-Datenstrukturen (HTTP 200) bei neuen oder leeren Nutzer-Sessions anstelle von fatalen Abbrüchen.
+  - Automatische Umgebungserkennung in `db.php`: Nutzt `.env.local` bei lokaler Ausführung (`localhost` / `127.0.0.1`) und `.env` auf dem Produktionsserver (Strato).
+  - Dynamisches Cookie-Flag `secure` in `get_stations.php` für reibungslosen Betrieb über HTTP (lokal) und HTTPS (Produktion).
+  - Robuste Anzeige aller vier Dashboard-Bereiche in `statsPage.js`: Gesamte Hörzeit, Zuletzt gehört, Hörverlauf-Liniendiagramm, Top 5 Sender Balkendiagramm & Liste sowie Genre-Verteilung Doughnut-Chart rendern jetzt jederzeit stabil und informativ.
+- **Service Worker & PWA Update v27:**
+  - Cache-Version in `sw.js` auf `milo-radio-v27` angehoben und alle Versions-Parameter in `index.html` und `main.js` auf `v=27` synchronisiert.
+
 ## [1.5.3] - 2026-09-05
 
 ### Hinzugefügt / Verbessert (Analytics, Empfehlungen & 1-Klick Playlist)

@@ -268,28 +268,28 @@ export function render(container) {
             if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
             const data = await response.json();
 
-            if (data.error) {
-                console.warn("API Note:", data.error);
-                const lastActiveContent = document.getElementById('lastActiveContent');
-                if (lastActiveContent) lastActiveContent.innerHTML = '<p class="text-white-50 small mb-0">Noch keine Live-Statistiken vorhanden.</p>';
-                cachedStats = { top_stations: [], genres: [], history: [], summary: { total_minutes: 0 } };
-                renderRecommendations();
-                return;
+            if (data && !data.error) {
+                cachedStats = data;
+            } else {
+                console.warn("API Note:", data?.error || "Keine Daten");
+                cachedStats = { top_stations: [], genres: [], history: [], summary: { total_minutes: 0, last_active: null } };
             }
 
-            cachedStats = data;
-
-            try { updateSummary(data.summary); } catch (e) { console.error("Error updating summary:", e); }
-            try { renderHistoryChart(data.history || []); } catch (e) { console.error("Error rendering history chart:", e); }
-            try { renderTopStations(data.top_stations || []); } catch (e) { console.error("Error rendering top stations:", e); }
-            try { renderGenreChart(data.genres || []); } catch (e) { console.error("Error rendering genre chart:", e); }
+            try { updateSummary(cachedStats.summary); } catch (e) { console.error("Error updating summary:", e); }
+            try { renderHistoryChart(cachedStats.history || []); } catch (e) { console.error("Error rendering history chart:", e); }
+            try { renderTopStations(cachedStats.top_stations || []); } catch (e) { console.error("Error rendering top stations:", e); }
+            try { renderGenreChart(cachedStats.genres || []); } catch (e) { console.error("Error rendering genre chart:", e); }
             try { renderRecommendations(); } catch (e) { console.error("Error rendering recommendations:", e); }
 
         } catch (err) {
             console.warn("Stats API nicht erreichbar, nutze lokale Präferenzen:", err);
+            cachedStats = { top_stations: [], genres: [], history: [], summary: { total_minutes: 0, last_active: null } };
             const lastActiveContent = document.getElementById('lastActiveContent');
             if (lastActiveContent) lastActiveContent.innerHTML = '<p class="text-white-50 small mb-0">Offline-Modus aktiv.</p>';
-            cachedStats = { top_stations: [], genres: [], history: [], summary: { total_minutes: 0 } };
+            try { updateSummary(cachedStats.summary); } catch (e) {}
+            try { renderHistoryChart([]); } catch (e) {}
+            try { renderTopStations([]); } catch (e) {}
+            try { renderGenreChart([]); } catch (e) {}
             try { renderRecommendations(); } catch (e) { console.error("Error rendering fallback recommendations:", e); }
         }
     }
@@ -348,8 +348,9 @@ export function render(container) {
         const ctx = canvas.getContext('2d');
         if (historyChart) historyChart.destroy();
 
-        const labels = history.map(h => h.label || '');
-        const dataValues = history.map(h => Math.round(((h.pings || 0) * 30) / 60));
+        const hasHistory = Array.isArray(history) && history.length > 0;
+        const labels = hasHistory ? history.map(h => h.label || '') : ['00:00', '06:00', '12:00', '18:00', '23:59'];
+        const dataValues = hasHistory ? history.map(h => Math.round(((h.pings || 0) * 30) / 60)) : [0, 0, 0, 0, 0];
 
         historyChart = new Chart(ctx, {
             type: 'line',
@@ -362,14 +363,17 @@ export function render(container) {
                     backgroundColor: 'rgba(13, 202, 240, 0.1)',
                     fill: true,
                     tension: 0.4,
-                    pointRadius: 4,
+                    pointRadius: hasHistory ? 4 : 0,
                     pointBackgroundColor: '#0dcaf0'
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
+                plugins: { 
+                    legend: { display: false },
+                    tooltip: { enabled: hasHistory }
+                },
                 scales: {
                     x: { grid: { display: false }, ticks: { color: '#f8fafc', font: { size: 10 } } },
                     y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#f8fafc', font: { size: 10 } } }
@@ -387,6 +391,32 @@ export function render(container) {
         const hasStations = Array.isArray(stations) && stations.length > 0;
         if (btnApplyTopPlaylist) {
             btnApplyTopPlaylist.disabled = !hasStations;
+        }
+
+        if (!hasStations) {
+            topStationsChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Noch keine Daten'],
+                    datasets: [{
+                        data: [0],
+                        backgroundColor: 'rgba(255, 255, 255, 0.08)',
+                        borderRadius: 5
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false }, tooltip: { enabled: false } },
+                    scales: {
+                        x: { beginAtZero: true, max: 10, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#f8fafc' } },
+                        y: { grid: { display: false }, ticks: { color: '#f8fafc' } }
+                    }
+                }
+            });
+            renderTopStationsList(stations);
+            return;
         }
 
         topStationsChart = new Chart(ctx, {
@@ -496,8 +526,28 @@ export function render(container) {
         if (genreChart) genreChart.destroy();
 
         if (genres.length === 0) {
+            genreChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Noch keine Daten'],
+                    datasets: [{
+                        data: [1],
+                        backgroundColor: ['rgba(255, 255, 255, 0.08)'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '70%',
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { enabled: false }
+                    }
+                }
+            });
             const info = document.getElementById('genreInfo');
-            if (info) info.innerHTML = '<div class="text-muted text-center py-3">Keine Genre-Daten vorhanden.</div>';
+            if (info) info.innerHTML = '<div class="text-white-50 text-center py-3 small">Sobald du Musik hörst, wird hier deine Genre-Verteilung sichtbar.</div>';
             return;
         }
 

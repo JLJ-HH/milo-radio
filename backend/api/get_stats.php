@@ -7,7 +7,16 @@ $period = $_GET['period'] ?? 'today';
 $sessionToken = $_COOKIE['milo_session_token'] ?? null;
 
 if (!$sessionToken) {
-    echo json_encode(['error' => 'No session found']);
+    echo json_encode([
+        'period' => $period,
+        'summary' => [
+            'total_minutes' => 0,
+            'last_active' => null
+        ],
+        'top_stations' => [],
+        'history' => [],
+        'genres' => []
+    ]);
     exit;
 }
 
@@ -18,7 +27,16 @@ try {
     $userId = $stmtUser->fetchColumn();
 
     if (!$userId) {
-        echo json_encode(['error' => 'User not found']);
+        echo json_encode([
+            'period' => $period,
+            'summary' => [
+                'total_minutes' => 0,
+                'last_active' => null
+            ],
+            'top_stations' => [],
+            'history' => [],
+            'genres' => []
+        ]);
         exit;
     }
 
@@ -58,20 +76,20 @@ try {
         ";
     }
 
-    // 3. Top 5 Stations
+    // 3. Top 5 Stations (Aggregiere TEXT-Spalten mit MAX, um MySQL 1170 Fehler bei GROUP BY zu vermeiden)
     $stmtTop = $pdo->prepare("
         SELECT 
             s.id,
             s.sender_name, 
-            s.sender_url,
-            s.sender_logo,
+            MAX(s.sender_url) as sender_url,
+            MAX(s.sender_logo) as sender_logo,
             s.genre,
-            s.now_playing_url,
+            MAX(s.now_playing_url) as now_playing_url,
             COUNT(e.id) as ping_count
         FROM stations s
         JOIN listen_events e ON s.id = e.station_id
         WHERE e.user_id = :user_id AND e.created_at >= $dateFilter
-        GROUP BY s.id, s.sender_name, s.sender_url, s.sender_logo, s.genre, s.now_playing_url
+        GROUP BY s.id, s.sender_name, s.genre
         ORDER BY ping_count DESC
         LIMIT 5
     ");

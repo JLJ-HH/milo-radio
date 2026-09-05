@@ -69,6 +69,37 @@ class UserStationService {
     return updated;
   }
 
+  removeStation(target) {
+    this.stations = this.loadFromStorage();
+    if (typeof target === "number") {
+      if (target >= 0 && target < this.stations.length) {
+        this.stations.splice(target, 1);
+      }
+    } else if (target && typeof target === "object") {
+      const rawUrl = target.sender_Url || target.sender_url || target.url || "";
+      const cleanUrl = this.normalizeUrl(rawUrl);
+      this.stations = this.stations.filter((s) => {
+        if (!s || typeof s !== "object") return false;
+        if (target.id && s.id && String(target.id) === String(s.id)) return false;
+        if (cleanUrl) {
+          const sUrl = this.normalizeUrl(s.sender_Url || s.sender_url || s.url || "");
+          if (sUrl === cleanUrl) return false;
+        }
+        return true;
+      });
+    } else if (typeof target === "string") {
+      const cleanUrl = this.normalizeUrl(target);
+      this.stations = this.stations.filter((s) => {
+        if (!s || typeof s !== "object") return false;
+        const sUrl = this.normalizeUrl(s.sender_Url || s.sender_url || s.url || "");
+        return sUrl !== cleanUrl;
+      });
+    }
+
+    this.setStations(this.stations);
+    return this.stations;
+  }
+
   getStations() {
     this.stations = this.loadFromStorage();
     return [...this.stations];
