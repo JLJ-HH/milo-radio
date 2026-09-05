@@ -107,7 +107,7 @@ export function render(container) {
                       <i class="bi ${isActive ? "bi-volume-up-fill" : "bi-play-fill"}"></i> ${isActive ? "Läuft" : "Play"}
                     </button>
                     <button class="btn btn-sm btn-outline-danger btn-remove rounded-pill w-100 py-1 d-flex align-items-center justify-content-center gap-1 shadow-sm mt-1" title="Aus Favoriten entfernen">
-                      <i class="bi bi-trash3"></i> <span class="small">Entfernen</span>
+                      <span class="small">Entfernen</span>
                     </button>
                 </div>
             </div>
@@ -140,13 +140,13 @@ export function render(container) {
         } else {
           removeB.dataset.confirming = "true";
           removeB.className = "btn btn-sm btn-danger rounded-pill w-100 py-1 d-flex align-items-center justify-content-center gap-1 shadow-sm mt-1 animate__animated animate__shakeX";
-          removeB.innerHTML = '<i class="bi bi-question-circle"></i> <span class="small fw-bold">Sicher löschen?</span>';
+          removeB.innerHTML = '<i class="bi bi-question-circle"></i> <span class="small fw-bold">Sicher entfernen?</span>';
 
           confirmTimeout = setTimeout(() => {
             if (removeB && removeB.isConnected) {
               delete removeB.dataset.confirming;
               removeB.className = "btn btn-sm btn-outline-danger btn-remove rounded-pill w-100 py-1 d-flex align-items-center justify-content-center gap-1 shadow-sm mt-1";
-              removeB.innerHTML = '<i class="bi bi-trash3"></i> <span class="small">Entfernen</span>';
+              removeB.innerHTML = '<span class="small">Entfernen</span>';
             }
           }, 3500);
         }

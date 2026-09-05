@@ -7,6 +7,15 @@ und dieses Projekt hält sich an [Semantic Versioning](https://semver.org/lang/d
 
 ---
 
+## [1.5.5] - 2026-09-05
+
+### Verbessert (UI-Bereinigung Favoriten-Karten)
+- **Entfernen-Button auf der Radio-Seite (`radioPage.js`):**
+  - Mülleimer-Icon (`bi-trash3`) vom Button entfernt für eine minimalistischere Optik.
+  - Bestätigungstext von `"Sicher löschen?"` zu `"Sicher entfernen?"` umformuliert.
+- **Service Worker & PWA Cache v28:**
+  - Cache-Version auf `milo-radio-v28` angehoben und alle Skript-Versionen (`index.html`, `main.js`) synchronisiert.
+
 ## [1.5.4] - 2026-09-05
 
 ### Behoben / Verbessert (Playlist-Entfernung & Analytics-Wiederherstellung)
