@@ -15,7 +15,9 @@ und dieses Projekt hält sich an [Semantic Versioning](https://semver.org/lang/d
   - `main.js`: Automatisches Befüllen der Top-6 mit den ersten Sendern aus dem Master-Katalog bei App-Neustart (`initApp()`) entfernt.
 - **Fokussierte Genre-Auswahl ohne vorherige Sender (`genresPage.js`):**
   - Beim Klick auf **"Genre wechseln"** werden die zuvor angezeigten Sender sofort aus der Ansicht entfernt und die Leiste des aktiven Genres temporär verborgen. Der Nutzer kann sich somit voll auf die Genre-Buttons konzentrieren, ohne dass alte Sender den Bildschirm auf Smartphones blockieren.
-  - Feste Mindesthöhe (`min-height: 250px`) am Senderbereich entfernt, um unnötigen Leerraum bei geöffneter Genre-Box zu vermeiden.
+- **Korrektur Syntax & Initialisierung:**
+  - `userStationService.js`: Nicht geschlossenen Kommentar-Tag (`*/`) behoben, der das Initialisieren der Module im Browser blockiert hatte.
+  - `index.html` & `main.js`: Alle Skript-, CSS- und Modul-Versions-Parameter konsistent auf `v=25` angehoben für sofortiges Neuladen im Browser und der PWA.
 - **Service Worker & PWA Update v25:** Cache-Version in `sw.js` auf `milo-radio-v25` angehoben für sofortiges Update auf Mobilgeräten.
 
 ## [1.5.1] - 2026-09-04

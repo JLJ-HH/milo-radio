@@ -1,6 +1,6 @@
 /**
  * USERSTATIONSERVICE (userStationService.js)
- *
+ */
 class UserStationService {
   constructor() {
     this.events = {};
