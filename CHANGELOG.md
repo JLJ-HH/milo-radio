@@ -7,6 +7,25 @@ und dieses Projekt hält sich an [Semantic Versioning](https://semver.org/lang/d
 
 ---
 
+## [1.5.3] - 2026-09-05
+
+### Hinzugefügt / Verbessert (Analytics, Empfehlungen & 1-Klick Playlist)
+- **Personalisierte Sender-Empfehlungen auf der Statistikseite (`statsPage.js`):**
+  - Neue Sektion **"Empfehlungen für dich"** mit visuellen Senderkarten im Glassmorphism-Design.
+  - Dynamische Erkennung des Lieblingsgenres basierend auf Analytics-Hördaten oder bestehenden Nutzer-Favoriten mit intelligentem Fallback auf beliebte Sender.
+  - Ausschluss bereits vorhandener Top-6-Sender und meistgehörter Stationen, um stets frische Musikentdeckungen vorzuschlagen.
+  - Direkte Interaktion auf den Empfehlungskarten: Direkt-Play (`▶ Play` / `Läuft`) und Schnellübernahme (`+ Zu Top 6` / `✓ In Top 6`).
+- **1-Klick-Übernahme der Top 5 in die Playlist:**
+  - Aktions-Button **"📥 Als Playlist übernehmen"** in der Top-5-Sender-Card.
+  - Detail-Liste der Top-Sender mit Rang-Badges (#1 bis #5), Senderlogos, Gesamthördauer und Sofort-Wiedergabe.
+  - Beim Klick werden die Top-Sender sofort in `userStationService` gespeichert und als aktive Favoritenliste geladen.
+- **Floating Toast Notifications:**
+  - Bestätigung von Übernahmen und Hinzufügungen mit Glassmorphism-Toast und Schnelllink *"Top 6 ansehen ➔"*.
+- **Backend & Metadaten (`get_stats.php`):**
+  - Bereitstellung vollständiger Metadaten (`id`, `sender_url`, `sender_logo`, `genre`, `now_playing_url`) für Top-Stationen.
+- **Service Worker & PWA Update v26:**
+  - Cache-Version in `sw.js` auf `milo-radio-v26` angehoben und alle Skript-/CSS-Versionen in `index.html` und `main.js` auf `v=26` aktualisiert.
+
 ## [1.5.2] - 2026-09-05
 
 ### Behoben / Verbessert (Favoriten-Verwaltung & Genre-UX)

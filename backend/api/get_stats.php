@@ -61,13 +61,17 @@ try {
     // 3. Top 5 Stations
     $stmtTop = $pdo->prepare("
         SELECT 
+            s.id,
             s.sender_name, 
+            s.sender_url,
+            s.sender_logo,
             s.genre,
+            s.now_playing_url,
             COUNT(e.id) as ping_count
         FROM stations s
         JOIN listen_events e ON s.id = e.station_id
         WHERE e.user_id = :user_id AND e.created_at >= $dateFilter
-        GROUP BY s.id, s.sender_name, s.genre
+        GROUP BY s.id, s.sender_name, s.sender_url, s.sender_logo, s.genre, s.now_playing_url
         ORDER BY ping_count DESC
         LIMIT 5
     ");
