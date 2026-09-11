@@ -353,6 +353,27 @@ body {
   to { transform: scaleY(1); }
 }
 
+/* Player Controls & Volume Layout */
+.player-controls-wrapper {
+  min-width: 0;
+}
+
+.player-btn-group {
+  flex-shrink: 0;
+}
+
+.player-volume-container {
+  min-width: 0;
+  max-width: 160px;
+  flex: 0 1 auto;
+}
+
+.player-volume-slider {
+  min-width: 45px;
+  max-width: 110px;
+  flex: 1 1 auto;
+}
+
 /* Mobile Optimierungen für Sticky Player */
 @media (max-width: 767.98px) {
   .has-sticky-player #app-content {
@@ -387,12 +408,12 @@ body {
   }
 
   .player-volume-container {
-    min-width: 0;
+    max-width: 130px;
   }
 
   .player-volume-slider {
-    max-width: 95px !important;
-    min-width: 45px;
+    max-width: 85px !important;
+    min-width: 40px;
   }
 }
 
@@ -403,8 +424,12 @@ body {
     gap: 0.35rem !important;
   }
 
+  .player-volume-container {
+    max-width: 105px;
+  }
+
   .player-volume-slider {
-    max-width: 70px !important;
+    max-width: 65px !important;
     min-width: 35px;
   }
 }

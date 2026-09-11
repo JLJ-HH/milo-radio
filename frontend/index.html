@@ -33,7 +33,7 @@
     <link rel="manifest" href="./manifest.json" />
 
     <!-- Eigene Styles (Design-Anpassungen) -->
-    <link rel="stylesheet" href="./css/style.css?v=31" />
+    <link rel="stylesheet" href="./css/style.css?v=32" />
 
     <!-- Lesezeichen-Icons (Favicon) -->
     <link rel="icon" href="./images/android.png" type="image/png" />
@@ -90,20 +90,25 @@
             </div>
           </div>
 
-          <!-- 2. Play & Stop Controls -->
-          <div class="col-auto col-md-4 col-lg-4 flex-shrink-0 d-flex align-items-center justify-content-start justify-content-md-center gap-2">
-            <button id="playBtn" class="btn btn-primary rounded-pill px-3 px-md-4 fw-semibold d-flex align-items-center gap-2 shadow-sm player-ctrl-btn" disabled>
-              <i class="bi bi-play-fill fs-5"></i><span>Play</span>
-            </button>
-            <button id="stopBtn" class="btn btn-outline-light rounded-pill px-3 fw-semibold d-flex align-items-center gap-2 player-ctrl-btn" disabled>
-              <i class="bi bi-stop-fill fs-5"></i><span>Stop</span>
-            </button>
-          </div>
+          <!-- 2. Controls & Lautstärke Wrapper -->
+          <div class="col-12 col-md-7 col-lg-7 d-flex align-items-center justify-content-between justify-content-md-end gap-2 gap-md-4 player-controls-wrapper">
+            
+            <!-- Play & Stop Controls -->
+            <div class="d-flex align-items-center gap-2 flex-shrink-0 player-btn-group">
+              <button id="playBtn" class="btn btn-primary rounded-pill px-3 px-md-4 fw-semibold d-flex align-items-center gap-2 shadow-sm player-ctrl-btn" disabled>
+                <i class="bi bi-play-fill fs-5"></i><span>Play</span>
+              </button>
+              <button id="stopBtn" class="btn btn-outline-light rounded-pill px-3 fw-semibold d-flex align-items-center gap-2 player-ctrl-btn" disabled>
+                <i class="bi bi-stop-fill fs-5"></i><span>Stop</span>
+              </button>
+            </div>
 
-          <!-- 3. Lautstärke & Extras -->
-          <div class="col col-md-3 col-lg-3 d-flex align-items-center justify-content-end gap-2 player-volume-container" style="min-width: 0;">
-            <i id="volumeIcon" class="bi bi-volume-up text-white-50 fs-5 flex-shrink-0" style="cursor: pointer;" title="Stummschalten / Lautstärke"></i>
-            <input type="range" id="volumeSlider" min="0" max="1" step="0.01" class="form-range custom-range player-volume-slider flex-grow-1" style="max-width: 120px;">
+            <!-- Lautstärke -->
+            <div class="d-flex align-items-center justify-content-end gap-2 player-volume-container">
+              <i id="volumeIcon" class="bi bi-volume-up text-white-50 fs-5 flex-shrink-0" style="cursor: pointer;" title="Stummschalten / Lautstärke"></i>
+              <input type="range" id="volumeSlider" min="0" max="1" step="0.01" class="form-range custom-range player-volume-slider flex-grow-1">
+            </div>
+
           </div>
 
         </div>
@@ -128,9 +133,9 @@
         });
         window.addEventListener("load", () => {
           navigator.serviceWorker
-            .register("./sw.js?v=31")
+            .register("./sw.js?v=32")
             .then((reg) => {
-              console.log("SW v31 registriert");
+              console.log("SW v32 registriert");
               reg.update();
             })
             .catch((err) => console.log("SW Fehler:", err));
@@ -139,7 +144,7 @@
     </script>
 
     <!-- Main JS entry point -->
-    <script type="module" src="./js/main.js?v=31"></script>
+    <script type="module" src="./js/main.js?v=32"></script>
 
     <!-- Privacy & Impressum Modal -->
     <div class="modal fade" id="privacyModal" tabindex="-1" aria-hidden="true">

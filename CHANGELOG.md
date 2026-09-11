@@ -7,6 +7,18 @@ und dieses Projekt hält sich an [Semantic Versioning](https://semver.org/lang/d
 
 ---
 
+## [1.5.9] - 2026-09-11
+
+### Behoben (Sticky-Player-Bar Flexbox-Zusammenführung & CSS Network-First)
+- **Vereinter Controls- & Lautstärke-Wrapper (`index.html`, `style.css`):**
+  - Vollständige Zusammenführung der Play/Stop-Buttons und des Lautstärkereglers auf Mobilgeräten in einen gemeinsamen Flexbox-Container (`.player-controls-wrapper` mit `justify-content: space-between`).
+  - Auflösung der separaten Bootstrap-Spalten auf mobilen Geräten: Horizontale Überlappungen von Buttons und Schieberegler sind dadurch im DOM physikalisch und rechnerisch unmöglich.
+  - Dedizierte Begrenzungen (`.player-volume-container`, `.player-volume-slider`) mit flexibler Schrumpffähigkeit (`min-width: 35px`, `flex: 1 1 auto`).
+- **PWA Service Worker Network-First für CSS (`sw.js`):**
+  - Einbindung von `.css`-Dateien in die prioritäre Network-First-Abrufstrategie von `sw.js`, um aggressive Cache-Verzögerungen auf Mobilgeräten und installierten PWAs dauerhaft zu verhindern.
+- **Cache-Bumping auf v32 (`sw.js`, `index.html`, `main.js`):**
+  - Cache-Name auf `milo-radio-v32` angehoben und alle Skript- sowie Stylesheet-Referenzen synchronisiert.
+
 ## [1.5.8] - 2026-09-11
 
 ### Behoben (Mobile Sticky-Player-Bar Layout-Kollision)

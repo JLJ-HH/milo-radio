@@ -5,7 +5,7 @@
  * für sofortige Aktualisierungen auf Mobilgeräten.
  */
 
-const CACHE_NAME = "milo-radio-v31";
+const CACHE_NAME = "milo-radio-v32";
 
 const urlsToCache = [
   "./",
@@ -58,12 +58,13 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // 2. Network-First für Navigation, HTML und JS-Dateien:
+  // 2. Network-First für Navigation, HTML, CSS und JS-Dateien:
   // Immer zuerst die neueste Version vom Server laden!
   if (
     event.request.mode === "navigate" ||
     url.pathname.endsWith(".html") ||
     url.pathname.endsWith(".js") ||
+    url.pathname.endsWith(".css") ||
     url.search.includes("v=")
   ) {
     event.respondWith(
