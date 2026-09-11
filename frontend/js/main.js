@@ -119,7 +119,7 @@ async function router() {
     }
 
     try {
-        const module = await import(`./pages/${page.module}.js?v=32`);
+        const module = await import(`./pages/${page.module}.js?v=33`);
         
         appContent.innerHTML = "";
         module.render(appContent);
@@ -207,6 +207,14 @@ async function initApp() {
     renderNavbar();
     router();
 }
+
+// Schließe mobile Navbar bei Klick außerhalb
+document.addEventListener("click", (e) => {
+    const nav = document.getElementById("app-nav");
+    if (nav && !nav.contains(e.target)) {
+        closeMobileNavbar();
+    }
+});
 
 window.addEventListener("hashchange", router);
 

@@ -30,6 +30,9 @@ body {
 
 /* Glassmorphism Navbar */
 #app-nav {
+  position: sticky;
+  top: 0;
+  z-index: 1020;
   background: var(--glass-bg) !important;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
@@ -141,32 +144,67 @@ body {
     font-size: 1.2rem;
   }
   
-  /* Mobile Menü Styling */
+  /* Mobile Menü Styling: Schwebendes Overlay (verdeckt Inhalt ohne ihn nach unten zu drücken) */
   .navbar-collapse {
-    background: rgba(15, 23, 42, 0.98);
-    backdrop-filter: blur(15px);
-    margin: 0.75rem -1rem 0 -1rem;
-    padding: 1.5rem;
-    border-radius: 0 0 25px 25px;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    width: 100%;
+    background: rgba(15, 23, 42, 0.97);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    margin: 0;
+    padding: 1rem 1.25rem 1.25rem 1.25rem;
+    border-radius: 0 0 22px 22px;
     border-top: 1px solid var(--glass-border);
-    box-shadow: 0 15px 35px rgba(0,0,0,0.6);
-    position: relative;
-    z-index: 1000;
+    border-bottom: 1px solid var(--glass-border);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.7);
+    max-height: calc(100dvh - 85px);
+    overflow-y: auto;
+    z-index: 1050;
+  }
+
+  .navbar-collapse.collapsing {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    width: 100%;
+    background: rgba(15, 23, 42, 0.97);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    margin: 0;
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+    border-radius: 0 0 22px 22px;
+    border-top: 1px solid var(--glass-border);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.7);
+    z-index: 1050;
+  }
+
+  .navbar-nav {
+    margin: 0;
+    padding: 0;
   }
 
   .navbar-nav .nav-item {
     margin-bottom: 0.5rem;
   }
 
+  .navbar-nav .nav-item:last-child {
+    margin-bottom: 0;
+  }
+
   .navbar-nav .nav-link {
-    padding: 1rem !important;
+    padding: 0.85rem 1rem !important;
     background: rgba(255,255,255,0.03);
     border-radius: 12px;
     transition: all 0.3s ease;
   }
 
   .navbar-nav .nav-link:active {
-    background: var(--primary-color);
+    background: var(--primary);
     color: white !important;
   }
 }
@@ -231,19 +269,12 @@ body {
 
 /* Responsive Fixes */
 @media (max-width: 768px) {
-  .navbar-nav {
-    background: var(--bg-dark);
-    padding: 1rem;
-    border-radius: 15px;
-    margin-top: 1rem;
-    border: 1px solid var(--glass-border);
-  }
-
   .genre-btn {
     width: 100% !important;
     text-align: left;
     margin-bottom: 0.25rem;
   }
+}
 
 /* ============================================================
    STICKY BOTTOM PLAYER BAR

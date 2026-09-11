@@ -7,6 +7,20 @@ und dieses Projekt hält sich an [Semantic Versioning](https://semver.org/lang/d
 
 ---
 
+## [1.5.10] - 2026-09-11
+
+### Behoben (Navbar Mobile-Menü als schwebendes Overlay & CSS-Reparatur)
+- **Floating Overlay für Mobile-Navigation (`style.css`, `main.js`):**
+  - Umstellung des mobilen Ausklappmenüs (`.navbar-collapse` und `.navbar-collapse.collapsing`) auf absolute Positionierung (`position: absolute; top: 100%; left: 0; right: 0; width: 100%`).
+  - Beim Öffnen des Hamburger-Menüs ganz oben auf der Seite wird der Seiteninhalt (`#app-content`) nicht mehr abrupt um ~250px nach unten gedrückt, sondern elegant schwebend verdeckt.
+  - Integration von Glassmorphism-Backdrop (`backdrop-filter: blur(20px)`), dezentem Rahmen, sanften Rundungen und Scroll-Sicherheit (`max-height: calc(100dvh - 85px); overflow-y: auto`).
+  - Automatisches Schließen des Menüs bei Klick außerhalb der Navigationsleiste (`main.js`).
+- **CSS-Syntaxkorrektur & Bereinigung (`style.css`):**
+  - Behebung einer unvollständig geschlossenen Media-Query (`@media (max-width: 768px)`), die zuvor nachfolgende Root-Regeln der Sticky-Player-Bar versehentlich umschlossen hatte.
+  - Entfernung redundanter, veralteter `.navbar-nav`-Stile.
+- **Cache-Bumping auf v33 (`sw.js`, `index.html`, `main.js`):**
+  - Cache-Name auf `milo-radio-v33` angehoben und alle Skript- sowie Stylesheet-Referenzen synchronisiert.
+
 ## [1.5.9] - 2026-09-11
 
 ### Behoben (Sticky-Player-Bar Flexbox-Zusammenführung & CSS Network-First)
