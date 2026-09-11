@@ -375,6 +375,48 @@ body {
   .player-station-name {
     font-size: 0.78rem;
   }
+
+  .sticky-player-bar .player-ctrl-btn {
+    padding: 0.38rem 0.85rem !important;
+    font-size: 0.88rem;
+    white-space: nowrap;
+  }
+
+  .sticky-player-bar .player-ctrl-btn i {
+    font-size: 1.15rem !important;
+  }
+
+  .player-volume-container {
+    min-width: 0;
+  }
+
+  .player-volume-slider {
+    max-width: 95px !important;
+    min-width: 45px;
+  }
+}
+
+@media (max-width: 380px) {
+  .sticky-player-bar .player-ctrl-btn {
+    padding: 0.32rem 0.65rem !important;
+    font-size: 0.82rem;
+    gap: 0.35rem !important;
+  }
+
+  .player-volume-slider {
+    max-width: 70px !important;
+    min-width: 35px;
+  }
+}
+
+#volumeIcon {
+  transition: color 0.2s ease, transform 0.15s ease;
+  user-select: none;
+}
+
+#volumeIcon:hover {
+  color: #fff !important;
+  transform: scale(1.1);
 }
 
 /* Scrollbar */

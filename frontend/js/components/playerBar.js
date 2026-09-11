@@ -13,6 +13,8 @@ class PlayerBar {
     this.playBtn = null;
     this.stopBtn = null;
     this.volumeSlider = null;
+    this.volumeIcon = null;
+    this.previousVolume = 0.3;
     this.playerThumb = null;
     this.playerPlayingBadge = null;
     this.nowPlayingInterval = null;
@@ -32,6 +34,7 @@ class PlayerBar {
     this.playBtn = document.getElementById("playBtn");
     this.stopBtn = document.getElementById("stopBtn");
     this.volumeSlider = document.getElementById("volumeSlider");
+    this.volumeIcon = document.getElementById("volumeIcon");
     this.playerThumb = document.getElementById("playerThumb");
     this.playerPlayingBadge = document.getElementById("playerPlayingBadge");
 
@@ -55,15 +58,42 @@ class PlayerBar {
 
     // Lautstärke initialisieren
     const savedVolume = parseFloat(localStorage.getItem("radioVolume") ?? "0.3");
+    this.previousVolume = savedVolume > 0.01 ? savedVolume : 0.3;
+
     if (this.volumeSlider) {
       this.volumeSlider.value = savedVolume;
       this.volumeSlider.addEventListener("input", () => {
         const val = parseFloat(this.volumeSlider.value);
         radioService.setVolume(val);
         localStorage.setItem("radioVolume", val);
+        if (val > 0.01) {
+          this.previousVolume = val;
+        }
+        this.updateVolumeIcon(val);
       });
     }
+
+    if (this.volumeIcon) {
+      this.volumeIcon.addEventListener("click", () => {
+        const currentVal = this.volumeSlider ? parseFloat(this.volumeSlider.value) : (savedVolume ?? 0.3);
+        if (currentVal > 0.01) {
+          this.previousVolume = currentVal;
+          if (this.volumeSlider) this.volumeSlider.value = 0;
+          radioService.setVolume(0);
+          localStorage.setItem("radioVolume", 0);
+          this.updateVolumeIcon(0);
+        } else {
+          const restoreVal = this.previousVolume > 0.05 ? this.previousVolume : 0.3;
+          if (this.volumeSlider) this.volumeSlider.value = restoreVal;
+          radioService.setVolume(restoreVal);
+          localStorage.setItem("radioVolume", restoreVal);
+          this.updateVolumeIcon(restoreVal);
+        }
+      });
+    }
+
     radioService.setVolume(savedVolume);
+    this.updateVolumeIcon(savedVolume);
 
     // Play & Stop Buttons
     if (this.playBtn) {
@@ -225,6 +255,21 @@ class PlayerBar {
 
     if (this.stopBtn) {
       this.stopBtn.disabled = !isPlaying;
+    }
+  }
+
+  updateVolumeIcon(vol) {
+    if (!this.volumeIcon) return;
+    this.volumeIcon.className = "fs-5 flex-shrink-0";
+    if (vol <= 0.01) {
+      this.volumeIcon.classList.add("bi", "bi-volume-mute-fill", "text-danger");
+      this.volumeIcon.title = "Ton einschalten";
+    } else if (vol < 0.5) {
+      this.volumeIcon.classList.add("bi", "bi-volume-down-fill", "text-white-50");
+      this.volumeIcon.title = "Stummschalten";
+    } else {
+      this.volumeIcon.classList.add("bi", "bi-volume-up-fill", "text-white-50");
+      this.volumeIcon.title = "Stummschalten";
     }
   }
 }

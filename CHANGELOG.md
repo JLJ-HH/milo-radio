@@ -7,6 +7,19 @@ und dieses Projekt hält sich an [Semantic Versioning](https://semver.org/lang/d
 
 ---
 
+## [1.5.8] - 2026-09-11
+
+### Behoben (Mobile Sticky-Player-Bar Layout-Kollision)
+- **Flexibles Grid & Responsive Buttons (`index.html`, `style.css`):**
+  - Behebung des Problems, dass auf Smartphones der Lautstärkebereich (Lautsprecher-Icon und Schieberegler) in den Stop-Button hineinragte bzw. diesen überlappte.
+  - Ersatz der starren `col-6` / `col-6`-Aufteilung durch `col-auto flex-shrink-0` für die Play/Stop-Controls und `col` mit bündiger Rechtsausrichtung für den Lautstärkeregler.
+  - Kompakte, touchfreundliche Paddings für `.player-ctrl-btn` sowie dynamische Breitenbegrenzung (`player-volume-slider`) für kleine Bildschirme (bis hinunter zu 320px).
+- **Interaktiver Mute-Toggle (`playerBar.js`, `style.css`):**
+  - Klickbares Lautsprecher-Icon (`#volumeIcon`) zum schnellen Stummschalten und Wiederherstellen der vorherigen Lautstärke.
+  - Dynamischer Statuswechsel des Icons (`bi-volume-mute-fill`, `bi-volume-down-fill`, `bi-volume-up-fill`) passend zum Lautstärkepegel.
+- **Service Worker & Cache v31 (`sw.js`, `index.html`, `main.js`):**
+  - Cache-Version auf `milo-radio-v31` angehoben und Versions-Parameter in `index.html` und `main.js` auf `v=31` synchronisiert.
+
 ## [1.5.7] - 2026-09-05
 
 ### Behoben (Mobile Ansicht Top 5 Sender Play-Buttons)
