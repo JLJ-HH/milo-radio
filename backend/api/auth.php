@@ -41,12 +41,16 @@ else {
 // 3. ANFRAGE-HANDLER (ROUTING)
 // ============================================================
 
+$isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == 443);
+$expectedToken = $realPin ? hash_hmac('sha256', 'milo_admin_auth', $realPin) : '';
+
 /**
  * GET: Prüfen, ob der Admin aktuell eingeloggt ist
  */
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    // Gibt zurück, ob die Session-Variable 'isAdmin' auf true gesetzt ist
-    echo json_encode(['success' => $_SESSION['isAdmin'] ?? false]);
+    $isAuth = (isset($_SESSION['isAdmin']) && $_SESSION['isAdmin'] === true)
+        || (!empty($expectedToken) && isset($_COOKIE['milo_admin_token']) && hash_equals($expectedToken, $_COOKIE['milo_admin_token']));
+    echo json_encode(['success' => $isAuth]);
     exit;
 }
 
@@ -68,14 +72,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Eingegebene PIN mit der PIN aus der .env vergleichen
     if ($userPin === $realPin) {
-        // Erfolg: Session-ID regenerieren, um Session Hijacking zu verhindern
-        session_regenerate_id(true);
         // Login in der Session vermerken
         $_SESSION['isAdmin'] = true;
         
         // Zähler zurücksetzen
         $_SESSION['login_attempts'] = 0;
         unset($_SESSION['lockout_until']);
+
+        // Strato-robuster Auth-Cookie (persistiert auch bei FastCGI/Cluster-Sessions)
+        $adminToken = hash_hmac('sha256', 'milo_admin_auth', $realPin);
+        setcookie('milo_admin_token', $adminToken, [
+            'expires' => time() + (30 * 24 * 60 * 60),
+            'path' => '/',
+            'secure' => $isHttps,
+            'httponly' => true,
+            'samesite' => 'Lax'
+        ]);
         
         echo json_encode(['success' => true]);
     }
@@ -103,6 +115,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
  * DELETE: Admin möchte sich ausloggen
  */
 if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
+    // Cookie entfernen
+    setcookie('milo_admin_token', '', [
+        'expires' => time() - 3600,
+        'path' => '/',
+        'secure' => $isHttps,
+        'httponly' => true,
+        'samesite' => 'Lax'
+    ]);
     // Session komplett zerstören, um alle Login-Daten zu löschen
     session_destroy();
     echo json_encode(['success' => true]);

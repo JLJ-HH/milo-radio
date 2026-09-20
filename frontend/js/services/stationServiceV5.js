@@ -94,6 +94,7 @@ class StationService {
     try {
       const response = await fetch("../backend/api/manage_station.php", {
         method: "POST",
+        credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           action: "add",
@@ -137,6 +138,7 @@ class StationService {
     try {
       const response = await fetch("../backend/api/manage_station.php", {
         method: "POST",
+        credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           action: "update",
@@ -173,6 +175,7 @@ class StationService {
     try {
       const response = await fetch("../backend/api/manage_station.php", {
         method: "POST",
+        credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           action: "delete",

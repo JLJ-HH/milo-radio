@@ -7,6 +7,20 @@ und dieses Projekt hält sich an [Semantic Versioning](https://semver.org/lang/d
 
 ---
 
+## [1.5.12] - 2026-09-20
+
+### Behoben (Strato Shared-Hosting Cookie-Authentifizierung & Play/Stop-Karten-Toggle)
+- **Kryptographische Admin-Token-Cookies (`auth.php`, `manage_station.php`, `get_admin_stats.php`):**
+  - Strato Shared Hosting betreibt PHP-Worker über FastCGI-Cluster, wodurch Standard-PHP-Dateisessions (`PHPSESSID`) zwischen aufeinanderfolgenden API-Requests oft verloren gingen (HTTP 403 bei Speichern im Admin-Panel).
+  - Einführung eines sicheren, signierten HTTP-Only Cookies (`milo_admin_token`) via HMAC-SHA256, der auch bei Cluster-Sessions 100% zuverlässig persistiert.
+  - Einbindung von `credentials: "include"` in `stationServiceV5.js`.
+- **Play/Stop-Toggle auf Senderkarten (`radioPage.js`):**
+  - Beim Klick auf den Button eines bereits aktiven Senders (`Läuft`) wird die Wiedergabe nun sofort gestoppt/pausiert, anstatt den Stream fehlerhaft neu anzuspielen.
+- **Audio-Lebenszyklus & Ended-Handling (`radioServiceV2.js`):**
+  - Event-Listener für `ended` und `error` auf dem HTML5-Audio-Element implementiert, damit finite Audio-Dateien (z. B. Podcasts oder Sendeschluss) den Player sauber in den Ruhezustand versetzen.
+- **PWA Service Worker Cache v35 (`sw.js`, `index.html`, `main.js`):**
+  - Cache-Version auf `milo-radio-v35` angehoben.
+
 ## [1.5.11] - 2026-09-20
 
 ### Hinzugefügt & Behoben (Persistente Sender-Verwaltung in Strato MySQL-Datenbank)

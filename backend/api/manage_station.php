@@ -10,8 +10,19 @@ session_start();
 
 header('Content-Type: application/json; charset=utf-8');
 
-// 1. Authentifizierungs-Prüfung
-if (!isset($_SESSION['isAdmin']) || $_SESSION['isAdmin'] !== true) {
+// 1. Authentifizierungs-Prüfung (Session oder robuster milo_admin_token Cookie)
+$envPath = __DIR__ . '/../.env';
+$realPin = null;
+if (file_exists($envPath)) {
+    $env = parse_ini_file($envPath);
+    $realPin = isset($env['ADMIN_PIN']) ? trim($env['ADMIN_PIN']) : null;
+}
+$expectedToken = $realPin ? hash_hmac('sha256', 'milo_admin_auth', $realPin) : '';
+
+$isAdmin = (isset($_SESSION['isAdmin']) && $_SESSION['isAdmin'] === true)
+    || (!empty($expectedToken) && isset($_COOKIE['milo_admin_token']) && hash_equals($expectedToken, $_COOKIE['milo_admin_token']));
+
+if (!$isAdmin) {
     http_response_code(403);
     echo json_encode([
         'success' => false,

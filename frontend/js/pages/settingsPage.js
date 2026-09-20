@@ -73,7 +73,7 @@ export function render(container) {
             <div class="card bg-dark border-secondary shadow p-4">
                 <h5 class="card-title text-primary fw-bold mb-3">App-Informationen</h5>
                 <div class="text-white-50">
-                    <p class="mb-1">Milo Radio <span class="badge bg-primary ms-2">v1.5.11 Premium</span></p>
+                    <p class="mb-1">Milo Radio <span class="badge bg-primary ms-2">v1.5.12 Premium</span></p>
                     <p class="small">© 2026 • Entwickelt für erstklassige Audio-Erlebnisse.</p>
                 </div>
                 <hr class="border-secondary my-4">

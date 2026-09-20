@@ -119,10 +119,14 @@ export function render(container) {
 
       playB.onclick = (e) => {
         if (e) e.stopPropagation();
-        userStationService.addStation(station, 6);
-        radioService.play(station);
+        if (isActive) {
+          radioService.stop();
+        } else {
+          userStationService.addStation(station, 6);
+          radioService.play(station);
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }
         renderRadioCards();
-        window.scrollTo({ top: 0, behavior: "smooth" });
       };
 
       removeB.onclick = (e) => {

@@ -11,6 +11,15 @@ class RadioService {
     this.events = {};
     this.pingInterval = null;
     this.currentStationData = null;
+
+    // Sauberes Stoppen, wenn ein Audio-Stream/Podcast endet oder fehlschlägt
+    this.audio.addEventListener("ended", () => {
+      this.stop();
+    });
+    this.audio.addEventListener("error", (e) => {
+      console.warn("Audio Element Fehler:", e);
+      this.stop();
+    });
   }
 
   play(station) {
