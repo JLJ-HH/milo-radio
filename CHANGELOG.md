@@ -7,6 +7,23 @@ und dieses Projekt hält sich an [Semantic Versioning](https://semver.org/lang/d
 
 ---
 
+## [1.5.11] - 2026-09-20
+
+### Hinzugefügt & Behoben (Persistente Sender-Verwaltung in Strato MySQL-Datenbank)
+- **Neuer CRUD-API-Endpunkt (`backend/api/manage_station.php`):**
+  - Vollständige Anbindung an die MySQL-Tabelle `stations` für Erstellen (`add`), Aktualisieren (`update`) und Löschen (`delete`) von Sendern.
+  - Abgesichert durch Prüfung der Admin-Session (`$_SESSION['isAdmin'] === true`) mit HTTP 403 Schutz.
+  - Automatischer Sync mit der Fallback-Datei `frontend/json/sender_daten.json`.
+- **API-First Caching-Strategie (`stationServiceV5.js`):**
+  - Primäres Laden der Sender aus der Datenbank via `get_stations.php` mit Speicherung im `localStorage` als reiner Offline-Cache (verhindert das Überschreiben serverseitiger Sender durch veraltete lokale Daten).
+  - Umstellung von `add()`, `update()` und `remove()` auf asynchrone Server-Requests an `manage_station.php`.
+- **Interaktives Admin-Panel & UX (`adminPage.js`):**
+  - Umstellung des Formulars und der Senderkarten auf eindeutige Datenbank-IDs (`station.id`) statt fehleranfälliger Array-Indizes.
+  - Ladezustands-Animation (`Spinner`) auf dem Speichern-Button während laufender API-Requests.
+  - Visuelle Erfolgs- und Fehlermeldungen direkt im Formular (`#stationAlert`) ohne störende Popup-Dialoge.
+- **Cache-Bumping auf v34 (`sw.js`, `index.html`, `main.js`, `settingsPage.js`):**
+  - Cache-Name auf `milo-radio-v34` angehoben und alle Skript- sowie Stylesheet-Referenzen synchronisiert, damit Änderungen auf Smartphones und PWAs sofort wirksam werden.
+
 ## [1.5.10] - 2026-09-11
 
 ### Behoben (Navbar Mobile-Menü als schwebendes Overlay & CSS-Reparatur)

@@ -138,7 +138,8 @@ export function render(container) {
                             <input type="url" id="nowPlaying" class="form-control bg-secondary text-white border-0" placeholder="https://...">
                         </div>
                         
-                        <input type="hidden" id="editIndex">
+                        <input type="hidden" id="editStationId">
+                        <div id="stationAlert" class="col-12 d-none"></div>
                         
                         <div class="col-12 mt-4">
                             <button type="submit" class="btn btn-primary px-5 rounded-pill fw-bold" id="submitBtn">Speichern</button>
@@ -363,7 +364,7 @@ function initStationManagement(container) {
     const genreInput = container.querySelector("#genre");
     const logoInput = container.querySelector("#logo");
     const nowPlayingInput = container.querySelector("#nowPlaying");
-    const editIndexInput = container.querySelector("#editIndex");
+    const editStationIdInput = container.querySelector("#editStationId") || container.querySelector("#editIndex");
     const submitBtn = container.querySelector("#submitBtn");
     const resetBtn = container.querySelector("#resetBtn");
     const genreButtons = container.querySelector("#genreButtons");
@@ -372,8 +373,26 @@ function initStationManagement(container) {
     const formBody = container.querySelector("#stationFormBody");
     const formCollapseIcon = container.querySelector("#formCollapseIcon");
     const formCollapseText = container.querySelector("#formCollapseText");
+    const alertEl = container.querySelector("#stationAlert");
 
     let currentGenre = null;
+
+    const showAlert = (message, isSuccess = true) => {
+        if (!alertEl) return;
+        alertEl.className = `col-12 alert ${isSuccess ? "alert-success" : "alert-danger"} alert-dismissible fade show my-2`;
+        alertEl.innerHTML = `
+            <div class="d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center gap-2">
+                    <i class="bi ${isSuccess ? "bi-check-circle-fill text-success" : "bi-exclamation-triangle-fill text-danger"} fs-5"></i>
+                    <span>${message}</span>
+                </div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Schließen"></button>
+            </div>
+        `;
+        setTimeout(() => {
+            if (alertEl) alertEl.className = "col-12 d-none";
+        }, 5000);
+    };
 
     const renderGenreButtons = () => {
         genreButtons.innerHTML = "";
@@ -446,16 +465,21 @@ function initStationManagement(container) {
                 genreInput.value = station.genre ?? "";
                 logoInput.value = station.sender_Logo ?? "";
                 nowPlayingInput.value = station.now_playing_url ?? "";
-                editIndexInput.value = station._index;
+                editStationIdInput.value = station.id;
                 submitBtn.textContent = "Aktualisieren";
                 form.scrollIntoView({ behavior: "smooth", block: "start" });
             };
 
-            col.querySelector(".del-btn").onclick = (e) => {
+            col.querySelector(".del-btn").onclick = async (e) => {
                 e.stopPropagation();
-                if (confirm(`Station "${station.sender_Name}" wirklich löschen?`)) {
-                    stationService.remove(station._index);
-                    renderGenreButtons();
+                if (confirm(`Station "${station.sender_Name}" wirklich dauerhaft löschen?`)) {
+                    try {
+                        await stationService.remove(station.id);
+                        showAlert(`Station "${station.sender_Name}" erfolgreich gelöscht.`);
+                        renderGenreButtons();
+                    } catch (err) {
+                        showAlert(err.message || "Fehler beim Löschen des Senders.", false);
+                    }
                 }
             };
             genreContainer.appendChild(col);
@@ -464,12 +488,13 @@ function initStationManagement(container) {
 
     resetBtn.onclick = () => {
         form.reset();
-        editIndexInput.value = "";
+        editStationIdInput.value = "";
         submitBtn.textContent = "Speichern";
     };
 
-    form.onsubmit = (e) => {
+    form.onsubmit = async (e) => {
         e.preventDefault();
+        const editId = editStationIdInput.value;
         const station = {
             sender_Name: senderInput.value.trim(),
             sender_Url: urlInput.value.trim(),
@@ -477,17 +502,34 @@ function initStationManagement(container) {
             sender_Logo: logoInput.value.trim() || null,
             now_playing_url: nowPlayingInput.value.trim() || null,
         };
-        const editIndex = editIndexInput.value;
-        if (editIndex !== "") {
-            stationService.update(Number(editIndex), station);
-        } else {
-            stationService.add(station);
+
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span>Speichern...`;
+
+        try {
+            if (editId) {
+                station.id = Number(editId);
+                await stationService.update(station.id, station);
+                showAlert(`Sender "${station.sender_Name}" erfolgreich aktualisiert.`);
+            } else {
+                await stationService.add(station);
+                showAlert(`Sender "${station.sender_Name}" erfolgreich hinzugefügt.`);
+            }
+            currentGenre = station.genre || currentGenre;
+            renderGenreButtons();
+            form.reset();
+            editStationIdInput.value = "";
+            submitBtn.textContent = "Speichern";
+        } catch (err) {
+            showAlert(err.message || "Fehler beim Speichern des Senders.", false);
+        } finally {
+            submitBtn.disabled = false;
+            if (editStationIdInput.value !== "") {
+                submitBtn.textContent = "Aktualisieren";
+            } else {
+                submitBtn.textContent = "Speichern";
+            }
         }
-        currentGenre = station.genre || currentGenre;
-        renderGenreButtons();
-        form.reset();
-        editIndexInput.value = "";
-        submitBtn.textContent = "Speichern";
     };
 
     stationService.on("loaded", () => {

@@ -1,6 +1,6 @@
 # Milo Radio App
 
-[![Version](https://img.shields.io/badge/Version-1.5.1-blue?style=flat-square)](#)
+[![Version](https://img.shields.io/badge/Version-1.5.11-blue?style=flat-square)](#)
 [![PWA](https://img.shields.io/badge/PWA-Progressive%20Web%20App-purple?style=flat-square&logo=pwa)](https://developer.mozilla.org/de/docs/Web/Progressive_web_apps)
 [![JavaScript](https://img.shields.io/badge/JS-Vanilla%20ES6-yellow?style=flat-square&logo=javascript)](https://developer.mozilla.org/de/docs/Web/JavaScript)
 [![PHP](https://img.shields.io/badge/PHP-8.x-blue?style=flat-square&logo=php)](https://www.php.net/)
