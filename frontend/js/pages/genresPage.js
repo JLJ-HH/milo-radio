@@ -5,6 +5,7 @@
 import { userStationService } from "../services/userStationService.js";
 import { stationService } from "../services/stationServiceV5.js";
 import { radioService } from "../services/radioServiceV2.js";
+import { podcastService } from "../services/podcastService.js";
 
 export function render(container) {
   container.innerHTML = `
@@ -192,8 +193,9 @@ export function render(container) {
         const alreadyAdded = stationIndex !== -1;
         const isPlaying = cleanCurrentPlayingUrl && cleanCurrentPlayingUrl === cleanUrl;
 
+        const isPod = podcastService.isPodcast(station);
         const col = document.createElement("div");
-        col.className = "col-6 col-md-4 col-lg-3";
+        col.className = isPod ? "col-12 col-md-6 col-lg-4" : "col-6 col-md-4 col-lg-3";
         
         col.innerHTML = `
           <div class="card h-100 bg-dark text-white border-secondary shadow-sm card-glow ${alreadyAdded ? 'border-success border-2' : ''} ${isPlaying ? 'border-primary border-2' : ''}">
@@ -205,17 +207,36 @@ export function render(container) {
                   <h6 class="card-title small text-truncate mb-2" title="${name}">${name}</h6>
                   <div class="d-grid gap-1 mt-auto">
                     <button class="btn btn-sm ${isPlaying ? 'btn-success fw-bold' : 'btn-primary'} btn-genre-play rounded-pill shadow-sm">
-                      <i class="bi ${isPlaying ? 'bi-volume-up-fill' : 'bi-play-fill'}"></i> ${isPlaying ? 'Läuft' : 'Play'}
+                      <i class="bi ${isPlaying ? 'bi-volume-up-fill' : 'bi-play-fill'}"></i> ${isPlaying ? 'Läuft' : (isPod ? 'Neueste Folge' : 'Play')}
                     </button>
+                    ${isPod ? `
+                    <button class="btn btn-sm btn-outline-info rounded-pill btn-podcast-episodes">
+                      <i class="bi bi-collection-play me-1"></i> Weitere Folgen
+                    </button>
+                    ` : ''}
                     <button class="btn btn-sm ${alreadyAdded ? 'btn-success fw-bold' : 'btn-outline-primary text-white'} btn-genre-add rounded-pill">
                       ${alreadyAdded ? `✓ In Top 6 (Platz ${stationIndex + 1})` : '+ Zu Top 6'}
                     </button>
                   </div>
+                  ${isPod ? `
+                  <div class="podcast-episodes-panel d-none mt-2 text-start border-top border-secondary pt-2">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                      <span class="text-white-50" style="font-size: 0.72rem; text-transform: uppercase;">Letzte Episoden:</span>
+                      <span class="badge bg-secondary" style="font-size: 0.65rem;">Feed</span>
+                    </div>
+                    <div class="episodes-list-content">
+                      <div class="text-white-50 text-center py-2 small"><span class="spinner-border spinner-border-sm me-1"></span> Lade Episoden...</div>
+                    </div>
+                  </div>
+                  ` : ''}
               </div>
           </div>`;
 
         const playBtn = col.querySelector(".btn-genre-play");
         const addBtn = col.querySelector(".btn-genre-add");
+        const epBtn = col.querySelector(".btn-podcast-episodes");
+        const epPanel = col.querySelector(".podcast-episodes-panel");
+        const epListContent = col.querySelector(".episodes-list-content");
 
         playBtn.onclick = (e) => {
           if (e) e.stopPropagation();
@@ -229,6 +250,59 @@ export function render(container) {
           showToast(name);
           renderStationsByGenre(selectedGenre);
         };
+
+        if (epBtn && epPanel && epListContent) {
+          epBtn.onclick = async (e) => {
+            if (e) e.stopPropagation();
+            const isClosed = epPanel.classList.contains("d-none");
+            if (isClosed) {
+              epPanel.classList.remove("d-none");
+              epBtn.classList.add("active");
+              epBtn.innerHTML = '<i class="bi bi-chevron-up me-1"></i> Episoden schließen';
+
+              try {
+                const episodes = await podcastService.getEpisodes(station.sender_Url || station.sender_url, 4);
+                if (!episodes || episodes.length === 0) {
+                  epListContent.innerHTML = '<div class="text-white-50 small text-center py-1">Keine Episoden im Feed gefunden.</div>';
+                  return;
+                }
+
+                epListContent.innerHTML = episodes.map((ep, epIdx) => `
+                  <div class="d-flex align-items-center justify-content-between p-2 rounded bg-secondary bg-opacity-25 mb-1 hover-highlight">
+                    <div class="text-truncate me-2" style="font-size: 0.75rem;">
+                      <div class="text-white fw-semibold text-truncate" title="${ep.title}">${epIdx === 0 ? '🟢 ' : ''}${ep.title}</div>
+                      <div class="text-white-50 small">${ep.pub_date || ''} ${ep.duration ? '• ' + ep.duration : ''}</div>
+                    </div>
+                    <button class="btn btn-primary btn-sm rounded-circle p-0 flex-shrink-0 d-flex align-items-center justify-content-center btn-play-single-ep" data-idx="${epIdx}" style="width: 28px; height: 28px;" title="Diese Folge abspielen">
+                      <i class="bi bi-play-fill fs-6"></i>
+                    </button>
+                  </div>
+                `).join("");
+
+                // Klickhandler für jede Episode
+                const epPlayButtons = epListContent.querySelectorAll(".btn-play-single-ep");
+                epPlayButtons.forEach((btn) => {
+                  btn.onclick = (ev) => {
+                    if (ev) ev.stopPropagation();
+                    const idx = parseInt(btn.getAttribute("data-idx"), 10);
+                    const chosenEp = episodes[idx];
+                    if (chosenEp) {
+                      radioService.play(station, chosenEp);
+                      renderStationsByGenre(selectedGenre);
+                    }
+                  };
+                });
+
+              } catch (err) {
+                epListContent.innerHTML = '<div class="text-danger small text-center py-1">Fehler beim Laden der Folgen.</div>';
+              }
+            } else {
+              epPanel.classList.add("d-none");
+              epBtn.classList.remove("active");
+              epBtn.innerHTML = '<i class="bi bi-collection-play me-1"></i> Weitere Folgen';
+            }
+          };
+        }
 
         genreContainer.appendChild(col);
       });

@@ -551,5 +551,13 @@
     "sender_Logo": "https://station-images-prod.radio-assets.com/300/radioactiva997.jpeg?version=eff15ac6fb908d533f43823dde6344ce564eb034",
     "genre": "Honduras",
     "now_playing_url": ""
+  },
+  {
+    "id": 70,
+    "sender_Name": "KI-Update – ein heise-Podcast",
+    "sender_Url": "https://kiupdate.podigee.io/feed/mp3",
+    "sender_Logo": "https://images.podigee-cdn.net/0x,sjEUqGzA3DmRKzK3Mfuhj-hs1oDpmdTowX7mfNzlElrw=/https://main.podigee-cdn.net/uploads/u13959/3d6da9ca-4ab8-42a2-9052-728f60454c16.jpg",
+    "genre": "Podcast",
+    "now_playing_url": ""
   }
 ]

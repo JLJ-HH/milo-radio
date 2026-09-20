@@ -1,9 +1,21 @@
 /**
  * GLOBAL PLAYER BAR COMPONENT (playerBar.js)
- * Verwaltet die permanente Sticky-Bottom-Player-Bar über alle Seiten (Radio, Genres, Stats, etc.) hinweg.
+ * Verwaltet die permanente Sticky-Bottom-Player-Bar über alle Seiten hinweg.
+ * Unterstützt Live-Radio sowie Podcast-Modus (Play/Pause, Scrubbing, Timecode, +/- 15s).
  */
 import { radioService } from "../services/radioServiceV2.js";
 import { userStationService } from "../services/userStationService.js";
+
+function formatTime(sec) {
+  if (!Number.isFinite(sec) || sec < 0) return "00:00";
+  const h = Math.floor(sec / 3600);
+  const m = Math.floor((sec % 3600) / 60);
+  const s = Math.floor(sec % 60);
+  if (h > 0) {
+    return `${h}:${m < 10 ? "0" : ""}${m}:${s < 10 ? "0" : ""}${s}`;
+  }
+  return `${m < 10 ? "0" : ""}${m}:${s < 10 ? "0" : ""}${s}`;
+}
 
 class PlayerBar {
   constructor() {
@@ -11,6 +23,8 @@ class PlayerBar {
     this.stationTitle = null;
     this.nowPlayingText = null;
     this.playBtn = null;
+    this.playBtnIcon = null;
+    this.playBtnText = null;
     this.stopBtn = null;
     this.volumeSlider = null;
     this.volumeIcon = null;
@@ -21,6 +35,15 @@ class PlayerBar {
     this.currentStation = null;
     this.lastPlayedStation = null;
     this.isInitialized = false;
+
+    // Podcast Controls
+    this.podcastBarRow = null;
+    this.podcastProgressBar = null;
+    this.podcastCurrentTime = null;
+    this.podcastTotalTime = null;
+    this.skipBack15Btn = null;
+    this.skipFwd15Btn = null;
+    this.isDraggingTimeline = false;
   }
 
   init() {
@@ -32,11 +55,21 @@ class PlayerBar {
     this.stationTitle = document.getElementById("stationTitle");
     this.nowPlayingText = document.getElementById("nowPlayingText");
     this.playBtn = document.getElementById("playBtn");
+    this.playBtnIcon = document.getElementById("playBtnIcon");
+    this.playBtnText = document.getElementById("playBtnText");
     this.stopBtn = document.getElementById("stopBtn");
     this.volumeSlider = document.getElementById("volumeSlider");
     this.volumeIcon = document.getElementById("volumeIcon");
     this.playerThumb = document.getElementById("playerThumb");
     this.playerPlayingBadge = document.getElementById("playerPlayingBadge");
+
+    // Podcast Elements
+    this.podcastBarRow = document.getElementById("podcastBarRow");
+    this.podcastProgressBar = document.getElementById("podcastProgressBar");
+    this.podcastCurrentTime = document.getElementById("podcastCurrentTime");
+    this.podcastTotalTime = document.getElementById("podcastTotalTime");
+    this.skipBack15Btn = document.getElementById("skipBack15Btn");
+    this.skipFwd15Btn = document.getElementById("skipFwd15Btn");
 
     // Body mit Padding-Klasse versehen
     document.body.classList.add("has-sticky-player");
@@ -98,6 +131,12 @@ class PlayerBar {
     // Play & Stop Buttons
     if (this.playBtn) {
       this.playBtn.addEventListener("click", () => {
+        if (radioService.isPodcast) {
+          radioService.togglePlayPause();
+          this.updateUI();
+          return;
+        }
+
         const activeStations = userStationService.getStations();
         if (!this.currentStation && this.lastPlayedStation) {
           this.currentStation = this.lastPlayedStation;
@@ -117,8 +156,33 @@ class PlayerBar {
       });
     }
 
+    // Podcast Timeline & Skip Handlers
+    if (this.podcastProgressBar) {
+      this.podcastProgressBar.addEventListener("input", () => {
+        this.isDraggingTimeline = true;
+        const percent = parseFloat(this.podcastProgressBar.value) || 0;
+        const duration = radioService.audio.duration || 0;
+        if (this.podcastCurrentTime && duration > 0) {
+          this.podcastCurrentTime.textContent = formatTime((percent / 100) * duration);
+        }
+      });
+
+      this.podcastProgressBar.addEventListener("change", () => {
+        const percent = parseFloat(this.podcastProgressBar.value) || 0;
+        radioService.seekPercent(percent);
+        this.isDraggingTimeline = false;
+      });
+    }
+
+    if (this.skipBack15Btn) {
+      this.skipBack15Btn.addEventListener("click", () => radioService.skip(-15));
+    }
+    if (this.skipFwd15Btn) {
+      this.skipFwd15Btn.addEventListener("click", () => radioService.skip(15));
+    }
+
     // Events von RadioService abonnieren
-    radioService.on("play", () => {
+    radioService.on("play", (data) => {
       this.currentStation = radioService.currentStationData;
       if (this.currentStation) {
         this.lastPlayedStation = this.currentStation;
@@ -127,10 +191,32 @@ class PlayerBar {
       this.updateUI();
     });
 
+    radioService.on("pause", () => {
+      this.updateUI();
+    });
+
     radioService.on("stop", () => {
       this.stopNowPlayingUpdates();
       this.currentStation = null;
       this.updateUI();
+    });
+
+    radioService.on("timeupdate", ({ currentTime, duration, progress }) => {
+      if (this.podcastCurrentTime) {
+        this.podcastCurrentTime.textContent = formatTime(currentTime);
+      }
+      if (this.podcastTotalTime && duration > 0) {
+        this.podcastTotalTime.textContent = formatTime(duration);
+      }
+      if (this.podcastProgressBar && !this.isDraggingTimeline) {
+        this.podcastProgressBar.value = progress || 0;
+      }
+    });
+
+    radioService.on("durationchange", ({ duration }) => {
+      if (this.podcastTotalTime && duration > 0) {
+        this.podcastTotalTime.textContent = formatTime(duration);
+      }
     });
 
     // Events von UserStationService abonnieren
@@ -161,6 +247,15 @@ class PlayerBar {
   async fetchNowPlaying(station) {
     if (!station) {
       if (this.nowPlayingText) this.nowPlayingText.textContent = "";
+      return;
+    }
+
+    // Bei Podcasts: Direkten Episodentitel nutzen, kein Polling auf metadata.php
+    if (radioService.isPodcast) {
+      const ep = radioService.getCurrentEpisode();
+      if (this.nowPlayingText) {
+        this.nowPlayingText.textContent = ep?.title ? `🎙️ ${ep.title}` : `🎙️ ${station.sender_Name || station.sender_name || "Podcast"}`;
+      }
       return;
     }
 
@@ -199,7 +294,9 @@ class PlayerBar {
     this.stopNowPlayingUpdates();
     if (!station) return;
     this.fetchNowPlaying(station);
-    this.nowPlayingInterval = setInterval(() => this.fetchNowPlaying(station), 15000);
+    if (!radioService.isPodcast) {
+      this.nowPlayingInterval = setInterval(() => this.fetchNowPlaying(station), 15000);
+    }
   }
 
   stopNowPlayingUpdates() {
@@ -213,9 +310,20 @@ class PlayerBar {
   }
 
   updateUI() {
-    const isPlaying = !!this.currentStation;
+    const isPlaying = radioService.isPlaying;
+    const isPaused = radioService.isPaused;
+    const isPodcast = radioService.isPodcast;
     const activeObj = this.currentStation || this.lastPlayedStation;
     const activeStations = userStationService.getStations();
+
+    // Podcast Bar Row Ein-/Ausblenden
+    if (this.podcastBarRow) {
+      if (isPodcast && (isPlaying || isPaused || this.currentStation)) {
+        this.podcastBarRow.classList.remove("d-none");
+      } else {
+        this.podcastBarRow.classList.add("d-none");
+      }
+    }
 
     if (this.playerThumb) {
       const logo = activeObj ? (activeObj.sender_Logo || activeObj.sender_logo || "./images/cholo_love.png") : "./images/milo.jpg";
@@ -236,11 +344,12 @@ class PlayerBar {
     }
 
     if (this.stationTitle) {
-      if (isPlaying && this.currentStation) {
-        const name = this.currentStation.sender_Name || this.currentStation.sender_name || "Radio";
-        this.stationTitle.textContent = `Hört gerade: ${name}`;
+      const name = activeObj ? (activeObj.sender_Name || activeObj.sender_name || "Radio") : "Radio";
+      if (isPlaying) {
+        this.stationTitle.textContent = isPodcast ? `Podcast: ${name}` : `Hört gerade: ${name}`;
+      } else if (isPaused) {
+        this.stationTitle.textContent = `Pausiert: ${name}`;
       } else if (this.lastPlayedStation) {
-        const name = this.lastPlayedStation.sender_Name || this.lastPlayedStation.sender_name || "Radio";
         this.stationTitle.textContent = `Zuletzt gehört: ${name}`;
       } else if (activeStations.length === 0) {
         this.stationTitle.textContent = "Keine Favoriten gewählt";
@@ -249,12 +358,33 @@ class PlayerBar {
       }
     }
 
+    // Play & Stop Button Logik
     if (this.playBtn) {
-      this.playBtn.disabled = (activeStations.length === 0 && !this.lastPlayedStation) || isPlaying;
+      if (isPodcast) {
+        this.playBtn.disabled = false;
+        if (isPlaying) {
+          if (this.playBtnIcon) this.playBtnIcon.className = "bi bi-pause-fill fs-5";
+          if (this.playBtnText) this.playBtnText.textContent = "Pause";
+          this.playBtn.classList.remove("btn-primary");
+          this.playBtn.classList.add("btn-warning");
+        } else {
+          if (this.playBtnIcon) this.playBtnIcon.className = "bi bi-play-fill fs-5";
+          if (this.playBtnText) this.playBtnText.textContent = "Play";
+          this.playBtn.classList.remove("btn-warning");
+          this.playBtn.classList.add("btn-primary");
+        }
+      } else {
+        // Normaler Radio-Modus
+        if (this.playBtnIcon) this.playBtnIcon.className = "bi bi-play-fill fs-5";
+        if (this.playBtnText) this.playBtnText.textContent = "Play";
+        this.playBtn.classList.remove("btn-warning");
+        this.playBtn.classList.add("btn-primary");
+        this.playBtn.disabled = (activeStations.length === 0 && !this.lastPlayedStation) || isPlaying;
+      }
     }
 
     if (this.stopBtn) {
-      this.stopBtn.disabled = !isPlaying;
+      this.stopBtn.disabled = !isPlaying && !isPaused && !this.currentStation;
     }
   }
 

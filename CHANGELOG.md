@@ -7,6 +7,30 @@ und dieses Projekt hält sich an [Semantic Versioning](https://semver.org/lang/d
 
 ---
 
+## [1.6.0] - 2026-09-20
+
+### Hinzugefügt (Vollständige Podcast-Integration & intelligentes Audio-Handling)
+- **Backend Podcast RSS-Feed Resolver mit Caching (`backend/api/podcast.php`):**
+  - Automatisches Auslesen von Podcast-Feeds (XML/RSS) mit Namespace-Unterstützung (`itunes:image`, `itunes:duration`, `enclosure`, etc.).
+  - `action=info`: Liefert Channel-Metadaten für den Admin Auto-Fill (Titel, Beschreibung, Logo, Genre, neueste Folge).
+  - `action=episodes`: Liefert die letzten N Episoden inklusive Audio-Stream-URL, Publikationsdatum und formatierter Laufzeit.
+  - 15-Minuten Server-Cache (`sys_get_temp_dir()`) zur Entlastung externer Podcast-Server und für minimale Ladezeiten.
+- **Frontend Podcast Service (`frontend/js/services/podcastService.js`):**
+  - Automatische Erkennung von Podcasts anhand des Genres (`Podcast`) oder Feed-URL-Strukturen (`/feed`, `.xml`, `podigee.io`).
+  - Asynchrone Auflösung der tatsächlichen Audio-URL der neuesten Folge beim Klick auf Play.
+- **Player-Upgrade: Echtes Play/Pause, Timeline & 15s Skip (`radioServiceV2.js`, `playerBar.js`, `index.html`):**
+  - Implementierung von `pause()` und `resume()`: Beim Pausieren von Podcasts bleibt die aktuelle Spielzeit (`currentTime`) exakt erhalten (kein Zurücksetzen auf 0:00 mehr).
+  - Fortschrittsleiste (Scrubber) mit Zeitanzeige (`Aktuelle Zeit / Gesamtlänge`) zum sekundengenauen Vor- und Zurückspulen.
+  - Skip-Buttons (`-15s` / `+15s`) für schnelles Springen in Podcast-Folgen.
+  - Automatischer UI-Wechsel: Normales Radio behält die schlanke Live-Stream-Leiste, Podcasts schalten automatisch die Timeline und den Play/Pause-Button frei.
+- **Episodenauswahl in der Genre-Übersicht (`genresPage.js`):**
+  - Auf jeder Podcast-Karte befindet sich neben dem Sofort-Play-Button für die neueste Folge ein Button **„Weitere Folgen“**.
+  - Klappt eine übersichtliche Liste der letzten Episoden mit Datum, Laufzeit und individuellem Play-Button auf.
+- **Admin 1-Klick Podcast Auto-Import (`adminPage.js`):**
+  - Neuer Bereich im Admin-Formular: Eingabe einer Feed-URL (z. B. `https://kiupdate.podigee.io/feed/mp3`) liest per Zauberstab alle Metadaten (Name, Genre, Logo, Stream-URL) vollautomatisch aus.
+- **PWA Service Worker & Cache-Busting auf v36 (`sw.js`, `index.html`, `main.js`):**
+  - `CACHE_NAME` auf `milo-radio-v36` angehoben und `podcastService.js` in die Offline-Cache-Liste aufgenommen.
+
 ## [1.5.12] - 2026-09-20
 
 ### Behoben (Strato Shared-Hosting Cookie-Authentifizierung & Play/Stop-Karten-Toggle)

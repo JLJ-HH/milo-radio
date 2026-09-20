@@ -116,13 +116,27 @@ export function render(container) {
                     </button>
                 </div>
                 <div id="stationFormBody" class="mt-3">
+                    <!-- Podcast Auto-Import Feature -->
+                    <div class="p-3 mb-3 rounded-4" style="background: rgba(99, 102, 241, 0.08); border: 1px dashed rgba(99, 102, 241, 0.35);">
+                        <label class="form-label small text-info fw-bold mb-1 d-flex align-items-center gap-2">
+                            <i class="bi bi-magic fs-5 text-warning"></i> <span>Podcast Auto-Import (RSS-Feed oder Podigee-Link)</span>
+                        </label>
+                        <div class="input-group">
+                            <input type="url" id="podcastImportUrl" class="form-control bg-secondary text-white border-0" placeholder="z. B. https://kiupdate.podigee.io/feed/mp3 oder https://kiupdate.podigee.io/">
+                            <button type="button" id="podcastImportBtn" class="btn btn-info fw-bold px-3 d-flex align-items-center gap-1">
+                                <i class="bi bi-cloud-arrow-down-fill"></i> <span>Feed laden & ausfüllen</span>
+                            </button>
+                        </div>
+                        <div id="podcastImportFeedback" class="small mt-2" style="display: none;"></div>
+                    </div>
+
                     <form id="radioForm" class="row g-3 pt-2">
                         <div class="col-md-6">
                             <label class="form-label small text-white-50">Sender Name</label>
                             <input type="text" id="sender" class="form-control bg-secondary text-white border-0" placeholder="Name des Senders" required>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label small text-white-50">Stream URL</label>
+                            <label class="form-label small text-white-50">Stream URL (oder RSS-Feed)</label>
                             <input type="url" id="url" class="form-control bg-secondary text-white border-0" placeholder="https://..." required>
                         </div>
                         <div class="col-md-4">
@@ -387,12 +401,58 @@ function initStationManagement(container) {
                     <span>${message}</span>
                 </div>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Schließen"></button>
-            </div>
-        `;
         setTimeout(() => {
             if (alertEl) alertEl.className = "col-12 d-none";
         }, 5000);
     };
+
+    const podcastImportUrl = container.querySelector("#podcastImportUrl");
+    const podcastImportBtn = container.querySelector("#podcastImportBtn");
+    const podcastImportFeedback = container.querySelector("#podcastImportFeedback");
+
+    if (podcastImportBtn && podcastImportUrl) {
+        podcastImportBtn.onclick = async () => {
+            const feedUrl = podcastImportUrl.value.trim();
+            if (!feedUrl) {
+                podcastImportFeedback.style.display = "block";
+                podcastImportFeedback.className = "small mt-2 text-warning";
+                podcastImportFeedback.textContent = "Bitte eine RSS-Feed-URL oder einen Podcast-Link eingeben.";
+                return;
+            }
+
+            const origHtml = podcastImportBtn.innerHTML;
+            podcastImportBtn.disabled = true;
+            podcastImportBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Lade Feed...';
+            podcastImportFeedback.style.display = "none";
+
+            try {
+                const res = await fetch(`../backend/api/podcast.php?action=info&url=${encodeURIComponent(feedUrl)}`);
+                if (!res.ok) throw new Error(`Server antwortete mit Status ${res.status}`);
+                const data = await res.json();
+                if (!data.success) {
+                    throw new Error(data.error || "Fehler beim Laden des Podcast-Feeds.");
+                }
+
+                senderInput.value = data.title || "";
+                urlInput.value = data.feed_url || feedUrl;
+                genreInput.value = "Podcast";
+                logoInput.value = data.logo || "";
+                nowPlayingInput.value = "";
+
+                podcastImportFeedback.style.display = "block";
+                podcastImportFeedback.className = "small mt-2 text-success fw-semibold";
+                const latestTitle = data.latest_episode?.title ? ` (Neueste Folge: "${data.latest_episode.title}")` : "";
+                podcastImportFeedback.innerHTML = `<i class="bi bi-check-circle-fill me-1"></i> Erfolgreich eingelesen: "${data.title}"${latestTitle}. Jetzt unten auf "Speichern" klicken!`;
+            } catch (err) {
+                podcastImportFeedback.style.display = "block";
+                podcastImportFeedback.className = "small mt-2 text-danger";
+                podcastImportFeedback.innerHTML = `<i class="bi bi-exclamation-circle-fill me-1"></i> ${err.message}`;
+            } finally {
+                podcastImportBtn.disabled = false;
+                podcastImportBtn.innerHTML = origHtml;
+            }
+        };
+    }
 
     const renderGenreButtons = () => {
         genreButtons.innerHTML = "";
@@ -488,6 +548,8 @@ function initStationManagement(container) {
 
     resetBtn.onclick = () => {
         form.reset();
+        if (podcastImportUrl) podcastImportUrl.value = "";
+        if (podcastImportFeedback) podcastImportFeedback.style.display = "none";
         editStationIdInput.value = "";
         submitBtn.textContent = "Speichern";
     };
@@ -518,6 +580,8 @@ function initStationManagement(container) {
             currentGenre = station.genre || currentGenre;
             renderGenreButtons();
             form.reset();
+            if (podcastImportUrl) podcastImportUrl.value = "";
+            if (podcastImportFeedback) podcastImportFeedback.style.display = "none";
             editStationIdInput.value = "";
             submitBtn.textContent = "Speichern";
         } catch (err) {

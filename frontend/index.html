@@ -72,6 +72,28 @@
     -->
     <div id="stickyPlayerBar" class="sticky-player-bar shadow-lg">
       <div class="container-fluid px-2 px-md-4">
+        
+        <!-- Podcast Timeline Bar (Nur sichtbar wenn ein Podcast aktiv ist) -->
+        <div id="podcastBarRow" class="d-none row align-items-center mb-2 gx-2">
+          <div class="col-auto">
+            <span id="podcastCurrentTime" class="badge bg-secondary bg-opacity-75 text-white font-monospace small px-2 py-1">00:00</span>
+          </div>
+          <div class="col">
+            <input type="range" id="podcastProgressBar" min="0" max="100" value="0" step="0.1" class="form-range custom-range w-100" style="cursor: pointer; height: 6px;" aria-label="Podcast Fortschritt">
+          </div>
+          <div class="col-auto d-flex align-items-center gap-2">
+            <span id="podcastTotalTime" class="badge bg-secondary bg-opacity-75 text-white font-monospace small px-2 py-1">00:00</span>
+            <div class="btn-group btn-group-sm">
+              <button id="skipBack15Btn" class="btn btn-outline-secondary btn-sm py-0 px-2 text-white-50 d-flex align-items-center gap-1" title="15 Sekunden zurück" style="font-size: 0.72rem; height: 24px;">
+                <i class="bi bi-arrow-counterclockwise"></i> <span>15s</span>
+              </button>
+              <button id="skipFwd15Btn" class="btn btn-outline-secondary btn-sm py-0 px-2 text-white-50 d-flex align-items-center gap-1" title="15 Sekunden vor" style="font-size: 0.72rem; height: 24px;">
+                <span>15s</span> <i class="bi bi-arrow-clockwise"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
         <div class="row align-items-center g-2">
           
           <!-- 1. Fetch / Now-Playing Bereich -->
@@ -96,7 +118,7 @@
             <!-- Play & Stop Controls -->
             <div class="d-flex align-items-center gap-2 flex-shrink-0 player-btn-group">
               <button id="playBtn" class="btn btn-primary rounded-pill px-3 px-md-4 fw-semibold d-flex align-items-center gap-2 shadow-sm player-ctrl-btn" disabled>
-                <i class="bi bi-play-fill fs-5"></i><span>Play</span>
+                <i class="bi bi-play-fill fs-5" id="playBtnIcon"></i><span id="playBtnText">Play</span>
               </button>
               <button id="stopBtn" class="btn btn-outline-light rounded-pill px-3 fw-semibold d-flex align-items-center gap-2 player-ctrl-btn" disabled>
                 <i class="bi bi-stop-fill fs-5"></i><span>Stop</span>
@@ -133,9 +155,9 @@
         });
         window.addEventListener("load", () => {
           navigator.serviceWorker
-            .register("./sw.js?v=35")
+            .register("./sw.js?v=36")
             .then((reg) => {
-              console.log("SW v35 registriert");
+              console.log("SW v36 registriert");
               reg.update();
             })
             .catch((err) => console.log("SW Fehler:", err));
@@ -144,7 +166,7 @@
     </script>
 
     <!-- Main JS entry point -->
-    <script type="module" src="./js/main.js?v=35"></script>
+    <script type="module" src="./js/main.js?v=36"></script>
 
     <!-- Privacy & Impressum Modal -->
     <div class="modal fade" id="privacyModal" tabindex="-1" aria-hidden="true">
