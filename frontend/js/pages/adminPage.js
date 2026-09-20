@@ -401,6 +401,8 @@ function initStationManagement(container) {
                     <span>${message}</span>
                 </div>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Schließen"></button>
+            </div>
+        `;
         setTimeout(() => {
             if (alertEl) alertEl.className = "col-12 d-none";
         }, 5000);

@@ -9,6 +9,10 @@ und dieses Projekt hält sich an [Semantic Versioning](https://semver.org/lang/d
 
 ## [1.6.0] - 2026-09-20
 
+### Behoben
+- **Template-Literal Syntaxfehler in `adminPage.js`:**
+  - Schließendes Backtick (` ` `) und End-Tag im Template-String der `showAlert`-Funktion wiederhergestellt, wodurch alle nachfolgenden Syntax-Warnungen im Editor vollständig behoben wurden.
+
 ### Hinzugefügt (Vollständige Podcast-Integration & intelligentes Audio-Handling)
 - **Backend Podcast RSS-Feed Resolver mit Caching (`backend/api/podcast.php`):**
   - Automatisches Auslesen von Podcast-Feeds (XML/RSS) mit Namespace-Unterstützung (`itunes:image`, `itunes:duration`, `enclosure`, etc.).
