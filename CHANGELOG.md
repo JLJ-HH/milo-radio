@@ -7,6 +7,20 @@ und dieses Projekt hält sich an [Semantic Versioning](https://semver.org/lang/d
 
 ---
 
+## [1.7.0] - 2026-09-20
+
+### Hinzugefügt (Online-Radiosendersuche & 1-Klick Auto-Fill via Radio-Browser)
+- **Backend Radio-Search API mit Caching (`backend/api/radio_search.php`):**
+  - Durchsucht das weltweite Radio-Browser-Verzeichnis (> 40.000 Sender) in Echtzeit.
+  - Liefert Sendername, Audio-Stream-URL (`url_resolved`), offizielles Sender-Logo (`favicon`), Genre und Codec/Bitrate.
+  - 10-Minuten Server-Cache (`sys_get_temp_dir()`) für minimale Ladezeiten und Schutz der Schnittstelle.
+- **Elegantes Tab-System ohne Emojis im Admin-Panel (`adminPage.js`):**
+  - Modernes, aufgeräumtes Design mit schlichten Bootstrap-Icons (`bi-broadcast`, `bi-rss`, `bi-search`) und sauberer Typografie – ohne Emojis.
+  - Tab 1: **Radiosender suchen** – Sendernamen eingeben (z. B. „Rock Antenne“, „Sunshine Live“, „1LIVE“), Trefferliste mit Senderlogo, Genre und Bitrate durchstöbern und per Klick auf „Übernehmen“ alle Formularfelder automatisch befüllen lassen.
+  - Tab 2: **Podcast importieren** – Bequemes Importieren von RSS-/Podigee-Links wie gewohnt.
+- **PWA Service Worker & Cache-Busting auf v37 (`sw.js`, `index.html`, `main.js`):**
+  - `CACHE_NAME` auf `milo-radio-v37` angehoben und Versions-Parameter in `index.html` und `main.js` synchronisiert.
+
 ## [1.6.0] - 2026-09-20
 
 ### Behoben

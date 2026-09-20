@@ -155,18 +155,21 @@
         });
         window.addEventListener("load", () => {
           navigator.serviceWorker
-            .register("./sw.js?v=36")
-            .then((reg) => {
-              console.log("SW v36 registriert");
-              reg.update();
+            .register("./sw.js?v=37")
+            .then((registration) => {
+              console.log("ServiceWorker erfolgreich registriert:", registration.scope);
             })
-            .catch((err) => console.log("SW Fehler:", err));
+            .catch((error) => {
+              console.log("ServiceWorker Registrierung fehlgeschlagen:", error);
+            });
         });
       }
     </script>
 
-    <!-- Main JS entry point -->
-    <script type="module" src="./js/main.js?v=36"></script>
+    <!-- 
+      HAUPT-SKRIPT (main.js)
+    -->
+    <script type="module" src="./js/main.js?v=37"></script>
 
     <!-- Privacy & Impressum Modal -->
     <div class="modal fade" id="privacyModal" tabindex="-1" aria-hidden="true">

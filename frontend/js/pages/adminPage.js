@@ -116,18 +116,47 @@ export function render(container) {
                     </button>
                 </div>
                 <div id="stationFormBody" class="mt-3">
-                    <!-- Podcast Auto-Import Feature -->
-                    <div class="p-3 mb-3 rounded-4" style="background: rgba(99, 102, 241, 0.08); border: 1px dashed rgba(99, 102, 241, 0.35);">
-                        <label class="form-label small text-info fw-bold mb-1 d-flex align-items-center gap-2">
-                            <i class="bi bi-magic fs-5 text-warning"></i> <span>Podcast Auto-Import (RSS-Feed oder Podigee-Link)</span>
-                        </label>
-                        <div class="input-group">
-                            <input type="url" id="podcastImportUrl" class="form-control bg-secondary text-white border-0" placeholder="z. B. https://kiupdate.podigee.io/feed/mp3 oder https://kiupdate.podigee.io/">
-                            <button type="button" id="podcastImportBtn" class="btn btn-info fw-bold px-3 d-flex align-items-center gap-1">
-                                <i class="bi bi-cloud-arrow-down-fill"></i> <span>Feed laden & ausfüllen</span>
-                            </button>
+                    <!-- Auto-Import / Suche Feature Box -->
+                    <div class="p-3 mb-3 rounded-4" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1);">
+                        <!-- Tab Umschalter -->
+                        <div class="d-flex align-items-center justify-content-between mb-3 border-bottom border-secondary pb-2 flex-wrap gap-2">
+                            <div class="d-flex gap-2">
+                                <button type="button" id="tabRadioSearchBtn" class="btn btn-sm btn-primary rounded-pill px-3 fw-semibold d-flex align-items-center gap-2">
+                                    <i class="bi bi-broadcast"></i>
+                                    <span>Radiosender suchen</span>
+                                </button>
+                                <button type="button" id="tabPodcastImportBtn" class="btn btn-sm btn-outline-secondary rounded-pill px-3 fw-semibold d-flex align-items-center gap-2 text-white-50">
+                                    <i class="bi bi-rss"></i>
+                                    <span>Podcast importieren</span>
+                                </button>
+                            </div>
+                            <span class="text-white-50 small d-none d-sm-inline">Auto-Fill für Formulardaten</span>
                         </div>
-                        <div id="podcastImportFeedback" class="small mt-2" style="display: none;"></div>
+
+                        <!-- Tab 1: Radiosender Suche -->
+                        <div id="tabRadioSearchContent">
+                            <div class="input-group">
+                                <span class="input-group-text bg-secondary text-white-50 border-0"><i class="bi bi-search"></i></span>
+                                <input type="text" id="radioSearchInput" class="form-control bg-secondary text-white border-0" placeholder="Sender suchen (z. B. Rock Antenne, Sunshine Live, 1LIVE)...">
+                                <button type="button" id="radioSearchBtn" class="btn btn-primary fw-semibold px-3 d-flex align-items-center gap-1">
+                                    <span>Suchen</span>
+                                </button>
+                            </div>
+                            <div id="radioSearchFeedback" class="small mt-2" style="display: none;"></div>
+                            <div id="radioSearchResults" class="mt-3 row g-2" style="display: none; max-height: 290px; overflow-y: auto;"></div>
+                        </div>
+
+                        <!-- Tab 2: Podcast Auto-Import -->
+                        <div id="tabPodcastImportContent" style="display: none;">
+                            <div class="input-group">
+                                <span class="input-group-text bg-secondary text-white-50 border-0"><i class="bi bi-link-45deg"></i></span>
+                                <input type="url" id="podcastImportUrl" class="form-control bg-secondary text-white border-0" placeholder="z. B. https://kiupdate.podigee.io/feed/mp3 oder https://kiupdate.podigee.io/">
+                                <button type="button" id="podcastImportBtn" class="btn btn-info fw-semibold px-3 d-flex align-items-center gap-1">
+                                    <i class="bi bi-cloud-arrow-down-fill"></i> <span>Feed laden</span>
+                                </button>
+                            </div>
+                            <div id="podcastImportFeedback" class="small mt-2" style="display: none;"></div>
+                        </div>
                     </div>
 
                     <form id="radioForm" class="row g-3 pt-2">
@@ -408,6 +437,148 @@ function initStationManagement(container) {
         }, 5000);
     };
 
+    // --- AUTO-IMPORT & SENDER-SUCHE TABS ---
+    const tabRadioSearchBtn = container.querySelector("#tabRadioSearchBtn");
+    const tabPodcastImportBtn = container.querySelector("#tabPodcastImportBtn");
+    const tabRadioSearchContent = container.querySelector("#tabRadioSearchContent");
+    const tabPodcastImportContent = container.querySelector("#tabPodcastImportContent");
+
+    if (tabRadioSearchBtn && tabPodcastImportBtn) {
+        tabRadioSearchBtn.onclick = () => {
+            tabRadioSearchBtn.className = "btn btn-sm btn-primary rounded-pill px-3 fw-semibold d-flex align-items-center gap-2";
+            tabPodcastImportBtn.className = "btn btn-sm btn-outline-secondary rounded-pill px-3 fw-semibold d-flex align-items-center gap-2 text-white-50";
+            tabRadioSearchContent.style.display = "block";
+            tabPodcastImportContent.style.display = "none";
+        };
+
+        tabPodcastImportBtn.onclick = () => {
+            tabPodcastImportBtn.className = "btn btn-sm btn-info rounded-pill px-3 fw-semibold d-flex align-items-center gap-2";
+            tabRadioSearchBtn.className = "btn btn-sm btn-outline-secondary rounded-pill px-3 fw-semibold d-flex align-items-center gap-2 text-white-50";
+            tabPodcastImportContent.style.display = "block";
+            tabRadioSearchContent.style.display = "none";
+        };
+    }
+
+    // --- TAB 1: RADIOSENDER ONLINE SUCHEN ---
+    const radioSearchInput = container.querySelector("#radioSearchInput");
+    const radioSearchBtn = container.querySelector("#radioSearchBtn");
+    const radioSearchFeedback = container.querySelector("#radioSearchFeedback");
+    const radioSearchResults = container.querySelector("#radioSearchResults");
+
+    const performRadioSearch = async () => {
+        const query = radioSearchInput ? radioSearchInput.value.trim() : "";
+        if (!query || query.length < 2) {
+            radioSearchFeedback.style.display = "block";
+            radioSearchFeedback.className = "small mt-2 text-warning";
+            radioSearchFeedback.textContent = "Bitte mindestens 2 Zeichen für die Sendersuche eingeben.";
+            return;
+        }
+
+        const origBtnHtml = radioSearchBtn.innerHTML;
+        radioSearchBtn.disabled = true;
+        radioSearchBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Suche...';
+        radioSearchFeedback.style.display = "none";
+        radioSearchResults.style.display = "none";
+        radioSearchResults.innerHTML = "";
+
+        try {
+            const res = await fetch(`../backend/api/radio_search.php?q=${encodeURIComponent(query)}`);
+            if (!res.ok) throw new Error(`Server-Fehler (Status ${res.status})`);
+            const data = await res.json();
+
+            if (!data.success) {
+                throw new Error(data.error || "Suche konnte nicht durchgeführt werden.");
+            }
+
+            if (!data.stations || data.stations.length === 0) {
+                radioSearchFeedback.style.display = "block";
+                radioSearchFeedback.className = "small mt-2 text-warning";
+                radioSearchFeedback.textContent = `Keine Sender für "${query}" gefunden. Bitte probiere einen anderen Begriff.`;
+                return;
+            }
+
+            radioSearchFeedback.style.display = "block";
+            radioSearchFeedback.className = "small mt-2 text-info";
+            radioSearchFeedback.textContent = `${data.stations.length} Sender gefunden. Wähle einen Sender aus, um das Formular auszufüllen:`;
+
+            radioSearchResults.innerHTML = data.stations.map((st, idx) => {
+                const logoHtml = st.logo
+                    ? `<img src="${st.logo}" alt="" class="rounded-2 flex-shrink-0 bg-dark" style="width: 38px; height: 38px; object-fit: contain;" onerror="this.outerHTML='<div class=\\'rounded-2 bg-secondary d-flex align-items-center justify-content-center flex-shrink-0 text-white-50\\' style=\\'width: 38px; height: 38px;\\'><i class=\\'bi bi-broadcast\\'></i></div>'">`
+                    : `<div class="rounded-2 bg-secondary d-flex align-items-center justify-content-center flex-shrink-0 text-white-50" style="width: 38px; height: 38px;"><i class="bi bi-broadcast"></i></div>`;
+                
+                const qualityBadge = st.bitrate > 0 
+                    ? `<span class="badge bg-secondary text-white-50" style="font-size: 0.7rem;">${st.codec || 'MP3'} ${st.bitrate}k</span>` 
+                    : (st.codec ? `<span class="badge bg-secondary text-white-50" style="font-size: 0.7rem;">${st.codec}</span>` : '');
+
+                return `
+                    <div class="col-12 col-md-6">
+                        <div class="card bg-dark border border-secondary p-2 rounded-3 h-100 d-flex flex-row align-items-center justify-content-between gap-2 shadow-sm">
+                            <div class="d-flex align-items-center gap-2 overflow-hidden flex-grow-1">
+                                ${logoHtml}
+                                <div class="text-truncate">
+                                    <div class="fw-bold text-white text-truncate small" title="${st.name}">${st.name}</div>
+                                    <div class="text-white-50 small d-flex gap-2 align-items-center flex-wrap" style="font-size: 0.75rem;">
+                                        ${qualityBadge}
+                                        <span class="text-info text-truncate">${st.genre}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-outline-info btn-sm rounded-pill px-3 py-1 flex-shrink-0 apply-station-btn" data-index="${idx}">
+                                Übernehmen
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join("");
+
+            // Klick-Events für "Übernehmen" Buttons binden
+            const applyButtons = radioSearchResults.querySelectorAll(".apply-station-btn");
+            applyButtons.forEach(btn => {
+                btn.onclick = () => {
+                    const idx = parseInt(btn.getAttribute("data-index"), 10);
+                    const selected = data.stations[idx];
+                    if (!selected) return;
+
+                    senderInput.value = selected.name || "";
+                    urlInput.value = selected.stream_url || "";
+                    genreInput.value = selected.genre || "Radio";
+                    logoInput.value = selected.logo || "";
+                    nowPlayingInput.value = "";
+
+                    radioSearchFeedback.style.display = "block";
+                    radioSearchFeedback.className = "small mt-2 text-success fw-semibold";
+                    radioSearchFeedback.innerHTML = `<i class="bi bi-check-circle-fill me-1"></i> Sender "${selected.name}" übernommen! Überprüfe die Angaben und klicke unten auf "Speichern".`;
+
+                    // Formular sanft in den Fokus bringen
+                    const formEl = container.querySelector("#radioForm");
+                    if (formEl) {
+                        formEl.scrollIntoView({ behavior: "smooth", block: "nearest" });
+                    }
+                };
+            });
+
+            radioSearchResults.style.display = "flex";
+        } catch (err) {
+            radioSearchFeedback.style.display = "block";
+            radioSearchFeedback.className = "small mt-2 text-danger";
+            radioSearchFeedback.innerHTML = `<i class="bi bi-exclamation-circle-fill me-1"></i> ${err.message}`;
+        } finally {
+            radioSearchBtn.disabled = false;
+            radioSearchBtn.innerHTML = origBtnHtml;
+        }
+    };
+
+    if (radioSearchBtn && radioSearchInput) {
+        radioSearchBtn.onclick = performRadioSearch;
+        radioSearchInput.addEventListener("keydown", (e) => {
+            if (e.key === "Enter") {
+                e.preventDefault();
+                performRadioSearch();
+            }
+        });
+    }
+
+    // --- TAB 2: PODCAST AUTO-IMPORT ---
     const podcastImportUrl = container.querySelector("#podcastImportUrl");
     const podcastImportBtn = container.querySelector("#podcastImportBtn");
     const podcastImportFeedback = container.querySelector("#podcastImportFeedback");
@@ -445,6 +616,11 @@ function initStationManagement(container) {
                 podcastImportFeedback.className = "small mt-2 text-success fw-semibold";
                 const latestTitle = data.latest_episode?.title ? ` (Neueste Folge: "${data.latest_episode.title}")` : "";
                 podcastImportFeedback.innerHTML = `<i class="bi bi-check-circle-fill me-1"></i> Erfolgreich eingelesen: "${data.title}"${latestTitle}. Jetzt unten auf "Speichern" klicken!`;
+                
+                const formEl = container.querySelector("#radioForm");
+                if (formEl) {
+                    formEl.scrollIntoView({ behavior: "smooth", block: "nearest" });
+                }
             } catch (err) {
                 podcastImportFeedback.style.display = "block";
                 podcastImportFeedback.className = "small mt-2 text-danger";
