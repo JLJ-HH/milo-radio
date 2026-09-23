@@ -7,6 +7,18 @@ und dieses Projekt hält sich an [Semantic Versioning](https://semver.org/lang/d
 
 ---
 
+## [1.8.0] - 2026-09-23
+
+### Behoben & Verbessert (Podcast RSS-Parser, CDN-Kompatibilität & Fehlerdiagnose)
+- **Moderner cURL-Parser für externe Podcast-Feeds (`backend/api/podcast.php`):**
+  - Umstellung von `file_get_contents()` auf cURL mit automatischer HTTP/HTTPS-Weiterleitung (`CURLOPT_FOLLOWLOCATION => true`), Auto-Dekomprimierung (`CURLOPT_ENCODING => ''`) für gzip/deflate und 12s-Timeout.
+  - Austausch des vorherigen User-Agents gegen einen modernen Standard-Browser-Header (`Mozilla/5.0 ... MiloRadio/2.0`), wodurch CDNs (Cloudflare, Akamai, Fastly, Podigee) Anfragen nicht länger irrtümlich per WAF als Bot mit HTTP 403 abweisen.
+  - Differenzierte HTTP-Statuscode-Diagnose: Spezifische und verständliche Fehlermeldungen bei HTTP 404 (Feed existiert nicht unter dieser URL), HTTP 403 (Zugriff verweigert) sowie bei ungültigen XML-Antworten.
+- **Admin-Panel Fehleranzeige & Service-Feedback (`adminPage.js`, `podcastService.js`):**
+  - Exakte Fehlermeldungen des Backends werden nun unmittelbar im Admin-Formular angezeigt (z. B. Hinweis auf ungültige/nicht gefundene Feed-Adresse mit HTTP 404), anstatt eines generischen HTTP-Fehlercodes.
+- **PWA Service Worker & Cache-Busting auf v38 (`sw.js`, `index.html`):**
+  - Cache-Version auf `milo-radio-v38` angehoben und Script-Versionen in `index.html` synchronisiert.
+
 ## [1.7.0] - 2026-09-20
 
 ### Hinzugefügt (Online-Radiosendersuche & 1-Klick Auto-Fill via Radio-Browser)

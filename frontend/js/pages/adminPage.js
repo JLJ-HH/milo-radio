@@ -600,10 +600,16 @@ function initStationManagement(container) {
 
             try {
                 const res = await fetch(`../backend/api/podcast.php?action=info&url=${encodeURIComponent(feedUrl)}`);
-                if (!res.ok) throw new Error(`Server antwortete mit Status ${res.status}`);
-                const data = await res.json();
-                if (!data.success) {
-                    throw new Error(data.error || "Fehler beim Laden des Podcast-Feeds.");
+                let data = null;
+                try {
+                    data = await res.json();
+                } catch (_) {
+                    // Falls die Antwort kein JSON war
+                }
+
+                if (!res.ok || !data || !data.success) {
+                    const errorMsg = data?.error || `Fehler beim Laden des Podcast-Feeds (HTTP ${res.status}).`;
+                    throw new Error(errorMsg);
                 }
 
                 senderInput.value = data.title || "";

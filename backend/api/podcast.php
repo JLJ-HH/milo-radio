@@ -9,9 +9,11 @@
  * Beinhaltet einen Server-Cache (15 Minuten), um externe Server zu schonen und Latenz zu minimieren.
  */
 
-header('Content-Type: application/json; charset=utf-8');
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: GET, OPTIONS');
+if (!headers_sent()) {
+    header('Content-Type: application/json; charset=utf-8');
+    header('Access-Control-Allow-Origin: *');
+    header('Access-Control-Allow-Methods: GET, OPTIONS');
+}
 
 if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'OPTIONS') {
     http_response_code(200);
@@ -47,20 +49,37 @@ if (file_exists($cacheFile) && (time() - filemtime($cacheFile) < $cacheDuration)
     }
 }
 
-// XML-Feed per cURL / file_get_contents mit User-Agent abrufen
-$opts = [
-    'http' => [
-        'method' => 'GET',
-        'header' => "User-Agent: MiloRadio/2.0 (Podcast Bot)\r\nAccept: application/rss+xml, application/xml, text/xml, */*\r\n",
-        'timeout' => 8
-    ]
-];
-$context = stream_context_create($opts);
-$xmlString = @file_get_contents($url, false, $context);
+// XML-Feed per cURL (mit Fallback) abrufen
+$fetchResult = fetchFeedXml($url);
+$xmlString = $fetchResult['content'];
+$httpCode = $fetchResult['http_code'];
+$curlError = $fetchResult['error'];
 
-if (!$xmlString) {
-    http_response_code(502);
-    echo json_encode(['success' => false, 'error' => 'Podcast-Feed konnte nicht abgerufen werden. Bitte URL prüfen.']);
+if ($httpCode === 404) {
+    http_response_code(404);
+    echo json_encode([
+        'success' => false, 
+        'error' => 'Die Podcast-Feed-URL wurde nicht gefunden (HTTP 404). Bitte prüfe die Adresse.'
+    ]);
+    exit;
+}
+
+if ($httpCode === 403) {
+    http_response_code(403);
+    echo json_encode([
+        'success' => false, 
+        'error' => 'Der Zugriff auf den Podcast-Feed wurde verweigert (HTTP 403). Der Host blockiert externe Abrufe.'
+    ]);
+    exit;
+}
+
+if (empty($xmlString) || $httpCode >= 400) {
+    http_response_code($httpCode >= 400 ? $httpCode : 502);
+    $detail = !empty($curlError) ? $curlError : ($httpCode > 0 ? "HTTP $httpCode" : "Verbindungsfehler");
+    echo json_encode([
+        'success' => false, 
+        'error' => "Podcast-Feed konnte nicht geladen werden ($detail). Bitte URL prüfen."
+    ]);
     exit;
 }
 
@@ -70,7 +89,10 @@ $xml = simplexml_load_string($xmlString, 'SimpleXMLElement', LIBXML_NOCDATA);
 
 if (!$xml || !isset($xml->channel)) {
     http_response_code(422);
-    echo json_encode(['success' => false, 'error' => 'Ungültiges RSS/Podcast-XML-Format.']);
+    echo json_encode([
+        'success' => false, 
+        'error' => 'Ungültiges RSS/Podcast-XML-Format oder Antwort war kein Feed.'
+    ]);
     exit;
 }
 
@@ -210,3 +232,69 @@ function formatDuration($duration) {
     }
     return sprintf('%02d:%02d', $m, $s);
 }
+
+/**
+ * Ruft die XML-Daten eines Podcast-Feeds robust per cURL (oder Fallback) ab
+ */
+function fetchFeedXml($url) {
+    if (function_exists('curl_init')) {
+        $ch = curl_init();
+        curl_setopt_array($ch, [
+            CURLOPT_URL => $url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_MAXREDIRS => 5,
+            CURLOPT_TIMEOUT => 12,
+            CURLOPT_CONNECTTIMEOUT => 6,
+            CURLOPT_USERAGENT => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36 MiloRadio/2.0',
+            CURLOPT_HTTPHEADER => [
+                'Accept: application/rss+xml, application/xml, text/xml, */*'
+            ],
+            CURLOPT_ENCODING => '', // Automatische Dekomprimierung (gzip, deflate)
+            CURLOPT_SSL_VERIFYPEER => false,
+            CURLOPT_SSL_VERIFYHOST => false
+        ]);
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $curlError = curl_error($ch);
+        curl_close($ch);
+
+        return [
+            'content' => $response,
+            'http_code' => (int)$httpCode,
+            'error' => $curlError
+        ];
+    } else {
+        // Fallback: stream_context_create mit Browser-Header und Redirects
+        $opts = [
+            'http' => [
+                'method' => 'GET',
+                'header' => "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36 MiloRadio/2.0\r\nAccept: application/rss+xml, application/xml, text/xml, */*\r\n",
+                'timeout' => 12,
+                'follow_location' => 1,
+                'max_redirects' => 5
+            ],
+            'ssl' => [
+                'verify_peer' => false,
+                'verify_peer_name' => false
+            ]
+        ];
+        $context = stream_context_create($opts);
+        $response = @file_get_contents($url, false, $context);
+        $httpCode = 200;
+        if (isset($http_response_header) && !empty($http_response_header)) {
+            preg_match('{HTTP\/\S*\s(\d{3})}', $http_response_header[0], $match);
+            if (!empty($match[1])) {
+                $httpCode = (int)$match[1];
+            }
+        }
+        return [
+            'content' => $response,
+            'http_code' => $httpCode,
+            'error' => $response === false ? 'Netzwerkverbindung fehlgeschlagen' : null
+        ];
+    }
+}
+
+
+

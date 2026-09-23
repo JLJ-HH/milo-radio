@@ -43,7 +43,7 @@ Podcasts sind fundamental anders als klassische Live-Radiosender: Statt eines fo
 
 - **Einstellungsseite (`#settings`):** Zentrale Anlaufstelle für App-Informationen, Impressum und Datenschutz.
 - **1-Klick Cache-Reset:** `App aktualisieren / Cache leeren` leert Service-Worker-Caches, CacheStorage und SessionStorage für sofortige Aktualisierungen auf Mobilgeräten.
-- **Progressive Web App (PWA):** Vollwertige PWA mit Offline-Fallback, Web-App-Manifest und Network-First-Caching (Service Worker `v37`) für rasante Ladezeiten und sofortige Updates.
+- **Progressive Web App (PWA):** Vollwertige PWA mit Offline-Fallback, Web-App-Manifest und Network-First-Caching (Service Worker `v38`) für rasante Ladezeiten und sofortige Updates.
 
 ### Deep Analytics & Dashboard
 
@@ -99,7 +99,7 @@ milo-radio/
 │   ├── index.html                # Haupt-Einstiegspunkt (Single Page App)
 │   ├── index.php                 # Server-Fallback für PWA- & Webserver-Routing
 │   ├── manifest.json             # PWA Web-App-Manifest
-│   ├── sw.js                     # Service Worker (Network-First, Cache v37)
+│   ├── sw.js                     # Service Worker (Network-First, Cache v38)
 │   ├── css/                      # Stylesheets (Bootstrap & Custom Glassmorphism Theme)
 │   ├── images/                   # Sender-Logos, PWA-Icons & SVGs
 │   └── js/                       # Modulare ES6-Architektur

@@ -44,9 +44,13 @@ class PodcastService {
     if (!url) throw new Error("Keine URL übergeben.");
     try {
       const res = await fetch(`${this.apiBase}?action=info&url=${encodeURIComponent(url)}`);
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const data = await res.json();
-      if (!data.success) throw new Error(data.error || "Fehler beim Laden des Feeds");
+      let data = null;
+      try {
+        data = await res.json();
+      } catch (_) {}
+      if (!res.ok || !data || !data.success) {
+        throw new Error(data?.error || `Fehler beim Laden des Feeds (HTTP ${res.status})`);
+      }
       return data;
     } catch (e) {
       console.error("Fehler bei getPodcastInfo:", e);
