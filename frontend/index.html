@@ -33,7 +33,7 @@
     <link rel="manifest" href="./manifest.json" />
 
     <!-- Eigene Styles (Design-Anpassungen) -->
-    <link rel="stylesheet" href="./css/style.css?v=35" />
+    <link rel="stylesheet" href="./css/style.css?v=42" />
 
     <!-- Lesezeichen-Icons (Favicon) -->
     <link rel="icon" href="./images/android.png" type="image/png" />
@@ -155,7 +155,7 @@
         });
         window.addEventListener("load", () => {
           navigator.serviceWorker
-            .register("./sw.js?v=38")
+            .register("./sw.js?v=42")
             .then((registration) => {
               console.log("ServiceWorker erfolgreich registriert:", registration.scope);
             })
@@ -169,7 +169,7 @@
     <!-- 
       HAUPT-SKRIPT (main.js)
     -->
-    <script type="module" src="./js/main.js?v=38"></script>
+    <script type="module" src="./js/main.js?v=42"></script>
 
     <!-- Privacy & Impressum Modal -->
     <div class="modal fade" id="privacyModal" tabindex="-1" aria-hidden="true">

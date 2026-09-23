@@ -7,6 +7,14 @@ und dieses Projekt hält sich an [Semantic Versioning](https://semver.org/lang/d
 
 ---
 
+## [1.10.1] - 2026-09-23
+
+### Behoben (Cache-Busting & PWA Service Worker Invalidation)
+- **Synchronisiertes Cache-Busting auf v42 (`sw.js`, `index.html`, `main.js`):**
+  - `main.js` importiert Seitenmodule nun mit `?v=42` statt veraltetem hardcoded `?v=37`, wodurch Browser und Service Worker gezwungen werden, die neueste Version von `adminPage.js` (inkl. Podcast-Suche) zu laden.
+  - Anhebung von `CACHE_NAME` in `sw.js` auf `milo-radio-v42`, damit veraltete Caches beim nächsten Seitenaufruf automatisch gelöscht werden.
+  - Aktualisierung der Versionstags in `index.html` für `style.css?v=42`, `sw.js?v=42` und `main.js?v=42`.
+
 ## [1.10.0] - 2026-09-23
 
 ### Hinzugefügt (Podcast-Rubriken & Sub-Genre-Filterung)
