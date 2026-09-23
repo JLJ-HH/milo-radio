@@ -7,6 +7,21 @@ und dieses Projekt hält sich an [Semantic Versioning](https://semver.org/lang/d
 
 ---
 
+## [1.9.0] - 2026-09-23
+
+### Hinzugefügt (Podcast-Namenssuche via Apple Podcasts API & 1-Klick Feed-Import)
+- **Backend Podcast-Search API (`backend/api/podcast.php`):**
+  - Neuer Modus `action=search` mit nativer Abfrage des weltweiten Apple Podcasts Verzeichnisses (iTunes Search API).
+  - Findet reale, verifizierte RSS-Feeds allein durch Eingabe des Podcast-Namens (z. B. „Wohlstand für Alle“, „Finanzfluss“, „Backstage Talk“, „Mikroökonomen“), ohne dass Nutzer kryptische Host-URLs erraten müssen.
+  - Server-Caching (1 Stunde) im Temp-Verzeichnis zur Schonung externer Schnittstellen und für sofortige Antwortzeiten.
+- **Podcast-Suche im Admin-Panel (`frontend/js/pages/adminPage.js`):**
+  - Neues Suchfeld im Podcast-Tab mit Enter-Taste-Unterstützung und Ladeindikator.
+  - Übersichtliche Trefferliste mit hochauflösendem Cover-Artwork, Podcast-Titel, Künstler/Host, Genre und Episodenzahl.
+  - 1-Klick-Übernahme aller Daten (Name, verifizierte Stream-/Feed-URL, Genre "Podcast", Cover-Logo) direkt in das Sender-Formular.
+  - Klappbarer Bereich für manuelle direkte Feed-URL-Eingaben für maximale Flexibilität und volle Abwärtskompatibilität.
+- **PWA Service Worker Cache-Busting auf v39 (`sw.js`):**
+  - `CACHE_NAME` auf `milo-radio-v39` angehoben.
+
 ## [1.8.0] - 2026-09-23
 
 ### Behoben & Verbessert (Podcast RSS-Parser, CDN-Kompatibilität & Fehlerdiagnose)

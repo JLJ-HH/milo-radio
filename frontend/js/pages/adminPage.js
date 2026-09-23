@@ -146,16 +146,35 @@ export function render(container) {
                             <div id="radioSearchResults" class="mt-3 row g-2" style="display: none; max-height: 290px; overflow-y: auto;"></div>
                         </div>
 
-                        <!-- Tab 2: Podcast Auto-Import -->
+                        <!-- Tab 2: Podcast Auto-Import & Suche -->
                         <div id="tabPodcastImportContent" style="display: none;">
                             <div class="input-group">
-                                <span class="input-group-text bg-secondary text-white-50 border-0"><i class="bi bi-link-45deg"></i></span>
-                                <input type="url" id="podcastImportUrl" class="form-control bg-secondary text-white border-0" placeholder="z. B. https://kiupdate.podigee.io/feed/mp3 oder https://kiupdate.podigee.io/">
-                                <button type="button" id="podcastImportBtn" class="btn btn-info fw-semibold px-3 d-flex align-items-center gap-1">
-                                    <i class="bi bi-cloud-arrow-down-fill"></i> <span>Feed laden</span>
+                                <span class="input-group-text bg-secondary text-white-50 border-0"><i class="bi bi-search"></i></span>
+                                <input type="text" id="podcastSearchInput" class="form-control bg-secondary text-white border-0" placeholder="Podcast suchen (z. B. Finanzfluss, Wohlstand für Alle, Zeit Verbrechen)...">
+                                <button type="button" id="podcastSearchBtn" class="btn btn-info fw-semibold px-3 d-flex align-items-center gap-1">
+                                    <i class="bi bi-search"></i> <span>Suchen</span>
                                 </button>
                             </div>
-                            <div id="podcastImportFeedback" class="small mt-2" style="display: none;"></div>
+                            <div id="podcastSearchFeedback" class="small mt-2" style="display: none;"></div>
+                            <div id="podcastSearchResults" class="mt-3 row g-2" style="display: none; max-height: 290px; overflow-y: auto;"></div>
+
+                            <!-- Direkte RSS-Feed-URL als Fallback / Expertenmodus -->
+                            <div class="mt-3 pt-2 border-top border-secondary border-opacity-25">
+                                <a href="javascript:void(0)" id="toggleManualRssLink" class="text-white-50 small text-decoration-none d-inline-flex align-items-center gap-1">
+                                    <i class="bi bi-chevron-right" id="toggleManualRssIcon"></i>
+                                    <span>Oder direkte RSS-Feed-URL manuell eingeben</span>
+                                </a>
+                                <div id="manualRssContainer" class="mt-2" style="display: none;">
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-secondary text-white-50 border-0"><i class="bi bi-link-45deg"></i></span>
+                                        <input type="url" id="podcastImportUrl" class="form-control bg-secondary text-white border-0" placeholder="z. B. https://anchor.fm/s/108bcffe4/podcast/rss oder https://kiupdate.podigee.io/feed/mp3">
+                                        <button type="button" id="podcastImportBtn" class="btn btn-outline-info fw-semibold px-3 d-flex align-items-center gap-1">
+                                            <i class="bi bi-cloud-arrow-down-fill"></i> <span>Feed laden</span>
+                                        </button>
+                                    </div>
+                                    <div id="podcastImportFeedback" class="small mt-2" style="display: none;"></div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -578,7 +597,140 @@ function initStationManagement(container) {
         });
     }
 
-    // --- TAB 2: PODCAST AUTO-IMPORT ---
+    // --- TAB 2: PODCAST AUTO-IMPORT & DIRECTORY SEARCH ---
+    const podcastSearchInput = container.querySelector("#podcastSearchInput");
+    const podcastSearchBtn = container.querySelector("#podcastSearchBtn");
+    const podcastSearchFeedback = container.querySelector("#podcastSearchFeedback");
+    const podcastSearchResults = container.querySelector("#podcastSearchResults");
+    const toggleManualRssLink = container.querySelector("#toggleManualRssLink");
+    const toggleManualRssIcon = container.querySelector("#toggleManualRssIcon");
+    const manualRssContainer = container.querySelector("#manualRssContainer");
+
+    // Toggle für manuelle RSS-URL Eingabe
+    if (toggleManualRssLink && manualRssContainer) {
+        toggleManualRssLink.onclick = () => {
+            const isHidden = manualRssContainer.style.display === "none";
+            manualRssContainer.style.display = isHidden ? "block" : "none";
+            if (toggleManualRssIcon) {
+                toggleManualRssIcon.className = isHidden ? "bi bi-chevron-down" : "bi bi-chevron-right";
+            }
+        };
+    }
+
+    // Podcast Online-Suche via Apple Directory
+    const performPodcastSearch = async () => {
+        const query = podcastSearchInput ? podcastSearchInput.value.trim() : "";
+        if (!query || query.length < 2) {
+            podcastSearchFeedback.style.display = "block";
+            podcastSearchFeedback.className = "small mt-2 text-warning";
+            podcastSearchFeedback.textContent = "Bitte mindestens 2 Zeichen für die Podcast-Suche eingeben.";
+            return;
+        }
+
+        const origBtnHtml = podcastSearchBtn.innerHTML;
+        podcastSearchBtn.disabled = true;
+        podcastSearchBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Suche...';
+        podcastSearchFeedback.style.display = "none";
+        podcastSearchResults.style.display = "none";
+        podcastSearchResults.innerHTML = "";
+
+        try {
+            const res = await fetch(`../backend/api/podcast.php?action=search&term=${encodeURIComponent(query)}`);
+            if (!res.ok) throw new Error(`Verzeichnis-Fehler (Status ${res.status})`);
+            const data = await res.json();
+
+            if (!data.success) {
+                throw new Error(data.error || "Podcast-Suche fehlgeschlagen.");
+            }
+
+            if (!data.results || data.results.length === 0) {
+                podcastSearchFeedback.style.display = "block";
+                podcastSearchFeedback.className = "small mt-2 text-warning";
+                podcastSearchFeedback.textContent = `Keine Podcasts für "${query}" gefunden. Bitte probiere einen anderen Suchbegriff.`;
+                return;
+            }
+
+            podcastSearchFeedback.style.display = "block";
+            podcastSearchFeedback.className = "small mt-2 text-info";
+            podcastSearchFeedback.textContent = `${data.results.length} Podcast(s) gefunden. Wähle einen aus, um die Feed-Daten zu übernehmen:`;
+
+            podcastSearchResults.innerHTML = data.results.map((pod, idx) => {
+                const logoHtml = pod.logo
+                    ? `<img src="${pod.logo}" alt="" class="rounded-2 flex-shrink-0 bg-dark" style="width: 44px; height: 44px; object-fit: cover;" onerror="this.outerHTML='<div class=\\'rounded-2 bg-secondary d-flex align-items-center justify-content-center flex-shrink-0 text-white-50\\' style=\\'width: 44px; height: 44px;\\'><i class=\\'bi bi-mic-fill\\'></i></div>'">`
+                    : `<div class="rounded-2 bg-secondary d-flex align-items-center justify-content-center flex-shrink-0 text-white-50" style="width: 44px; height: 44px;"><i class="bi bi-mic-fill"></i></div>`;
+
+                const countBadge = pod.track_count > 0 ? `<span class="badge bg-secondary text-white-50" style="font-size: 0.7rem;">${pod.track_count} Folgen</span>` : '';
+
+                return `
+                    <div class="col-12 col-md-6">
+                        <div class="card bg-dark border border-secondary p-2 rounded-3 h-100 d-flex flex-row align-items-center justify-content-between gap-2 shadow-sm">
+                            <div class="d-flex align-items-center gap-2 overflow-hidden flex-grow-1">
+                                ${logoHtml}
+                                <div class="text-truncate">
+                                    <div class="fw-bold text-white text-truncate small" title="${pod.title}">${pod.title}</div>
+                                    <div class="text-white-50 small text-truncate" style="font-size: 0.75rem;" title="${pod.artist}">${pod.artist || 'Podcast'}</div>
+                                    <div class="d-flex gap-2 align-items-center flex-wrap mt-1">
+                                        ${countBadge}
+                                        <span class="text-info small" style="font-size: 0.7rem;">${pod.genre}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-outline-info btn-sm rounded-pill px-3 py-1 flex-shrink-0 apply-podcast-btn" data-index="${idx}">
+                                Übernehmen
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join("");
+
+            // Klick-Events für "Übernehmen" Buttons binden
+            const applyBtns = podcastSearchResults.querySelectorAll(".apply-podcast-btn");
+            applyBtns.forEach(btn => {
+                btn.onclick = () => {
+                    const idx = parseInt(btn.getAttribute("data-index"), 10);
+                    const selected = data.results[idx];
+                    if (!selected) return;
+
+                    senderInput.value = selected.title || "";
+                    urlInput.value = selected.feed_url || "";
+                    genreInput.value = "Podcast";
+                    logoInput.value = selected.logo || "";
+                    nowPlayingInput.value = "";
+
+                    podcastSearchFeedback.style.display = "block";
+                    podcastSearchFeedback.className = "small mt-2 text-success fw-semibold";
+                    podcastSearchFeedback.innerHTML = `<i class="bi bi-check-circle-fill me-1"></i> Podcast "${selected.title}" übernommen! Überprüfe die Angaben und klicke unten auf "Speichern".`;
+
+                    // Formular sanft in den Fokus bringen
+                    const formEl = container.querySelector("#radioForm");
+                    if (formEl) {
+                        formEl.scrollIntoView({ behavior: "smooth", block: "nearest" });
+                    }
+                };
+            });
+
+            podcastSearchResults.style.display = "flex";
+        } catch (err) {
+            podcastSearchFeedback.style.display = "block";
+            podcastSearchFeedback.className = "small mt-2 text-danger";
+            podcastSearchFeedback.innerHTML = `<i class="bi bi-exclamation-circle-fill me-1"></i> ${err.message}`;
+        } finally {
+            podcastSearchBtn.disabled = false;
+            podcastSearchBtn.innerHTML = origBtnHtml;
+        }
+    };
+
+    if (podcastSearchBtn && podcastSearchInput) {
+        podcastSearchBtn.onclick = performPodcastSearch;
+        podcastSearchInput.addEventListener("keydown", (e) => {
+            if (e.key === "Enter") {
+                e.preventDefault();
+                performPodcastSearch();
+            }
+        });
+    }
+
+    // --- MANUELLER FEED-IMPORT (URL) ---
     const podcastImportUrl = container.querySelector("#podcastImportUrl");
     const podcastImportBtn = container.querySelector("#podcastImportBtn");
     const podcastImportFeedback = container.querySelector("#podcastImportFeedback");

@@ -21,6 +21,73 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'OPTIONS') {
 }
 
 $action = $_GET['action'] ?? 'episodes';
+
+// --- ACTION: SEARCH PODCAST DIRECTORY ---
+if ($action === 'search') {
+    $term = trim($_GET['term'] ?? $_GET['q'] ?? '');
+    if (mb_strlen($term, 'UTF-8') < 2) {
+        http_response_code(400);
+        echo json_encode(['success' => false, 'error' => 'Bitte mindestens 2 Zeichen für die Suche eingeben.']);
+        exit;
+    }
+
+    $searchLimit = isset($_GET['limit']) ? max(1, min(25, (int)$_GET['limit'])) : 12;
+    $cacheKey = 'milo_podsearch_' . md5(mb_strtolower($term, 'UTF-8') . '_' . $searchLimit);
+    $cacheFile = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $cacheKey . '.json';
+    $cacheDuration = 3600; // 1 Stunde Cache
+
+    if (file_exists($cacheFile) && (time() - filemtime($cacheFile) < $cacheDuration)) {
+        $cached = file_get_contents($cacheFile);
+        if ($cached) {
+            echo $cached;
+            exit;
+        }
+    }
+
+    $searchApiUrl = 'https://itunes.apple.com/search?term=' . urlencode($term) . '&entity=podcast&limit=' . $searchLimit;
+    $res = fetchFeedXml($searchApiUrl);
+
+    if ($res['http_code'] !== 200 || empty($res['content'])) {
+        http_response_code(502);
+        echo json_encode([
+            'success' => false, 
+            'error' => 'Podcast-Verzeichnis konnte nicht erreicht werden. Bitte prüfe deine Internetverbindung.'
+        ]);
+        exit;
+    }
+
+    $raw = json_decode($res['content'], true);
+    $results = [];
+
+    if (!empty($raw['results']) && is_array($raw['results'])) {
+        foreach ($raw['results'] as $item) {
+            $feedUrl = trim($item['feedUrl'] ?? '');
+            if (empty($feedUrl)) {
+                continue;
+            }
+            $results[] = [
+                'title' => trim($item['collectionName'] ?? $item['trackName'] ?? 'Unbekannter Podcast'),
+                'artist' => trim($item['artistName'] ?? ''),
+                'feed_url' => $feedUrl,
+                'logo' => $item['artworkUrl600'] ?? $item['artworkUrl100'] ?? '',
+                'genre' => $item['primaryGenreName'] ?? 'Podcast',
+                'track_count' => (int)($item['trackCount'] ?? 0)
+            ];
+        }
+    }
+
+    $outJson = json_encode([
+        'success' => true,
+        'term' => $term,
+        'total' => count($results),
+        'results' => $results
+    ]);
+
+    @file_put_contents($cacheFile, $outJson);
+    echo $outJson;
+    exit;
+}
+
 $url = trim($_GET['url'] ?? '');
 $limit = isset($_GET['limit']) ? max(1, min(20, (int)$_GET['limit'])) : 5;
 
