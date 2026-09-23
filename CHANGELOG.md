@@ -7,6 +7,21 @@ und dieses Projekt hält sich an [Semantic Versioning](https://semver.org/lang/d
 
 ---
 
+## [1.11.0] - 2026-09-23
+
+### Hinzugefügt & Verbessert (Sender- & Podcast-Suche Zurücksetzen und Ausblenden)
+- **Komfortables Ausblenden der Suchergebnisse im Admin-Panel (`adminPage.js`):**
+  - Neuer Button "Ausblenden" direkt in der Kopfzeile oberhalb der Ergebnisliste bei der Radiosender- und Podcast-Suche.
+  - Ermöglicht das sofortige Schließen/Ausblenden der Trefferliste, ohne einen neuen Suchbegriff eingeben zu müssen.
+- **Schnell-Löschen ("X"-Button) im Suchfeld (`adminPage.js`):**
+  - Dynamischer Lösch-Button ("X") in den Suchfeldern für Radio und Podcast, der erscheint, sobald Text eingegeben wird.
+  - Klick auf das "X" leert das Eingabefeld und setzt die Ergebnisse und Feedback-Hinweise vollständig zurück.
+- **Erweiterter Reset über "Abbrechen" & nach dem Speichern (`adminPage.js`):**
+  - Der "Abbrechen"-Button im Formular leert nun nicht nur die Formularfelder, sondern räumt auch alle geöffneten Suchergebnisse, Treffermeldungen und Suchfelder der oberen Tabs komplett auf.
+  - Nach erfolgreichem Speichern eines Senders werden die Suchergebnisse ebenfalls automatisch bereinigt.
+- **PWA Service Worker Cache-Busting auf v43 (`sw.js`, `index.html`, `main.js`):**
+  - Anhebung von `CACHE_NAME` auf `milo-radio-v43` und Synchronisation der Versionstags auf `?v=43`.
+
 ## [1.10.1] - 2026-09-23
 
 ### Behoben (Cache-Busting & PWA Service Worker Invalidation)

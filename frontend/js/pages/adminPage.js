@@ -138,11 +138,20 @@ export function render(container) {
                             <div class="input-group">
                                 <span class="input-group-text bg-secondary text-white-50 border-0"><i class="bi bi-search"></i></span>
                                 <input type="text" id="radioSearchInput" class="form-control bg-secondary text-white border-0" placeholder="Sender suchen (z. B. Rock Antenne, Sunshine Live, 1LIVE)...">
+                                <button type="button" id="radioSearchClearBtn" class="btn btn-secondary border-0 text-white-50 px-2" title="Eingabe leeren" style="display: none;">
+                                    <i class="bi bi-x-lg"></i>
+                                </button>
                                 <button type="button" id="radioSearchBtn" class="btn btn-primary fw-semibold px-3 d-flex align-items-center gap-1">
                                     <span>Suchen</span>
                                 </button>
                             </div>
-                            <div id="radioSearchFeedback" class="small mt-2" style="display: none;"></div>
+                            <div id="radioSearchHeader" class="mt-2 d-flex justify-content-between align-items-center" style="display: none !important;">
+                                <div id="radioSearchFeedback" class="small flex-grow-1 pe-2"></div>
+                                <button type="button" id="radioSearchCloseBtn" class="btn btn-outline-secondary btn-sm py-0 px-2 rounded-pill text-white-50 flex-shrink-0 d-inline-flex align-items-center gap-1" style="font-size: 0.75rem;">
+                                    <i class="bi bi-x-circle"></i>
+                                    <span>Ausblenden</span>
+                                </button>
+                            </div>
                             <div id="radioSearchResults" class="mt-3 row g-2" style="display: none; max-height: 290px; overflow-y: auto;"></div>
                         </div>
 
@@ -151,11 +160,20 @@ export function render(container) {
                             <div class="input-group">
                                 <span class="input-group-text bg-secondary text-white-50 border-0"><i class="bi bi-search"></i></span>
                                 <input type="text" id="podcastSearchInput" class="form-control bg-secondary text-white border-0" placeholder="Podcast suchen (z. B. Finanzfluss, Wohlstand für Alle, Zeit Verbrechen)...">
+                                <button type="button" id="podcastSearchClearBtn" class="btn btn-secondary border-0 text-white-50 px-2" title="Eingabe leeren" style="display: none;">
+                                    <i class="bi bi-x-lg"></i>
+                                </button>
                                 <button type="button" id="podcastSearchBtn" class="btn btn-info fw-semibold px-3 d-flex align-items-center gap-1">
                                     <i class="bi bi-search"></i> <span>Suchen</span>
                                 </button>
                             </div>
-                            <div id="podcastSearchFeedback" class="small mt-2" style="display: none;"></div>
+                            <div id="podcastSearchHeader" class="mt-2 d-flex justify-content-between align-items-center" style="display: none !important;">
+                                <div id="podcastSearchFeedback" class="small flex-grow-1 pe-2"></div>
+                                <button type="button" id="podcastSearchCloseBtn" class="btn btn-outline-secondary btn-sm py-0 px-2 rounded-pill text-white-50 flex-shrink-0 d-inline-flex align-items-center gap-1" style="font-size: 0.75rem;">
+                                    <i class="bi bi-x-circle"></i>
+                                    <span>Ausblenden</span>
+                                </button>
+                            </div>
                             <div id="podcastSearchResults" class="mt-3 row g-2" style="display: none; max-height: 290px; overflow-y: auto;"></div>
 
                             <!-- Direkte RSS-Feed-URL als Fallback / Expertenmodus -->
@@ -494,23 +512,46 @@ function initStationManagement(container) {
 
     // --- TAB 1: RADIOSENDER ONLINE SUCHEN ---
     const radioSearchInput = container.querySelector("#radioSearchInput");
+    const radioSearchClearBtn = container.querySelector("#radioSearchClearBtn");
     const radioSearchBtn = container.querySelector("#radioSearchBtn");
+    const radioSearchHeader = container.querySelector("#radioSearchHeader");
     const radioSearchFeedback = container.querySelector("#radioSearchFeedback");
+    const radioSearchCloseBtn = container.querySelector("#radioSearchCloseBtn");
     const radioSearchResults = container.querySelector("#radioSearchResults");
+
+    const clearRadioSearch = () => {
+        if (radioSearchInput) radioSearchInput.value = "";
+        if (radioSearchClearBtn) radioSearchClearBtn.style.display = "none";
+        if (radioSearchHeader) radioSearchHeader.style.setProperty("display", "none", "important");
+        if (radioSearchFeedback) {
+            radioSearchFeedback.textContent = "";
+            radioSearchFeedback.className = "small flex-grow-1 pe-2";
+        }
+        if (radioSearchResults) {
+            radioSearchResults.style.display = "none";
+            radioSearchResults.innerHTML = "";
+        }
+    };
+
+    const hideRadioSearchResults = () => {
+        if (radioSearchHeader) radioSearchHeader.style.setProperty("display", "none", "important");
+        if (radioSearchResults) radioSearchResults.style.display = "none";
+    };
 
     const performRadioSearch = async () => {
         const query = radioSearchInput ? radioSearchInput.value.trim() : "";
         if (!query || query.length < 2) {
-            radioSearchFeedback.style.display = "block";
-            radioSearchFeedback.className = "small mt-2 text-warning";
+            if (radioSearchHeader) radioSearchHeader.style.setProperty("display", "flex", "important");
+            radioSearchFeedback.className = "small flex-grow-1 pe-2 text-warning";
             radioSearchFeedback.textContent = "Bitte mindestens 2 Zeichen für die Sendersuche eingeben.";
+            radioSearchResults.style.display = "none";
             return;
         }
 
         const origBtnHtml = radioSearchBtn.innerHTML;
         radioSearchBtn.disabled = true;
         radioSearchBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Suche...';
-        radioSearchFeedback.style.display = "none";
+        if (radioSearchHeader) radioSearchHeader.style.setProperty("display", "none", "important");
         radioSearchResults.style.display = "none";
         radioSearchResults.innerHTML = "";
 
@@ -524,14 +565,14 @@ function initStationManagement(container) {
             }
 
             if (!data.stations || data.stations.length === 0) {
-                radioSearchFeedback.style.display = "block";
-                radioSearchFeedback.className = "small mt-2 text-warning";
+                if (radioSearchHeader) radioSearchHeader.style.setProperty("display", "flex", "important");
+                radioSearchFeedback.className = "small flex-grow-1 pe-2 text-warning";
                 radioSearchFeedback.textContent = `Keine Sender für "${query}" gefunden. Bitte probiere einen anderen Begriff.`;
                 return;
             }
 
-            radioSearchFeedback.style.display = "block";
-            radioSearchFeedback.className = "small mt-2 text-info";
+            if (radioSearchHeader) radioSearchHeader.style.setProperty("display", "flex", "important");
+            radioSearchFeedback.className = "small flex-grow-1 pe-2 text-info";
             radioSearchFeedback.textContent = `${data.stations.length} Sender gefunden. Wähle einen Sender aus, um das Formular auszufüllen:`;
 
             radioSearchResults.innerHTML = data.stations.map((st, idx) => {
@@ -578,8 +619,8 @@ function initStationManagement(container) {
                     logoInput.value = selected.logo || "";
                     nowPlayingInput.value = "";
 
-                    radioSearchFeedback.style.display = "block";
-                    radioSearchFeedback.className = "small mt-2 text-success fw-semibold";
+                    if (radioSearchHeader) radioSearchHeader.style.setProperty("display", "flex", "important");
+                    radioSearchFeedback.className = "small flex-grow-1 pe-2 text-success fw-semibold";
                     radioSearchFeedback.innerHTML = `<i class="bi bi-check-circle-fill me-1"></i> Sender "${selected.name}" übernommen! Überprüfe die Angaben und klicke unten auf "Speichern".`;
 
                     // Formular sanft in den Fokus bringen
@@ -592,8 +633,8 @@ function initStationManagement(container) {
 
             radioSearchResults.style.display = "flex";
         } catch (err) {
-            radioSearchFeedback.style.display = "block";
-            radioSearchFeedback.className = "small mt-2 text-danger";
+            if (radioSearchHeader) radioSearchHeader.style.setProperty("display", "flex", "important");
+            radioSearchFeedback.className = "small flex-grow-1 pe-2 text-danger";
             radioSearchFeedback.innerHTML = `<i class="bi bi-exclamation-circle-fill me-1"></i> ${err.message}`;
         } finally {
             radioSearchBtn.disabled = false;
@@ -609,16 +650,54 @@ function initStationManagement(container) {
                 performRadioSearch();
             }
         });
+        radioSearchInput.addEventListener("input", () => {
+            if (radioSearchClearBtn) {
+                radioSearchClearBtn.style.display = radioSearchInput.value.length > 0 ? "block" : "none";
+            }
+        });
+    }
+
+    if (radioSearchClearBtn) {
+        radioSearchClearBtn.onclick = () => {
+            clearRadioSearch();
+            if (radioSearchInput) radioSearchInput.focus();
+        };
+    }
+
+    if (radioSearchCloseBtn) {
+        radioSearchCloseBtn.onclick = hideRadioSearchResults;
     }
 
     // --- TAB 2: PODCAST AUTO-IMPORT & DIRECTORY SEARCH ---
     const podcastSearchInput = container.querySelector("#podcastSearchInput");
+    const podcastSearchClearBtn = container.querySelector("#podcastSearchClearBtn");
     const podcastSearchBtn = container.querySelector("#podcastSearchBtn");
+    const podcastSearchHeader = container.querySelector("#podcastSearchHeader");
     const podcastSearchFeedback = container.querySelector("#podcastSearchFeedback");
+    const podcastSearchCloseBtn = container.querySelector("#podcastSearchCloseBtn");
     const podcastSearchResults = container.querySelector("#podcastSearchResults");
     const toggleManualRssLink = container.querySelector("#toggleManualRssLink");
     const toggleManualRssIcon = container.querySelector("#toggleManualRssIcon");
     const manualRssContainer = container.querySelector("#manualRssContainer");
+
+    const clearPodcastSearch = () => {
+        if (podcastSearchInput) podcastSearchInput.value = "";
+        if (podcastSearchClearBtn) podcastSearchClearBtn.style.display = "none";
+        if (podcastSearchHeader) podcastSearchHeader.style.setProperty("display", "none", "important");
+        if (podcastSearchFeedback) {
+            podcastSearchFeedback.textContent = "";
+            podcastSearchFeedback.className = "small flex-grow-1 pe-2";
+        }
+        if (podcastSearchResults) {
+            podcastSearchResults.style.display = "none";
+            podcastSearchResults.innerHTML = "";
+        }
+    };
+
+    const hidePodcastSearchResults = () => {
+        if (podcastSearchHeader) podcastSearchHeader.style.setProperty("display", "none", "important");
+        if (podcastSearchResults) podcastSearchResults.style.display = "none";
+    };
 
     // Toggle für manuelle RSS-URL Eingabe
     if (toggleManualRssLink && manualRssContainer) {
@@ -635,16 +714,17 @@ function initStationManagement(container) {
     const performPodcastSearch = async () => {
         const query = podcastSearchInput ? podcastSearchInput.value.trim() : "";
         if (!query || query.length < 2) {
-            podcastSearchFeedback.style.display = "block";
-            podcastSearchFeedback.className = "small mt-2 text-warning";
+            if (podcastSearchHeader) podcastSearchHeader.style.setProperty("display", "flex", "important");
+            podcastSearchFeedback.className = "small flex-grow-1 pe-2 text-warning";
             podcastSearchFeedback.textContent = "Bitte mindestens 2 Zeichen für die Podcast-Suche eingeben.";
+            podcastSearchResults.style.display = "none";
             return;
         }
 
         const origBtnHtml = podcastSearchBtn.innerHTML;
         podcastSearchBtn.disabled = true;
         podcastSearchBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Suche...';
-        podcastSearchFeedback.style.display = "none";
+        if (podcastSearchHeader) podcastSearchHeader.style.setProperty("display", "none", "important");
         podcastSearchResults.style.display = "none";
         podcastSearchResults.innerHTML = "";
 
@@ -658,14 +738,14 @@ function initStationManagement(container) {
             }
 
             if (!data.results || data.results.length === 0) {
-                podcastSearchFeedback.style.display = "block";
-                podcastSearchFeedback.className = "small mt-2 text-warning";
+                if (podcastSearchHeader) podcastSearchHeader.style.setProperty("display", "flex", "important");
+                podcastSearchFeedback.className = "small flex-grow-1 pe-2 text-warning";
                 podcastSearchFeedback.textContent = `Keine Podcasts für "${query}" gefunden. Bitte probiere einen anderen Suchbegriff.`;
                 return;
             }
 
-            podcastSearchFeedback.style.display = "block";
-            podcastSearchFeedback.className = "small mt-2 text-info";
+            if (podcastSearchHeader) podcastSearchHeader.style.setProperty("display", "flex", "important");
+            podcastSearchFeedback.className = "small flex-grow-1 pe-2 text-info";
             podcastSearchFeedback.textContent = `${data.results.length} Podcast(s) gefunden. Wähle einen aus, um die Feed-Daten zu übernehmen:`;
 
             podcastSearchResults.innerHTML = data.results.map((pod, idx) => {
@@ -731,8 +811,8 @@ function initStationManagement(container) {
                     logoInput.value = selected.logo || "";
                     nowPlayingInput.value = "";
 
-                    podcastSearchFeedback.style.display = "block";
-                    podcastSearchFeedback.className = "small mt-2 text-success fw-semibold";
+                    if (podcastSearchHeader) podcastSearchHeader.style.setProperty("display", "flex", "important");
+                    podcastSearchFeedback.className = "small flex-grow-1 pe-2 text-success fw-semibold";
                     podcastSearchFeedback.innerHTML = `<i class="bi bi-check-circle-fill me-1"></i> Podcast "${selected.title}" mit Rubrik "${detectedGenre}" übernommen! Überprüfe die Angaben und klicke unten auf "Speichern".`;
 
                     // Formular sanft in den Fokus bringen
@@ -745,8 +825,8 @@ function initStationManagement(container) {
 
             podcastSearchResults.style.display = "flex";
         } catch (err) {
-            podcastSearchFeedback.style.display = "block";
-            podcastSearchFeedback.className = "small mt-2 text-danger";
+            if (podcastSearchHeader) podcastSearchHeader.style.setProperty("display", "flex", "important");
+            podcastSearchFeedback.className = "small flex-grow-1 pe-2 text-danger";
             podcastSearchFeedback.innerHTML = `<i class="bi bi-exclamation-circle-fill me-1"></i> ${err.message}`;
         } finally {
             podcastSearchBtn.disabled = false;
@@ -762,6 +842,22 @@ function initStationManagement(container) {
                 performPodcastSearch();
             }
         });
+        podcastSearchInput.addEventListener("input", () => {
+            if (podcastSearchClearBtn) {
+                podcastSearchClearBtn.style.display = podcastSearchInput.value.length > 0 ? "block" : "none";
+            }
+        });
+    }
+
+    if (podcastSearchClearBtn) {
+        podcastSearchClearBtn.onclick = () => {
+            clearPodcastSearch();
+            if (podcastSearchInput) podcastSearchInput.focus();
+        };
+    }
+
+    if (podcastSearchCloseBtn) {
+        podcastSearchCloseBtn.onclick = hidePodcastSearchResults;
     }
 
     // --- MANUELLER FEED-IMPORT (URL) ---
@@ -918,6 +1014,8 @@ function initStationManagement(container) {
 
     resetBtn.onclick = () => {
         form.reset();
+        clearRadioSearch();
+        clearPodcastSearch();
         if (podcastImportUrl) podcastImportUrl.value = "";
         if (podcastImportFeedback) podcastImportFeedback.style.display = "none";
         editStationIdInput.value = "";
@@ -950,6 +1048,8 @@ function initStationManagement(container) {
             currentGenre = station.genre || currentGenre;
             renderGenreButtons();
             form.reset();
+            clearRadioSearch();
+            clearPodcastSearch();
             if (podcastImportUrl) podcastImportUrl.value = "";
             if (podcastImportFeedback) podcastImportFeedback.style.display = "none";
             editStationIdInput.value = "";
