@@ -20,6 +20,10 @@ und dieses Projekt hält sich an [Semantic Versioning](https://semver.org/lang/d
   - Tab 2: **Podcast importieren** – Bequemes Importieren von RSS-/Podigee-Links wie gewohnt.
 - **PWA Service Worker & Cache-Busting auf v37 (`sw.js`, `index.html`, `main.js`):**
   - `CACHE_NAME` auf `milo-radio-v37` angehoben und Versions-Parameter in `index.html` und `main.js` synchronisiert.
+- **Projektdokumentation aktualisiert (`README.md`):**
+  - Umfassende Dokumentation der Podcast-Features (Pause/Resume mit Zeiterhalt, Scrubber-Timeline, Skip-Buttons, Episodenauswahl).
+  - Ausführliche Beschreibung der weltweiten Radio-Browser-Suchmaschine (> 40.000 Sender) mit Länderanzeige, 1-Klick-Auto-Fill und Podcast-Auto-Import im Admin-Panel.
+  - Versions-Badge und Projektstruktur auf aktuellen Stand synchronisiert.
 
 ## [1.6.0] - 2026-09-20
 

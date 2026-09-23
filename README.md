@@ -1,6 +1,6 @@
 # Milo Radio App
 
-[![Version](https://img.shields.io/badge/Version-1.5.12-blue?style=flat-square)](#)
+[![Version](https://img.shields.io/badge/Version-1.7.0-blue?style=flat-square)](#)
 [![PWA](https://img.shields.io/badge/PWA-Progressive%20Web%20App-purple?style=flat-square&logo=pwa)](https://developer.mozilla.org/de/docs/Web/Progressive_web_apps)
 [![JavaScript](https://img.shields.io/badge/JS-Vanilla%20ES6-yellow?style=flat-square&logo=javascript)](https://developer.mozilla.org/de/docs/Web/JavaScript)
 [![PHP](https://img.shields.io/badge/PHP-8.x-blue?style=flat-square&logo=php)](https://www.php.net/)
@@ -8,7 +8,7 @@
 [![Bootstrap](https://img.shields.io/badge/Bootstrap-5-purple?style=flat-square&logo=bootstrap)](https://getbootstrap.com/)
 [![License](https://img.shields.io/badge/Lizenz-MIT-green?style=flat-square)](#)
 
-Milo Radio ist eine moderne, Progressive Web App (PWA) zum Streamen deiner Lieblingsradiosender. Das Projekt besticht durch eine saubere Trennung von Frontend (Single Page Application SPA) und Backend (REST-API), eine performante Echtzeit-Statistik sowie ein voll ausgestattetes, abgesichertes Admin-Panel.
+Milo Radio ist eine moderne, Progressive Web App (PWA) zum Streamen deiner Lieblingsradiosender und Podcasts. Das Projekt besticht durch eine saubere Trennung von Frontend (Single Page Application SPA) und Backend (REST-API), eine performante Echtzeit-Statistik, weltweite Sendersuche sowie ein voll ausgestattetes, abgesichertes Admin-Panel.
 
 > [!NOTE]
 > **Live Demo:** Die App ist live erreichbar unter: **[milo-radio.de](https://milo-radio.de)**
@@ -19,7 +19,7 @@ Milo Radio ist eine moderne, Progressive Web App (PWA) zum Streamen deiner Liebl
 
 ### Design & Player-Erlebnis (UX/UI)
 
-- **Globale Sticky-Bottom-Player-Bar (Spotify-Style):** Unterbrechungsfreie Musikwiedergabe über alle Seiten (Radio, Genres, Stats, Einstellungen, Admin) mit Now-Playing-Anzeige (Sender, Titel, Interpret, Cover), animiertem Soundwave-Badge und Lautstärkeregler.
+- **Globale Sticky-Bottom-Player-Bar (Spotify-Style):** Unterbrechungsfreie Audiowiedergabe über alle Seiten (Radio, Genres, Stats, Einstellungen, Admin) mit Now-Playing-Anzeige (Sender, Titel, Interpret, Cover), animiertem Soundwave-Badge und Lautstärkeregler.
 - **Top 6 Favoriten-System (MRU & Auto-FIFO):**
   - Schlankes Dashboard mit maximal 6 aktiven Lieblingssendern für optimale Übersicht ohne Überladung.
   - **MRU-Sortierung beim Abspielen:** Der laufende Sender rückt automatisch auf **Platz #1** vor, begleitet von einem sanften Auto-Scroll an den Seitenanfang.
@@ -31,11 +31,19 @@ Milo Radio ist eine moderne, Progressive Web App (PWA) zum Streamen deiner Liebl
 - **QR-Code-Sharing:** Generiere und teile Sender-Links direkt per Knopfdruck über ein integriertes QR-Code-Modal.
 - **SPA Swipe-Gesten:** Schnelles Wischen (links/rechts) auf Touchscreens zwischen allen Seiten mit 10 % Randschutz zur Vermeidung nativer Smartphone-Gestenkonflikte.
 
+### Podcast-Integration & On-Demand Audio
+
+Podcasts sind fundamental anders als klassische Live-Radiosender: Statt eines fortlaufenden Dauer-Streams hören Nutzer gezielte Episoden on demand. Milo Radio unterscheidet dies vollautomatisch:
+- **Echtes Pause & Resume mit Zeiterhalt:** Beim Pausieren eines Podcasts bleibt die genaue Abspielposition (`currentTime`) erhalten. Beim erneuten Starten läuft die Episode exakt an der unterbrochenen Stelle weiter, statt von vorn zu beginnen.
+- **Interaktive Timeline & Scrubber:** Sobald ein Podcast abgespielt wird, schaltet der Player dynamisch eine sekundengenaue Zeitleiste mit aktueller Spielzeit und Gesamtlaufzeit frei.
+- **15-Sekunden Quick-Skip:** Schnelles Vor- und Zurückspulen (`-15s` / `+15s`) per Fingertipp, um Textpassagen zu wiederholen oder Intros zu überspringen.
+- **Episodenauswahl („Weitere Folgen“):** Auf den Podcast-Karten in der Genre-Übersicht steht neben dem Sofortstart der neuesten Episode ein Button für weitere Folgen bereit. Eine einklappbare Liste zeigt die letzten Episoden mit Veröffentlichungsdatum, Laufzeit und individuellem Play-Button.
+
 ### Zentrale App-Einstellungen & PWA
 
 - **Einstellungsseite (`#settings`):** Zentrale Anlaufstelle für App-Informationen, Impressum und Datenschutz.
 - **1-Klick Cache-Reset:** `App aktualisieren / Cache leeren` leert Service-Worker-Caches, CacheStorage und SessionStorage für sofortige Aktualisierungen auf Mobilgeräten.
-- **Progressive Web App (PWA):** Vollwertige PWA mit Offline-Fallback, Web-App-Manifest und Network-First-Caching (Service Worker `v23`) für rasante Ladezeiten und sofortige Updates.
+- **Progressive Web App (PWA):** Vollwertige PWA mit Offline-Fallback, Web-App-Manifest und Network-First-Caching (Service Worker `v37`) für rasante Ladezeiten und sofortige Updates.
 
 ### Deep Analytics & Dashboard
 
@@ -55,12 +63,22 @@ Milo Radio ist eine moderne, Progressive Web App (PWA) zum Streamen deiner Liebl
   - Sensible Zugangsdaten sind in einer geschützten `.env`-Datei hinterlegt.
   - Die [.htaccess](file:///c:/github/milo-radio/.htaccess) blockiert den direkten Zugriff auf `.env`, JSON-Datendateien, Git-Konfigurationen und Assistant-Datenordner, und schützt vor Directory-Browsing.
 
-### Admin-Dashboard & Wartung
+### Admin-Dashboard & Smarte Senderverwaltung
 
+Das Admin-Panel macht das Verwalten und Hinzufügen neuer Audioquellen intuitiv und schnell – ohne dass Stream-URLs mühsam manuell recherchiert werden müssen:
+
+- **Weltweite Online-Radiosendersuche (> 40.000 Sender):**
+  - Integrierte Radio-Browser-Schnittstelle direkt im Admin-Bereich.
+  - Einfach den Sendernamen eingeben (egal ob regional oder international wie z. B. „Rock Antenne“, „1LIVE“, „Sunshine Live“, „BBC“).
+  - Trefferliste zeigt Senderlogo, Musikrichtung, Bitrate/Codec und das **Herkunftsland** an (hilft sofort bei der Unterscheidung von Sendern mit identischem Namen in verschiedenen Ländern).
+  - **1-Klick Auto-Fill:** Ein Klick auf „Übernehmen“ überträgt Sendername, Audio-Stream-URL, Genre und Sender-Logo direkt in das Speicherformular.
+- **1-Klick Podcast-Auto-Import:**
+  - Eingabe einer RSS-Feed-URL oder eines Podigee-Links.
+  - Das Backend liest Channel-Titel, Beschreibung, Cover-Grafik und die Stream-URL der neuesten Folge automatisch aus und füllt alle Felder mit einem Klick aus.
 - **5 individuell einklappbare Bereiche:** Live Hörer, Datenbank-Status, Top-10-Sender-Chart, Sender-Formular und Vorhandene Sender lassen sich per Klick einzeln ein- und ausklappen für maximale Übersicht auf Smartphones. Bei Klick auf „Edit“ öffnet sich das Formular automatisch (`Auto-Expand`).
 - **Echtzeit-Hörer:** Zeigt die Anzahl der aktiven Hörer in den letzten 10 Minuten an.
 - **Datenbank-Status & Optimierung:** Zeigt die aktuelle Tabellengröße an und bietet einen Button zur sofortigen Datenbankbereinigung.
-- **Sender-Verwaltung (CRUD):** Sender direkt im Browser hinzufügen, bearbeiten oder löschen.
+- **Sender-Verwaltung (CRUD):** Sender direkt im Browser hinzufügen, bearbeiten oder löschen mit persistenter Speicherung in der MySQL-Datenbank.
 - **Wartungs-Cronjob:** Die Schnittstelle `maintenance.php` bereinigt Hörer-Events älter als 6 Monate, verdichtet sie in die Archiv-Tabelle `archived_stats` und führt ein `OPTIMIZE TABLE` durch. Sie kann über externe Cronjobs per `CRON_TOKEN` getriggert werden.
 
 ---
@@ -68,7 +86,7 @@ Milo Radio ist eine moderne, Progressive Web App (PWA) zum Streamen deiner Liebl
 ## Technologie-Stack
 
 - **Frontend:** Vanilla HTML5, CSS3 (Custom CSS & Glassmorphismus), [Bootstrap 5](https://getbootstrap.com/), Vanilla JS (ES Modules), [Chart.js](https://www.chartjs.org/) (Diagramme).
-- **Backend:** [PHP 8.x](https://www.php.net/) (RESTful API), PDO für sichere SQL-Verbindungen.
+- **Backend:** [PHP 8.x](https://www.php.net/) (RESTful API), PDO für sichere SQL-Verbindungen, cURL & XML-Parser für Feeds und Radiosuche.
 - **Datenbank:** MySQL / MariaDB (für hervorragende Strato-Kompatibilität).
 
 ---
@@ -81,27 +99,31 @@ milo-radio/
 │   ├── index.html                # Haupt-Einstiegspunkt (Single Page App)
 │   ├── index.php                 # Server-Fallback für PWA- & Webserver-Routing
 │   ├── manifest.json             # PWA Web-App-Manifest
-│   ├── sw.js                     # Service Worker (Network-First, Cache v24)
+│   ├── sw.js                     # Service Worker (Network-First, Cache v37)
 │   ├── css/                      # Stylesheets (Bootstrap & Custom Glassmorphism Theme)
 │   ├── images/                   # Sender-Logos, PWA-Icons & SVGs
 │   └── js/                       # Modulare ES6-Architektur
 │       ├── main.js               # App-Initialisierung, SPA-Router, Gestensteuerung
 │       ├── components/           # Wiederverwendbare UI-Komponenten
-│       │   └── playerBar.js      # Globale, persistente Sticky-Bottom-Player-Bar
+│       │   └── playerBar.js      # Globale Sticky-Bottom-Player-Bar mit Podcast-Controls
 │       ├── pages/                # Seiten-Module der SPA
 │       │   ├── radioPage.js      # Radio-Player mit Top-6-Favoriten
-│       │   ├── genresPage.js     # Genre-Übersicht, Stöbern, Vorhören & Hinzufügen
+│       │   ├── genresPage.js     # Genre-Übersicht, Stöbern, Vorhören & Episodenliste
 │       │   ├── statsPage.js      # Persönliches Statistik-Dashboard (Chart.js)
 │       │   ├── settingsPage.js   # Einstellungen, 1-Klick Cache-Reset, Impressum
-│       │   └── adminPage.js      # Abgesichertes Admin-Panel (CRUD, Stats, Wartung)
+│       │   └── adminPage.js      # Abgesichertes Admin-Panel mit Suchmaschine & Import
 │       └── services/             # Geschäftslogik & API-Services
 │           ├── userStationService.js # Verwaltung der Top-6-Sender (LocalStorage, MRU/FIFO)
-│           ├── stationServiceV5.js   # Laden, Caching & Filtern aller Radiosender
-│           └── radioServiceV2.js     # Audio-Streaming, Playback-Status & Ping-Tracking
+│           ├── stationServiceV5.js   # Laden, Caching & CRUD aller Radiosender
+│           ├── podcastService.js     # Erkennung, Episoden-Auflösung & Podcast-Status
+│           └── radioServiceV2.js     # Audio-Streaming, Playback-Status, Timeline & Pings
 ├── backend/                      # Server-Logik & REST-API
 │   ├── api/                      # REST-Endpunkte
-│   │   ├── auth.php              # PIN-Prüfung mit Brute-Force-Lockout & Session
+│   │   ├── auth.php              # PIN-Prüfung mit Brute-Force-Lockout & HMAC-Cookie
 │   │   ├── get_stations.php      # Senderdatenbank abrufen
+│   │   ├── manage_station.php    # CRUD-Endpunkt für Senderverwaltung
+│   │   ├── radio_search.php      # Live-Suche im weltweiten Radio-Browser (>40k Sender)
+│   │   ├── podcast.php           # RSS-Feed Resolver mit Caching & Episoden
 │   │   ├── get_stats.php         # Persönliche Hörerstatistiken abrufen
 │   │   ├── get_admin_stats.php   # Admin-Statistiken (Echtzeit-Hörer, DB-Größe)
 │   │   ├── metadata.php          # Live Now-Playing ICY-Metadaten & Cover
