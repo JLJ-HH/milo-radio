@@ -7,6 +7,22 @@ und dieses Projekt hält sich an [Semantic Versioning](https://semver.org/lang/d
 
 ---
 
+## [1.10.0] - 2026-09-23
+
+### Hinzugefügt (Podcast-Rubriken & Sub-Genre-Filterung)
+- **Podcast-Rubriken & interaktive Sub-Filterleiste (`genresPage.js`, `podcastService.js`):**
+  - Alle Podcasts werden auf der Genres-Hauptseite weiterhin unter dem gemeinsamen Button "Podcasts" zusammengefasst.
+  - Bei Auswahl von "Podcast" blendet die Seite eine dynamische Sub-Filterleiste ein mit den Rubriken: Alle, Politik & Geschichte, Finanzen, Technik und Musik (inklusive Live-Zähler je Kategorie).
+  - Klick auf eine Rubrik filtert die Podcast-Karten sofort und flüssig ohne Seiten-Reload.
+  - Auf den Podcast-Karten wird die zugewiesene Rubrik als kompaktes Tag-Badge angezeigt.
+  - `podcastService.isPodcast` unterstützt nun strukturierte Sub-Genres (`Podcast: Finanzen`, etc.) ohne Notwendigkeit einer Datenbank-Migration.
+- **Smarte Rubrik-Zuweisung im Admin-Panel (`adminPage.js`):**
+  - HTML5-Datalist am Genre-Eingabefeld für schnelle Auswahl der vordefinierten Podcast-Rubriken.
+  - Automatische Vorbelegung der passenden Rubrik beim Import von Podcasts aus dem Apple-Verzeichnis.
+  - Bereinigung sämtlicher Emojis im Code und Interface zugunsten einheitlicher Vektor-Icons.
+- **PWA Service Worker Cache-Busting auf v40 (`sw.js`):**
+  - `CACHE_NAME` auf `milo-radio-v40` angehoben.
+
 ## [1.9.0] - 2026-09-23
 
 ### Hinzugefügt (Podcast-Namenssuche via Apple Podcasts API & 1-Klick Feed-Import)

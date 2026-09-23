@@ -18,7 +18,7 @@ class PodcastService {
   isPodcast(station) {
     if (!station) return false;
     const genre = (station.genre || "").trim().toLowerCase();
-    if (genre === "podcast") return true;
+    if (genre === "podcast" || genre.startsWith("podcast:") || genre.startsWith("podcast -")) return true;
 
     const url = (station.sender_Url || station.sender_url || station.url || "").trim().toLowerCase();
     if (url.includes("/feed") || url.endsWith(".xml") || url.includes("podigee.io") || url.includes("rss")) {
@@ -26,6 +26,23 @@ class PodcastService {
     }
 
     return false;
+  }
+
+  /**
+   * Extrahiert die Podcast-Kategorie (z. B. "Finanzen", "Politik & Geschichte", "Technik", "Musik", "Allgemein")
+   */
+  getPodcastCategory(station) {
+    if (!station) return "Allgemein";
+    const genre = (station.genre || "").trim();
+    if (genre.toLowerCase().startsWith("podcast:")) {
+      const cat = genre.substring(8).trim();
+      return cat || "Allgemein";
+    }
+    if (genre.toLowerCase().startsWith("podcast -")) {
+      const cat = genre.substring(9).trim();
+      return cat || "Allgemein";
+    }
+    return "Allgemein";
   }
 
   /**

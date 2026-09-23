@@ -119,8 +119,8 @@ export function render(container) {
         <i class="bi bi-check-circle-fill fs-5"></i>
         <span><strong>"${stationName}"</strong> ist jetzt auf Platz 1!</span>
       </div>
-      <a href="#radio" class="btn btn-light btn-sm rounded-pill px-3 fw-bold text-dark text-decoration-none">
-        Top 6 ansehen ➔
+      <a href="#radio" class="btn btn-light btn-sm rounded-pill px-3 fw-bold text-dark text-decoration-none d-inline-flex align-items-center gap-1">
+        <span>Top 6 ansehen</span> <i class="bi bi-arrow-right"></i>
       </a>
     `;
 
@@ -139,7 +139,21 @@ export function render(container) {
     if (!Array.isArray(masterStations) || masterStations.length === 0) return;
 
     genreButtonsContainer.innerHTML = "";
-    const genres = [...new Set(masterStations.map((s) => s.genre ?? "Unbekannt"))].sort();
+    
+    // Alle Podcast-Varianten zu "Podcast" zusammenfassen
+    const rawGenres = masterStations.map((s) => {
+      const g = (s.genre ?? "Unbekannt").trim();
+      if (podcastService.isPodcast(s) || g.toLowerCase() === "podcast" || g.toLowerCase().startsWith("podcast:") || g.toLowerCase().startsWith("podcast -")) {
+        return "Podcast";
+      }
+      return g;
+    });
+
+    const genres = [...new Set(rawGenres)].sort((a, b) => {
+      if (a === "Podcast") return 1;
+      if (b === "Podcast") return -1;
+      return a.localeCompare(b);
+    });
 
     const colors = [
       "primary", "success", "info", "warning", "danger", 
@@ -148,32 +162,138 @@ export function render(container) {
 
     genres.forEach((genre, index) => {
       const btn = document.createElement("button");
-      const color = colors[index % colors.length];
-      btn.className = `btn btn-sm btn-${color} rounded-pill px-4 shadow-sm genre-btn`;
-      btn.textContent = genre;
+      const isPodcast = genre === "Podcast";
+      const color = isPodcast ? "info" : colors[index % colors.length];
+      btn.className = `btn btn-sm btn-${color} rounded-pill px-4 shadow-sm genre-btn d-inline-flex align-items-center gap-1`;
+      btn.innerHTML = isPodcast ? `<i class="bi bi-mic-fill"></i> <span>Podcasts</span>` : `<span>${genre}</span>`;
       btn.onclick = () => {
         selectGenre(genre);
       };
       genreButtonsContainer.appendChild(btn);
     });
 
+    function matchesPodcastCategory(station, category) {
+      if (!category || category === "Alle") return true;
+      const rawCat = podcastService.getPodcastCategory(station).toLowerCase();
+      const c = category.toLowerCase();
+      
+      if (c.includes("politik")) {
+        return rawCat.includes("politik") || rawCat.includes("geschichte") || rawCat.includes("society");
+      }
+      if (c.includes("finanz")) {
+        return rawCat.includes("finanz") || rawCat.includes("invest") || rawCat.includes("wirtschaft") || rawCat.includes("money") || rawCat.includes("business");
+      }
+      if (c.includes("technik")) {
+        return rawCat.includes("technik") || rawCat.includes("tech") || rawCat.includes("computer") || rawCat.includes("wissen") || rawCat.includes("science");
+      }
+      if (c.includes("musik")) {
+        return rawCat.includes("musik") || rawCat.includes("music") || rawCat.includes("audio") || rawCat.includes("sound");
+      }
+      return rawCat === c;
+    }
+
     function selectGenre(genre) {
-      const stationsInGenre = masterStations.filter((s) => (s.genre ?? "Unbekannt") === genre);
+      const isPodcastGenre = genre === "Podcast";
+      const stationsInGenre = masterStations.filter((s) => {
+        if (isPodcastGenre) {
+          return podcastService.isPodcast(s) || (s.genre ?? "").toLowerCase().startsWith("podcast");
+        }
+        return (s.genre ?? "Unbekannt") === genre;
+      });
 
       activeGenreBar.classList.remove("d-none");
       activeGenreBadge.textContent = genre;
-      activeStationCount.textContent = `• ${stationsInGenre.length} Sender`;
+      activeStationCount.textContent = `• ${stationsInGenre.length} ${isPodcastGenre ? "Podcasts" : "Sender"}`;
 
       // Nach Auswahl die große Button-Box einklappen
       genreButtonsCard.classList.add("d-none");
 
-      renderStationsByGenre(genre);
+      renderStationsByGenre(genre, "Alle");
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
-    function renderStationsByGenre(selectedGenre) {
+    function renderStationsByGenre(selectedGenre, selectedCategory = "Alle") {
       genreContainer.innerHTML = "";
-      const stationsInGenre = masterStations.filter((s) => (s.genre ?? "Unbekannt") === selectedGenre);
+      const isPodcastView = selectedGenre === "Podcast";
+      
+      const allStationsInGenre = masterStations.filter((s) => {
+        if (isPodcastView) {
+          return podcastService.isPodcast(s) || (s.genre ?? "").toLowerCase().startsWith("podcast");
+        }
+        return (s.genre ?? "Unbekannt") === selectedGenre;
+      });
+
+      // Bei Podcasts die interaktive Sub-Filterleiste oben rendern
+      if (isPodcastView) {
+        const categories = [
+          { id: "Alle", name: "Alle", icon: "bi-collection" },
+          { id: "Politik & Geschichte", name: "Politik & Geschichte", icon: "bi-bank" },
+          { id: "Finanzen", name: "Finanzen", icon: "bi-graph-up-arrow" },
+          { id: "Technik", name: "Technik", icon: "bi-cpu" },
+          { id: "Musik", name: "Musik", icon: "bi-music-note-beamed" }
+        ];
+
+        // Zähler für jede Kategorie berechnen
+        categories.forEach((cat) => {
+          cat.count = allStationsInGenre.filter((s) => matchesPodcastCategory(s, cat.id)).length;
+        });
+
+        const filterBarCol = document.createElement("div");
+        filterBarCol.className = "col-12 mb-3";
+        filterBarCol.innerHTML = `
+          <div class="card bg-dark border-secondary p-3 rounded-4 shadow-sm">
+            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-2">
+              <span class="text-white-50 small fw-bold text-uppercase" style="letter-spacing: 0.5px;">
+                <i class="bi bi-funnel me-1 text-info"></i> Podcast-Rubriken:
+              </span>
+              <span class="text-white-50 small">
+                Aktive Rubrik: <strong class="text-white">${selectedCategory}</strong>
+              </span>
+            </div>
+            <div class="d-flex flex-wrap gap-2" id="podcastSubFilterPills">
+              ${categories.map((cat) => {
+                const isActive = cat.id === selectedCategory;
+                return `
+                  <button type="button" class="btn btn-sm ${isActive ? 'btn-info fw-bold' : 'btn-outline-secondary text-white-50'} rounded-pill px-3 py-1 d-flex align-items-center gap-1 shadow-sm podcast-subfilter-btn" data-cat="${cat.id}">
+                    <i class="bi ${cat.icon}"></i>
+                    <span>${cat.name}</span>
+                    <span class="badge ${isActive ? 'bg-dark text-info' : 'bg-secondary text-white-50'} rounded-pill ms-1" style="font-size: 0.7rem;">${cat.count}</span>
+                  </button>
+                `;
+              }).join("")}
+            </div>
+          </div>
+        `;
+
+        genreContainer.appendChild(filterBarCol);
+
+        // Klick-Events für Sub-Filter
+        const filterBtns = filterBarCol.querySelectorAll(".podcast-subfilter-btn");
+        filterBtns.forEach((btn) => {
+          btn.onclick = () => {
+            const cat = btn.getAttribute("data-cat");
+            renderStationsByGenre(selectedGenre, cat);
+          };
+        });
+      }
+
+      // Zu filternde Sender bestimmen
+      const stationsInGenre = isPodcastView
+        ? allStationsInGenre.filter((s) => matchesPodcastCategory(s, selectedCategory))
+        : allStationsInGenre;
+
+      if (stationsInGenre.length === 0) {
+        const emptyCol = document.createElement("div");
+        emptyCol.className = "col-12 text-center py-5 text-white-50";
+        emptyCol.innerHTML = `
+          <i class="bi bi-info-circle display-4 text-info opacity-50 mb-3 d-block"></i>
+          <p class="fs-5 mb-1">Keine Podcasts in der Rubrik "${selectedCategory}" vorhanden.</p>
+          <p class="small text-white-50">Du kannst Podcasts im Admin-Bereich bearbeiten und ihnen diese Rubrik zuweisen.</p>
+        `;
+        genreContainer.appendChild(emptyCol);
+        return;
+      }
+
       const userStations = userStationService.getStations();
       const currentPlayingUrl = (radioService.getCurrentStation() || "").trim();
       const cleanCurrentPlayingUrl = userStationService.normalizeUrl(currentPlayingUrl);
@@ -194,6 +314,11 @@ export function render(container) {
         const isPlaying = cleanCurrentPlayingUrl && cleanCurrentPlayingUrl === cleanUrl;
 
         const isPod = podcastService.isPodcast(station);
+        const podCat = isPod ? podcastService.getPodcastCategory(station) : null;
+        const podBadgeHtml = (isPod && podCat && podCat !== 'Podcast') 
+          ? `<div class="mb-1"><span class="badge bg-secondary text-info border border-secondary border-opacity-50" style="font-size: 0.68rem;"><i class="bi bi-tag me-1"></i>${podCat}</span></div>` 
+          : '';
+
         const col = document.createElement("div");
         col.className = isPod ? "col-12 col-md-6 col-lg-4" : "col-6 col-md-4 col-lg-3";
         
@@ -204,6 +329,7 @@ export function render(container) {
                 ${isPlaying ? '<div class="playing-overlay"><div class="wave"></div></div>' : ""}
               </div>
               <div class="card-body p-2 text-center d-flex flex-column justify-content-between">
+                  ${podBadgeHtml}
                   <h6 class="card-title small text-truncate mb-2" title="${name}">${name}</h6>
                   <div class="d-grid gap-1 mt-auto">
                     <button class="btn btn-sm ${isPlaying ? 'btn-success fw-bold' : 'btn-primary'} btn-genre-play rounded-pill shadow-sm">
@@ -215,7 +341,7 @@ export function render(container) {
                     </button>
                     ` : ''}
                     <button class="btn btn-sm ${alreadyAdded ? 'btn-success fw-bold' : 'btn-outline-primary text-white'} btn-genre-add rounded-pill">
-                      ${alreadyAdded ? `✓ In Top 6 (Platz ${stationIndex + 1})` : '+ Zu Top 6'}
+                      ${alreadyAdded ? `<i class="bi bi-check-lg me-1"></i>In Top 6 (Platz ${stationIndex + 1})` : '+ Zu Top 6'}
                     </button>
                   </div>
                   ${isPod ? `
@@ -270,7 +396,7 @@ export function render(container) {
                 epListContent.innerHTML = episodes.map((ep, epIdx) => `
                   <div class="d-flex align-items-center justify-content-between p-2 rounded bg-secondary bg-opacity-25 mb-1 hover-highlight">
                     <div class="text-truncate me-2" style="font-size: 0.75rem;">
-                      <div class="text-white fw-semibold text-truncate" title="${ep.title}">${epIdx === 0 ? '🟢 ' : ''}${ep.title}</div>
+                      <div class="text-white fw-semibold text-truncate" title="${ep.title}">${epIdx === 0 ? '<span class="badge bg-success me-1" style="font-size: 0.65rem;">NEU</span>' : ''}${ep.title}</div>
                       <div class="text-white-50 small">${ep.pub_date || ''} ${ep.duration ? '• ' + ep.duration : ''}</div>
                     </div>
                     <button class="btn btn-primary btn-sm rounded-circle p-0 flex-shrink-0 d-flex align-items-center justify-content-center btn-play-single-ep" data-idx="${epIdx}" style="width: 28px; height: 28px;" title="Diese Folge abspielen">

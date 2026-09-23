@@ -188,8 +188,22 @@ export function render(container) {
                             <input type="url" id="url" class="form-control bg-secondary text-white border-0" placeholder="https://..." required>
                         </div>
                         <div class="col-md-4">
-                            <label class="form-label small text-white-50">Genre</label>
-                            <input type="text" id="genre" class="form-control bg-secondary text-white border-0" placeholder="z.B. Pop, Rock" required>
+                            <label class="form-label small text-white-50">Genre / Rubrik</label>
+                            <input type="text" id="genre" class="form-control bg-secondary text-white border-0" placeholder="z.B. Pop oder Podcast: Finanzen" list="genreDatalist" required>
+                            <datalist id="genreDatalist">
+                                <option value="Podcast: Politik & Geschichte"></option>
+                                <option value="Podcast: Finanzen"></option>
+                                <option value="Podcast: Technik"></option>
+                                <option value="Podcast: Musik"></option>
+                                <option value="Podcast"></option>
+                                <option value="Pop"></option>
+                                <option value="Rock"></option>
+                                <option value="Electro"></option>
+                                <option value="Hip-Hop"></option>
+                                <option value="Jazz"></option>
+                                <option value="Klassik"></option>
+                                <option value="Schlager"></option>
+                            </datalist>
                         </div>
                         <div class="col-md-4">
                             <label class="form-label small text-white-50">Logo URL</label>
@@ -691,15 +705,35 @@ function initStationManagement(container) {
                     const selected = data.results[idx];
                     if (!selected) return;
 
+                    // Smarte Erkennung der Podcast-Rubrik anhand von Apple-Genre und Titel
+                    const mapPodcastCategory = (rawGenre = "", title = "") => {
+                        const combined = `${rawGenre} ${title}`.toLowerCase();
+                        if (combined.includes("invest") || combined.includes("finanz") || combined.includes("business") || combined.includes("wirtschaft") || combined.includes("geld") || combined.includes("money")) {
+                            return "Podcast: Finanzen";
+                        }
+                        if (combined.includes("tech") || combined.includes("it") || combined.includes("computer") || combined.includes("science") || combined.includes("wissen") || combined.includes("ki ") || combined.includes("software")) {
+                            return "Podcast: Technik";
+                        }
+                        if (combined.includes("music") || combined.includes("musik") || combined.includes("audio") || combined.includes("sound") || combined.includes("recording") || combined.includes("guitar")) {
+                            return "Podcast: Musik";
+                        }
+                        if (combined.includes("politik") || combined.includes("politics") || combined.includes("geschichte") || combined.includes("history") || combined.includes("news") || combined.includes("nachrichten") || combined.includes("gesellschaft")) {
+                            return "Podcast: Politik & Geschichte";
+                        }
+                        return "Podcast";
+                    };
+
+                    const detectedGenre = mapPodcastCategory(selected.genre, selected.title);
+
                     senderInput.value = selected.title || "";
                     urlInput.value = selected.feed_url || "";
-                    genreInput.value = "Podcast";
+                    genreInput.value = detectedGenre;
                     logoInput.value = selected.logo || "";
                     nowPlayingInput.value = "";
 
                     podcastSearchFeedback.style.display = "block";
                     podcastSearchFeedback.className = "small mt-2 text-success fw-semibold";
-                    podcastSearchFeedback.innerHTML = `<i class="bi bi-check-circle-fill me-1"></i> Podcast "${selected.title}" übernommen! Überprüfe die Angaben und klicke unten auf "Speichern".`;
+                    podcastSearchFeedback.innerHTML = `<i class="bi bi-check-circle-fill me-1"></i> Podcast "${selected.title}" mit Rubrik "${detectedGenre}" übernommen! Überprüfe die Angaben und klicke unten auf "Speichern".`;
 
                     // Formular sanft in den Fokus bringen
                     const formEl = container.querySelector("#radioForm");
